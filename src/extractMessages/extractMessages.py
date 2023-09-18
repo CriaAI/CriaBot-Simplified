@@ -78,12 +78,16 @@ class ExtractMessages:
         find_sender_db = users_ref.where("message_sender", "==", sender_to_search).get()
         return find_sender_db
     
-    def update_user_database(self, doc_id, messages):
+    def update_messages_array(self, doc_id, messages):
         users_ref.document(doc_id).update({"messages": messages})
+
+    def update_messages_to_be_answered(self, doc_id):
+        users_ref.document(doc_id).update({"messages_to_be_answered": True})
 
     def insert_messages_database(self, messages):
         #we need to find who the sender is to create the document in the db (cannot be the seller)
         find_sender_db = []
+        
         for message in messages:
             if message["message_sender"] != " Fran Hahn: ": #CAIO terá que colocar como está o nome dele
                 find_sender_db = self.get_user_database(message)
@@ -116,18 +120,17 @@ class ExtractMessages:
                     doc_data["messages"].append({
                         "sender": message["message_sender"],
                         "text": message["message_text"], 
-                        "date": message["message_date"],
-                        "was_answered": False
+                        "date": message["message_date"]
                     })
             else:
                 doc_data["messages"].append({
                     "sender": message["message_sender"],
                     "text": message["message_text"], 
-                    "date": message["message_date"],
-                    "was_answered": False
+                    "date": message["message_date"]
                 })
 
-        self.update_user_database(doc_id, doc_data["messages"])
+        self.update_messages_array(doc_id, doc_data["messages"])
+        self.update_messages_to_be_answered(doc_id)
         return doc_data["message_sender"]
 
 previous_sender = ""
