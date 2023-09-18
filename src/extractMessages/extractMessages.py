@@ -91,7 +91,8 @@ class ExtractMessages:
                 #If the sender is not in the database yet, a new document will be created for them
                 if len(find_sender_db) == 0:
                     users_ref.add({
-                        "message_sender": message["message_sender"], 
+                        "message_sender": message["message_sender"],
+                        "messages_to_be_answered": True,
                         "messages": []
                     })
                     find_sender_db = self.get_user_database(message) #need to do that to find out the id that was created in the db
