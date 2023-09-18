@@ -9,18 +9,10 @@ import random
 import pyautogui
 import pyperclip
 from bs4 import BeautifulSoup
-from firebase_admin import firestore
-from firebase_admin import initialize_app
-from firebase_admin import credentials
-from src.databaseConfig.firebaseConfig import firebase_config
-
-credentials = credentials.Certificate(firebase_config)
-initialize_app(credentials)
-db_client = firestore.client()
+from src.databaseConfig.firebaseConfig import users_ref
 
 SECS_BETWEEN_KEYS = 0.2
 filter_click_type = "click"
-users_ref = db_client.collection("users")
 
 class ExtractMessages:
     def open_conversation(self):
@@ -98,7 +90,7 @@ class ExtractMessages:
                 
                 #If the sender is not in the database yet, a new document will be created for them
                 if len(find_sender_db) == 0:
-                    db_client.collection("users").add({
+                    users_ref.add({
                         "message_sender": message["message_sender"], 
                         "messages": []
                     })
