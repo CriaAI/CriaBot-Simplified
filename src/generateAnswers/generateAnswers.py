@@ -75,9 +75,6 @@ def main():
                     })
                     users_ref.document(doc_id).update({"messages": all_messages})
 
-                    #Updating the variable messages_to_be_answered to false
-                    users_ref.document(doc_id).update({"messages_to_be_answered": False})
-
                     st.experimental_rerun()
 
     # Rendering the message history between the lead and the seller

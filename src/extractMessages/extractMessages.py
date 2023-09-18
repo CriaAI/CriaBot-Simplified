@@ -99,14 +99,14 @@ class ExtractMessages:
                 if len(find_sender_db) == 0:
                     users_ref.add({
                         "message_sender": message["message_sender"],
-                        "messages_to_be_answered": True,
+                        "need_to_generate_message": True,
+                        "need_to_answer_user": True,
                         "messages": []
                     })
                     find_sender_db = self.get_user_database(message["message_sender"]) #need to do that to find out the id that was created in the db
                 break
         
         #Now, the messages will be inserted in the db inside the messages array
-        print("sender db: ", find_sender_db)
         doc_id = find_sender_db[0].id
         doc_data = find_sender_db[0].to_dict()
 
