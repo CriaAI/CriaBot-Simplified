@@ -38,6 +38,8 @@ class ExtractMessages:
             message_meta_data:str = element.parent.get('data-pre-plain-text') #Sometimes it returns None
 
             if message_meta_data == None:
+                message = {'message_text': 'Não foi possível extrair essa mensagem', 'message_sender': 'NAN', 'message_date': 'NAN'}
+                messages_list.append(message)
                 continue
 
             message_date = message_meta_data.split(']')[0].split('[')[-1]
@@ -45,6 +47,8 @@ class ExtractMessages:
             message_text:str = element.find("span", {"class": "_11JPr selectable-text copyable-text"}) #Sometimes it returns None
             
             if message_text == None:
+                message = {'message_text': 'Não foi possível extrair essa mensagem', 'message_sender': message_sender, 'message_date': message_date}
+                messages_list.append(message)
                 continue
             
             message_text = message_text.text
@@ -73,9 +77,8 @@ class ExtractMessages:
     def randomize_time(self):
         return random.uniform(0.8000, 1.2000)
     
-    def get_user_database(self, message):
-        sender_to_search = message["message_sender"]
-        find_sender_db = users_ref.where("message_sender", "==", sender_to_search).get()
+    def get_user_database(self, sender):
+        find_sender_db = users_ref.where("message_sender", "==", sender).get()
         return find_sender_db
     
     def update_messages_array(self, doc_id, messages):
@@ -87,10 +90,10 @@ class ExtractMessages:
     def insert_messages_database(self, messages):
         #we need to find who the sender is to create the document in the db (cannot be the seller)
         find_sender_db = []
-        
+
         for message in messages:
             if message["message_sender"] != " Fran Hahn: ": #CAIO terá que colocar como está o nome dele
-                find_sender_db = self.get_user_database(message)
+                find_sender_db = self.get_user_database(message["message_sender"])
                 
                 #If the sender is not in the database yet, a new document will be created for them
                 if len(find_sender_db) == 0:
@@ -99,10 +102,11 @@ class ExtractMessages:
                         "messages_to_be_answered": True,
                         "messages": []
                     })
-                    find_sender_db = self.get_user_database(message) #need to do that to find out the id that was created in the db
+                    find_sender_db = self.get_user_database(message["message_sender"]) #need to do that to find out the id that was created in the db
                 break
         
         #Now, the messages will be inserted in the db inside the messages array
+        print("sender db: ", find_sender_db)
         doc_id = find_sender_db[0].id
         doc_data = find_sender_db[0].to_dict()
 
