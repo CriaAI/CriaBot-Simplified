@@ -38,8 +38,6 @@ class ExtractMessages:
             message_meta_data:str = element.parent.get('data-pre-plain-text') #Sometimes it returns None
 
             if message_meta_data == None:
-                message = {'message_text': 'Não foi possível extrair essa mensagem', 'message_sender': 'NAN', 'message_date': 'NAN'}
-                messages_list.append(message)
                 continue
 
             message_date = message_meta_data.split(']')[0].split('[')[-1]
@@ -84,9 +82,6 @@ class ExtractMessages:
     def update_messages_array(self, doc_id, messages):
         users_ref.document(doc_id).update({"messages": messages})
 
-    def update_messages_to_be_answered(self, doc_id):
-        users_ref.document(doc_id).update({"messages_to_be_answered": True})
-
     def insert_messages_database(self, messages):
         #we need to find who the sender is to create the document in the db (cannot be the seller)
         find_sender_db = []
@@ -99,8 +94,8 @@ class ExtractMessages:
                 if len(find_sender_db) == 0:
                     users_ref.add({
                         "message_sender": message["message_sender"],
-                        "need_to_generate_message": True,
-                        "need_to_answer_user": True,
+                        "need_to_generate_answer": True,
+                        "need_to_send_answer": True,
                         "messages": []
                     })
                     find_sender_db = self.get_user_database(message["message_sender"]) #need to do that to find out the id that was created in the db
@@ -134,7 +129,6 @@ class ExtractMessages:
                 })
 
         self.update_messages_array(doc_id, doc_data["messages"])
-        self.update_messages_to_be_answered(doc_id)
         return doc_data["message_sender"]
 
 previous_sender = ""

@@ -24,4 +24,5 @@
 
 `Observação: ` Algumas informações deverão ser mudadas para as informações do Caio (eu deixei especificado em comentários no código)
 
-** Para rodar o streamlit: streamlit run c:/Users/fran_/Documents/EMPRESA/CRIA.AI/CriaBot/src/generateAnswers/generateAnswers.py
+### Para rodar o streamlit: 
+- streamlit run c:/Users/fran_/Documents/EMPRESA/CRIA.AI/CriaBot/src/generateAnswers/generateAnswers.py

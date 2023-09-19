@@ -29,7 +29,7 @@ def main():
         openai_api_type="azure",
     )
 
-    users_to_be_answered = users_ref.where("messages_to_be_answered", "==", True).get()
+    users_to_be_answered = users_ref.where("need_to_generate_answer", "==", True).get()
     
     if len(users_to_be_answered) > 0:
         doc_id = users_to_be_answered[0].id
@@ -48,11 +48,12 @@ def main():
         gpt_prompt = list(reversed(gpt_prompt))
 
         messages = [
-            SystemMessage(content="Você é um vendedor de um serviço de inteligência artificial que cria documentos para advogados no Brasil"),
+            SystemMessage(content="Você é um vendedor de um serviço de inteligência artificial que cria documentos para advogados"),
         ]
         messages.append(HumanMessage(content="\n".join(gpt_prompt)))
     else:
         st.write("Todos os usuários foram respondidos.")
+        st.stop()
 
     with st.sidebar:
         gpt_answer = chat(messages)
@@ -74,8 +75,10 @@ def main():
                         "text": gpt_answer.content
                     })
                     users_ref.document(doc_id).update({"messages": all_messages})
+                    users_ref.document(doc_id).update({"need_to_generate_answer": False})
 
                     st.experimental_rerun()
+
 
     # Rendering the message history between the lead and the seller
     if len(users_to_be_answered) > 0:
