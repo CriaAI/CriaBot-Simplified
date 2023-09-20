@@ -30,11 +30,11 @@ class SendMessages:
             self.move_to_and_click(xy_position=first_conversation_box_xy)
             time.sleep(2)
             self.move_to_and_click(xy_position=input_send_message_xy)
-            time.sleep(1)
-            keyboard.write(message_to_be_sent)
             time.sleep(2)
+            keyboard.write(message_to_be_sent)
+            time.sleep(6)
             pyautogui.hotkey('enter')
-            time.sleep(1)
+            time.sleep(2)
             self.update_user(user.id)
 
     def move_to_and_click(self, xy_position):
