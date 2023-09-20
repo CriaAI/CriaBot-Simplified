@@ -3,25 +3,22 @@ sys.path.insert(0, os.path.abspath(os.curdir))
 
 import streamlit as st
 from dotenv import load_dotenv
-import time
 from datetime import datetime
-from langchain.chat_models import AzureChatOpenAI, ChatOpenAI
+from langchain.chat_models import AzureChatOpenAI
 from langchain.schema import SystemMessage, HumanMessage
 
 from src.databaseConfig.firebaseConfig import users_ref
 
 load_dotenv()
 
-#chat = AzureChatOpenAI(
-#    openai_api_base=os.getenv("BASE_URL"),
-#    openai_api_version="2023-05-15",
-#    deployment_name="gpt-35-turbo",
-#    openai_api_key=os.getenv("API_KEY"),
-#    openai_api_type="azure",
-#    temperature=0.4
-#)
-
-chat = ChatOpenAI()
+chat = AzureChatOpenAI(
+    openai_api_base=os.getenv("BASE_URL"),
+    openai_api_version="2023-05-15",
+    deployment_name="gpt-35-turbo",
+    openai_api_key=os.getenv("API_KEY"),
+    openai_api_type="azure",
+    temperature=0.4
+)
 
 def init():
     st.set_page_config(
