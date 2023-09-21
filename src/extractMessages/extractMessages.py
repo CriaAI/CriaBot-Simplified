@@ -9,18 +9,10 @@ import random
 import pyautogui
 import pyperclip
 from bs4 import BeautifulSoup
-from firebase_admin import firestore
-from firebase_admin import initialize_app
-from firebase_admin import credentials
-from src.databaseConfig.firebaseConfig import firebase_config
-
-credentials = credentials.Certificate(firebase_config)
-initialize_app(credentials)
-db_client = firestore.client()
+from src.databaseConfig.firebaseConfig import users_ref
 
 SECS_BETWEEN_KEYS = 0.2
 filter_click_type = "click"
-users_ref = db_client.collection("users")
 
 class ExtractMessages:
     def open_conversation(self):
@@ -53,6 +45,8 @@ class ExtractMessages:
             message_text:str = element.find("span", {"class": "_11JPr selectable-text copyable-text"}) #Sometimes it returns None
             
             if message_text == None:
+                message = {'message_text': 'Não foi possível extrair essa mensagem', 'message_sender': message_sender, 'message_date': message_date}
+                messages_list.append(message)
                 continue
             
             message_text = message_text.text
@@ -81,28 +75,30 @@ class ExtractMessages:
     def randomize_time(self):
         return random.uniform(0.8000, 1.2000)
     
-    def get_user_database(self, message):
-        sender_to_search = message["message_sender"]
-        find_sender_db = users_ref.where("message_sender", "==", sender_to_search).get()
+    def get_user_database(self, sender):
+        find_sender_db = users_ref.where("message_sender", "==", sender).get()
         return find_sender_db
     
-    def update_user_database(self, doc_id, messages):
+    def update_messages_array(self, doc_id, messages):
         users_ref.document(doc_id).update({"messages": messages})
 
     def insert_messages_database(self, messages):
         #we need to find who the sender is to create the document in the db (cannot be the seller)
         find_sender_db = []
+
         for message in messages:
             if message["message_sender"] != " Fran Hahn: ": #CAIO terá que colocar como está o nome dele
-                find_sender_db = self.get_user_database(message)
+                find_sender_db = self.get_user_database(message["message_sender"])
                 
                 #If the sender is not in the database yet, a new document will be created for them
                 if len(find_sender_db) == 0:
-                    db_client.collection("users").add({
-                        "message_sender": message["message_sender"], 
+                    users_ref.add({
+                        "message_sender": message["message_sender"],
+                        "need_to_generate_answer": True,
+                        "need_to_send_answer": True,
                         "messages": []
                     })
-                    find_sender_db = self.get_user_database(message) #need to do that to find out the id that was created in the db
+                    find_sender_db = self.get_user_database(message["message_sender"]) #need to do that to find out the id that was created in the db
                 break
         
         #Now, the messages will be inserted in the db inside the messages array
@@ -123,18 +119,16 @@ class ExtractMessages:
                     doc_data["messages"].append({
                         "sender": message["message_sender"],
                         "text": message["message_text"], 
-                        "date": message["message_date"],
-                        "was_answered": False
+                        "date": message["message_date"]
                     })
             else:
                 doc_data["messages"].append({
                     "sender": message["message_sender"],
                     "text": message["message_text"], 
-                    "date": message["message_date"],
-                    "was_answered": False
+                    "date": message["message_date"]
                 })
 
-        self.update_user_database(doc_id, doc_data["messages"])
+        self.update_messages_array(doc_id, doc_data["messages"])
         return doc_data["message_sender"]
 
 previous_sender = ""

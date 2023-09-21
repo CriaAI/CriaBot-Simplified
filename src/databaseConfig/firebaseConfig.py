@@ -1,6 +1,7 @@
 #firebaseConfig.py
 import os
 from dotenv import load_dotenv
+from firebase_admin import credentials, initialize_app, firestore
 
 load_dotenv()
 
@@ -17,3 +18,8 @@ firebase_config = {
     "client_x509_cert_url": os.getenv("client_x509_cert_url"),
     "universe_domain": os.getenv("universe_domain")
 }
+
+credentials_obj = credentials.Certificate(firebase_config)
+initialize_app(credentials_obj)
+db_client = firestore.client()
+users_ref = db_client.collection("users")
