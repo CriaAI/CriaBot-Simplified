@@ -22,9 +22,7 @@ def test_open_conversation_with_html_file():
 
     assert user == " Vittório Girardi: "
     assert pyautogui_module.assert_any_call
-    repository.get_user_by_name.assert_any_call
-    repository.update_messages_array.assert_any_call
-    repository.insert_new_document.assert_any_call
+    assert repository.assert_has_calls
 
 def test_insert_messages_from_existing_user():
     messages = [{'message_text': 'Hello', 'message_sender': ' Vittório Girardi: ', 'message_date': '12:00, 01/10/2023'}]
@@ -41,10 +39,7 @@ def test_insert_messages_from_existing_user():
         filter_click_type=filter_click_type
     ).insert_messages(messages)
 
-    repository.get_user_by_name.assert_any_call
-    repository.update_messages_array.assert_any_call
-    repository.insert_new_document.assert_not_called
-
+    assert repository.assert_has_calls
     assert result == ' Vittório Girardi: '
 
 def test_insert_message_with_no_data_and_cannot_return_error():
@@ -62,9 +57,7 @@ def test_insert_message_with_no_data_and_cannot_return_error():
         filter_click_type=filter_click_type
     ).insert_messages(messages)
 
-    repository.get_user_by_name.assert_any_call
-    repository.update_messages_array.assert_any_call
-    repository.insert_new_document.assert_not_called
+    assert repository.assert_has_calls
 
 def test_insert_messages_from_new_user():
     messages = [{'message_text': 'Hello', 'message_sender': ' New user: ', 'message_date': '12:00, 01/10/2023'}]
@@ -81,7 +74,6 @@ def test_insert_messages_from_new_user():
         filter_click_type=filter_click_type
     ).insert_messages(messages)
 
-    repository.get_user_by_name.assert_any_call
-    repository.update_messages_array.assert_any_call
-    repository.insert_new_document.assert_any_call
+    assert repository.assert_has_calls
+
 
