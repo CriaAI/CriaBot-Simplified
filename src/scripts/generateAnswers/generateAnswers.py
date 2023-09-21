@@ -6,8 +6,7 @@ from dotenv import load_dotenv
 from datetime import datetime
 from langchain.chat_models import AzureChatOpenAI
 from langchain.schema import SystemMessage, HumanMessage
-
-from src.databaseConfig.firebaseConfig import users_ref
+from src.repository.repository import Repository
 
 load_dotenv()
 
@@ -30,7 +29,7 @@ def init():
 def main():
     init()
 
-    users_to_be_answered = users_ref.where("need_to_generate_answer", "==", True).get()
+    users_to_be_answered = Repository().get_users_by_need_to_generate_answer()
 
     if len(users_to_be_answered) > 0:
         doc_id = users_to_be_answered[0].id
@@ -68,8 +67,8 @@ def main():
                         "text": edited_gpt_answer_value
                     })
 
-                    users_ref.document(doc_id).update({"need_to_generate_answer": False})
-                    users_ref.document(doc_id).update({"messages": all_messages})
+                    Repository().update_need_to_generate_answer(doc_id)
+                    Repository().update_messages_array(doc_id, all_messages)
 
                 st.form_submit_button("Aceitar", on_click=handle_submit)
                 
