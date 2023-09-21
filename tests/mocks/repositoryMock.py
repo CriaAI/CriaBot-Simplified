@@ -17,7 +17,9 @@ class User:
 
 
 repository_mock = MagicMock()
-repository_mock.get_user_by_name.return_value = [User(id="id", message_sender=" Vittório Girardi: ", messages=[], need_to_generate_answer=False, need_to_send_answer=False)]
+repository_mock.get_user_by_name.side_effect = lambda message_sender: \
+    [User(id="id", message_sender=message_sender, messages=[], need_to_generate_answer=False, need_to_send_answer=False)] \
+    if message_sender == " Vittório Girardi: " else []
 repository_mock.update_messages_array.side_effect = lambda doc_id, messages: print(f"Mocked update_messages_array({doc_id}, {messages})")
 repository_mock.insert_new_document.side_effect = lambda message_sender: print(f"Mocked insert_new_document({message_sender})")
 repository_mock.get_users_by_need_to_send_answer.return_value = [
@@ -34,5 +36,3 @@ repository_mock.get_users_by_need_to_send_answer.return_value = [
     )
 ]
 repository_mock.update_need_to_send_answer.side_effect = lambda doc_id: print(f"Mocked update_need_to_send_answer({doc_id})")
-
-
