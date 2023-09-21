@@ -90,6 +90,8 @@ class ExtractMessages:
                 if len(find_sender_db) == 0:
                     self.repository.insert_new_document(message["message_sender"])
                     find_sender_db = self.repository.get_user_by_name(message["message_sender"]) #need to do that to find out the id that was created in the db
+                else:
+                    self.repository.update_need_to_generate_answer(find_sender_db[0].id, {"need_to_generate_answer": True})
                 break
         
         #Now, the messages will be inserted in the db inside the messages array

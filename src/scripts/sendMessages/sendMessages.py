@@ -38,7 +38,7 @@ class SendMessages:
             time.sleep(6)
             self.pyautogui.hotkey('enter')
             time.sleep(2)
-            self.repository.update_need_to_send_answer(user.id)
+            self.repository.update_need_to_send_answer(user.id, {"need_to_send_answer": False})
 
     def move_to_and_click(self, xy_position):
         self.pyautogui.moveTo(xy_position[0], xy_position[1], duration=0.5*(self.randomize_time()), tween=self.pyautogui.easeInOutQuad)

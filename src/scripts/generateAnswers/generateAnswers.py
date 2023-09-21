@@ -67,8 +67,9 @@ def main():
                         "text": edited_gpt_answer_value
                     })
 
-                    Repository().update_need_to_generate_answer(doc_id)
                     Repository().update_messages_array(doc_id, all_messages)
+                    Repository().update_need_to_generate_answer(doc_id, {"need_to_generate_answer": False})
+                    Repository().update_need_to_send_answer(doc_id, {"need_to_send_answer": True})
 
                 st.form_submit_button("Aceitar", on_click=handle_submit)
                 

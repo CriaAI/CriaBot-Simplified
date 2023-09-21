@@ -10,6 +10,7 @@ class Repository:
     def insert_new_document(self, message_sender):
         users_ref.add({
             "message_sender": message_sender,
+            "stage": 1,
             "need_to_generate_answer": True,
             "need_to_send_answer": True,
             "messages": []
@@ -23,9 +24,9 @@ class Repository:
         users = users_ref.where("need_to_generate_answer", "==", True).get()
         return users
 
-    def update_need_to_send_answer(self, doc_id):
-        users_ref.document(doc_id).update({"need_to_send_answer": False})
+    def update_need_to_send_answer(self, doc_id, object):
+        users_ref.document(doc_id).update(object)
 
-    def update_need_to_generate_answer(self, doc_id):
-        users_ref.document(doc_id).update({"need_to_generate_answer": False})
+    def update_need_to_generate_answer(self, doc_id, object):
+        users_ref.document(doc_id).update(object)
     
