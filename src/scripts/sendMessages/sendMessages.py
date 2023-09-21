@@ -8,6 +8,20 @@ from unidecode import unidecode
 
 os.environ['PYTHONIOENCODING'] = 'utf-8'
 
+#messages_stage_2 = [
+#    "Minha empresa desenvolveu recentemente uma Inteligência Artificial específica para advogados!", 
+#    "VÍDEO",
+#    """Estou buscando advogados interessados em fazer o teste da nossa solução de forma 100% gratuita. Se tiver interesse, 
+#    só mandar um 👍 que eu envio o link!"""
+#]
+
+#messages_stage_3 = [
+#    "Segue o link: https://criaai.com/",
+#    "Vou deixar liberado acesso até hoje para criar sua conta! Só fazer o cadastro e testar à vontade! Não leva nem 1 minuto."
+#    """E uma dica: Para nosso teste não ser ainda mais um peso na sua semana, indicamos testar a plataforma já buscando economizar o tempo em alguma demanda.
+#    Quanto mais real e específico for o caso que você passar para a IA, melhores e mais surpreendentes serão os resultados obtidos 😉"""
+#]
+
 class SendMessages:
     def __init__(self, pyautogui_module, keyboard_module, repository):
         self.pyautogui = pyautogui_module

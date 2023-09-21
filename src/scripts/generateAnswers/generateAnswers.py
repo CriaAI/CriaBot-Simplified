@@ -55,30 +55,48 @@ def main():
 
         gpt_answer = chat(gpt_prompt).content
 
-        with st.sidebar:
-            with st.form("my_form"):
-                st.text_area(label="Resposta", value=gpt_answer, height=400, key="edited_gpt_answer")
+        if user["stage"] == 1:
+            with st.sidebar:
+                st.info("Baseando-se nas respostas do usuário, você quer prosseguir com o envio de mensagens?")
 
-                def handle_submit():
-                    edited_gpt_answer_value = st.session_state.edited_gpt_answer
-                    all_messages.append({
-                        "date": datetime.now().strftime("%H:%M, %d/%m/%Y"),
-                        "sender": " Fran Hahn: ", #CAIO, mudar pelo seu nome
-                        "text": edited_gpt_answer_value
-                    })
+                if st.button("Não", key=f"reject_{doc_id}"):
+                    Repository().update_stage_number(doc_id, 0)
+                    Repository().update_need_to_generate_answer(doc_id, {"need_to_generate_answer": False})
+                    Repository().update_need_to_send_answer(doc_id, {"need_to_send_answer": False})
+                    st.experimental_rerun()
 
-                    Repository().update_messages_array(doc_id, all_messages)
+                if st.button("Sim", key=f"accept_{doc_id}"):
+                    Repository().update_stage_number(doc_id, 2)
                     Repository().update_need_to_generate_answer(doc_id, {"need_to_generate_answer": False})
                     Repository().update_need_to_send_answer(doc_id, {"need_to_send_answer": True})
+                    st.experimental_rerun()
+                    
+        elif user["stage"] > 3:
+            with st.sidebar:
+                with st.form("my_form"):
+                    st.text_area(label="Resposta", value=gpt_answer, height=400, key="edited_gpt_answer")
 
-                st.form_submit_button("Aceitar", on_click=handle_submit)
-                
-            if st.button("Rejeitar", key=f"reject_{doc_id}"):
-                print("REJECTED GPT MESSAGE")
-                
+                    def handle_submit():
+                        edited_gpt_answer_value = st.session_state.edited_gpt_answer
+                        all_messages.append({
+                            "date": datetime.now().strftime("%H:%M, %d/%m/%Y"),
+                            "sender": " Fran Hahn: ", #CAIO, mudar pelo seu nome
+                            "text": edited_gpt_answer_value
+                        })
+
+                        Repository().update_messages_array(doc_id, all_messages)
+                        Repository().update_need_to_generate_answer(doc_id, {"need_to_generate_answer": False})
+                        Repository().update_need_to_send_answer(doc_id, {"need_to_send_answer": True})
+
+                    st.form_submit_button("Aceitar", on_click=handle_submit)
+                    
+                if st.button("Rejeitar", key=f"reject_{doc_id}"):
+                    print("REJECTED GPT MESSAGE")
+                    
         # Rendering the message history between the lead and the seller
         for message in all_messages:
             st.info(f"{message['sender']} {message['text']}")
+
     else:
         st.write("Todos os usuários foram respondidos.")
         st.stop()
