@@ -20,6 +20,12 @@
     </code>
 </pre>
 
+### Script First Messages
+- Abrir o WhatsApp web sem a aba inspecionar do navegador
+- Rodar o script na pasta run e ir até a página do whats. O script começará a rodar em 4 segundos
+- OBS: O script irá percorrer a lista de números de celular dentro do arquivo phoneNumbers.csv
+<br>
+
 ### Script Extract Messages
 - Abrir o WhatsApp web e a aba inspecionar do navegador
 - Rodar o script na pasta run e ir até a página do whats. O script começará a rodar em 4 segundos
