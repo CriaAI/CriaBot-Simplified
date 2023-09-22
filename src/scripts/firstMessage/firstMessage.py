@@ -26,11 +26,11 @@ class FirstMessage:
             phone_numbers_array = csv.reader(csv_file)
             
             for phone_number in phone_numbers_array:
-                find_sender_db = self.repository.get_user_by_name(phone_number)
+                find_sender_db = self.repository.get_user_by_name(phone_number[0])
                 
                 #If the sender is not in the database yet, a new document will be created for them
                 if len(find_sender_db) == 0:
-                    self.repository.insert_new_document(phone_number)
+                    self.repository.insert_new_document(f" {phone_number[0]}: ")
                 else:
                     continue
 

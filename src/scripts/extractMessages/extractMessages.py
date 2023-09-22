@@ -85,6 +85,11 @@ class ExtractMessages:
             if message["message_sender"] != " Fran Hahn: ": #CAIO terá que colocar como está o nome dele
                 find_sender_db = self.repository.get_user_by_name(message["message_sender"])
                 self.repository.update_need_to_generate_answer(find_sender_db[0].id, {"need_to_generate_answer": True})
+                
+                #if the user stage is 0, after this first interaction, it will be updated to 1
+                stage = find_sender_db[0].to_dict()["stage"]
+                if stage == 0:
+                    self.repository.update_stage_number(find_sender_db[0].id, 1)
         
         #Now, the messages will be inserted in the db inside the messages array
         doc_id = find_sender_db[0].id

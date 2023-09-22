@@ -55,22 +55,27 @@ def main():
 
         gpt_answer = chat(gpt_prompt).content
 
-        if user["stage"] == 1:
+        if user["stage"] < 3:
             with st.sidebar:
                 st.info("Baseando-se nas respostas do usuário, você quer prosseguir com o envio de mensagens?")
 
-                if st.button("Não", key=f"reject_{doc_id}"):
-                    Repository().update_stage_number(doc_id, 0)
-                    Repository().update_need_to_generate_answer(doc_id, {"need_to_generate_answer": False})
-                    Repository().update_need_to_send_answer(doc_id, {"need_to_send_answer": False})
-                    st.experimental_rerun()
+                col1, col2 = st.columns(2)
 
-                if st.button("Sim", key=f"accept_{doc_id}"):
-                    Repository().update_stage_number(doc_id, 2)
-                    Repository().update_need_to_generate_answer(doc_id, {"need_to_generate_answer": False})
-                    Repository().update_need_to_send_answer(doc_id, {"need_to_send_answer": True})
-                    st.experimental_rerun()
-                    
+                with col1:
+                    if st.button("Não", key=f"reject_{doc_id}"):
+                        Repository().update_stage_number(doc_id, 0)
+                        Repository().update_need_to_generate_answer(doc_id, {"need_to_generate_answer": False})
+                        Repository().update_need_to_send_answer(doc_id, {"need_to_send_answer": False})
+                        st.experimental_rerun()
+
+                with col2:
+                    if st.button("Sim", key=f"accept_{doc_id}"):
+                        if user["stage"] < 3:
+                            Repository().update_stage_number(doc_id, user["stage"] + 1)
+                        Repository().update_need_to_generate_answer(doc_id, {"need_to_generate_answer": False})
+                        Repository().update_need_to_send_answer(doc_id, {"need_to_send_answer": True})
+                        st.experimental_rerun()
+                        
         elif user["stage"] > 3:
             with st.sidebar:
                 with st.form("my_form"):
