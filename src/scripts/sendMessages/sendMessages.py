@@ -19,6 +19,10 @@ class SendMessages:
         input_search_box_xy = (255, 257) #Talvez o CAIO precise alterar na tela dele
         first_conversation_box_xy = (150, 400) #Talvez o CAIO precise alterar na tela dele
         input_send_message_xy = (880, 952) #Talvez o CAIO precise alterar na tela dele
+        attach_file_xy = (695, 950) #Talvez o CAIO precise alterar na tela dele
+        photos_and_videos_xy = (700, 690) #Talvez o CAIO precise alterar na tela dele
+        path_to_video_xy = (900, 200) #Talvez o CAIO precise alterar na tela dele
+        video_xy = (600, 400) #Talvez o CAIO precise alterar na tela dele
 
         users = self.repository.get_users_by_need_to_send_answer()
         
@@ -38,11 +42,24 @@ class SendMessages:
             if stage == 0 or stage == 1:
                 continue
             elif stage == 2:
+                #CAIO mudar no seu pc
+                video_path = "c:/Users/fran_/Documents/EMPRESA/CRIA.AI/CriaBot/src/videos"
+
                 self.keyboard.write("Minha empresa desenvolveu recentemente uma Inteligência Artificial específica para advogados!")
                 time.sleep(2)
                 self.pyautogui.hotkey('enter')
                 time.sleep(2)
-                self.keyboard.write("VÍDEO")
+                self.move_to_and_click(attach_file_xy)
+                time.sleep(1)
+                self.move_to_and_click(photos_and_videos_xy)
+                time.sleep(1)
+                self.move_to_and_click(path_to_video_xy)
+                time.sleep(2)
+                self.keyboard.write(video_path)
+                time.sleep(1)
+                self.pyautogui.hotkey('enter')
+                time.sleep(1)
+                self.move_to_and_double_click(video_xy)
                 time.sleep(2)
                 self.pyautogui.hotkey('enter')
                 time.sleep(2)
@@ -75,6 +92,10 @@ class SendMessages:
     def move_to_and_click(self, xy_position):
         self.pyautogui.moveTo(xy_position[0], xy_position[1], duration=0.5*(self.randomize_time()), tween=self.pyautogui.easeInOutQuad)
         self.pyautogui.click()
+
+    def move_to_and_double_click(self, xy_position):
+        self.pyautogui.moveTo(xy_position[0], xy_position[1], duration=0.5*(self.randomize_time()), tween=self.pyautogui.easeInOutQuad)  # Use tweening/easing function to move mouse over 2 seconds.
+        self.pyautogui.doubleClick()
 
     def randomize_time(self):
         return random.uniform(0.8000, 1.2000)
