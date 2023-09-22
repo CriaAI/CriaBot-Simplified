@@ -22,9 +22,9 @@ class Repository:
     def insert_new_document(self, message_sender):
         users_ref.add({
             "message_sender": message_sender,
-            "stage": 1,
-            "need_to_generate_answer": True,
-            "need_to_send_answer": True,
+            "stage": 0,
+            "need_to_generate_answer": False,
+            "need_to_send_answer": False,
             "messages": []
         })
 

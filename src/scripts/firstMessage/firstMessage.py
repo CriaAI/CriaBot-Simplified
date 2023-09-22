@@ -3,9 +3,10 @@ import random
 import csv
 
 class FirstMessage:
-    def __init__(self, pyautogui_module, keyboard_module):
+    def __init__(self, pyautogui_module, keyboard_module, repository):
         self.pyautogui = pyautogui_module
         self.keyboard = keyboard_module
+        self.repository = repository
 
     def open_conversation(self):
         time.sleep(4)
@@ -24,6 +25,14 @@ class FirstMessage:
             phone_numbers_array = csv.reader(csv_file)
             
             for phone_number in phone_numbers_array:
+                find_sender_db = self.repository.get_user_by_name(phone_number)
+                
+                #If the sender is not in the database yet, a new document will be created for them
+                if len(find_sender_db) == 0:
+                    self.repository.insert_new_document(phone_number)
+                else:
+                    continue
+
                 self.move_to_and_click(xy_position = button_start_new_conversation_xy)
                 time.sleep(1)
                 self.move_to_and_click(xy_position = input_search_box_xy)
