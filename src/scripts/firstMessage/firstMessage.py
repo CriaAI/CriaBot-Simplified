@@ -19,6 +19,7 @@ class FirstMessage:
         message2 = "Aqui é o Caio da CriaAI!"
         message3 = "Vocês prestam serviços jurídicos?"
 
+        #CAIO, mudar no seu computador
         file_path = "c:/Users/fran_/Documents/EMPRESA/CRIA.AI/CriaBot/src/scripts/firstMessage/phoneNumbers.csv"
 
         with open(file_path, 'r') as csv_file:
