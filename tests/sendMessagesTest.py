@@ -19,4 +19,6 @@ def test_open_conversation():
 
     assert pyautogui_module.assert_any_call
     assert keyboard_module.assert_any_call
-    assert repository.assert_has_calls
+    repository.insert_new_document.assert_not_called()
+    repository.get_users_by_need_to_send_answer.assert_called_once()
+    repository.update_need_to_send_answer.assert_called_once()

@@ -79,18 +79,17 @@ class ExtractMessages:
         return random.uniform(0.8000, 1.2000)
 
     def insert_messages(self, messages):
-        #we need to find who the sender is to create the document in the db (cannot be the seller)
         find_sender_db = []
 
         for message in messages:
             if message["message_sender"] != " Fran Hahn: ": #CAIO terá que colocar como está o nome dele
                 find_sender_db = self.repository.get_user_by_name(message["message_sender"])
+                self.repository.update_need_to_generate_answer(find_sender_db[0].id, {"need_to_generate_answer": True})
                 
-                #If the sender is not in the database yet, a new document will be created for them
-                if len(find_sender_db) == 0:
-                    self.repository.insert_new_document(message["message_sender"])
-                    find_sender_db = self.repository.get_user_by_name(message["message_sender"]) #need to do that to find out the id that was created in the db
-                break
+                #if the user stage is 0, after this first interaction, it will be updated to 1
+                stage = find_sender_db[0].to_dict()["stage"]
+                if stage == 0:
+                    self.repository.update_stage_number(find_sender_db[0].id, 1)
         
         #Now, the messages will be inserted in the db inside the messages array
         doc_id = find_sender_db[0].id
