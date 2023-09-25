@@ -20,27 +20,10 @@
     </code>
 </pre>
 
-### Script First Messages
-- Abrir o WhatsApp web sem a aba inspecionar do navegador
-- Rodar o script na pasta run e ir até a página do whats. O script começará a rodar em 4 segundos
-- OBS: O script irá percorrer a lista de números de celular dentro do arquivo phoneNumbers.csv
-<br>
-
-### Script Extract Messages
-- Abrir o WhatsApp web e a aba inspecionar do navegador
-- Rodar o script na pasta run e ir até a página do whats. O script começará a rodar em 4 segundos
-- OBS: O script irá percorrer apenas a lista de usuários que possuem mensagens a serem lidas
-<br>
-
-### Script Generate Answers
+## Abrir o streamlit para rodar os scripts
 - Para rodar o strealit, digitar no cmd o caminho para o arquivo:
     - Exemplo do meu pc: streamlit run c:/Users/fran_/Documents/EMPRESA/CRIA.AI/CriaBot/src/scripts/generateAnswers/generateAnswers.py
 - Ao rodar esse comando, uma aba será aberta no navegador automaticamente
-<br>
-
-### Script Send Messages
-- Abrir o WhatsApp web SEM a aba inspecionar aberta
-- Rodar o script na pasta run e ir até a página do whats. O script começará a rodar em 4 segundos
 <br>
 
 `Observação:` Algumas informações deverão ser mudadas para as informações da pessoa que estiver testando (eu deixei especificado em comentários no código)
