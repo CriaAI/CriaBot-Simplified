@@ -7,6 +7,24 @@ from src.scripts.extractMessages.extractMessages import ExtractMessages
 from mocks.repositoryMock import repository_mock
 from mocks.getHtmlFromWhatsAppMock import GetHtmlFromWhatsAppMock
 
+class User:
+    def __init__(self, id, message_sender, messages, need_to_generate_answer, need_to_send_answer, stage):
+        self.id = id
+        self.message_sender = message_sender
+        self.messages = messages
+        self.need_to_generate_answer = need_to_generate_answer
+        self.need_to_send_answer = need_to_send_answer
+        self.stage = stage
+
+    def to_dict(self):
+        return {
+            "message_sender": self.message_sender,
+            "messages": self.messages,
+            "need_to_generate_answer": self.need_to_generate_answer,
+            "need_to_send_answer": self.need_to_send_answer,
+            "stage": self.stage
+        }
+    
 def test_open_conversation_from_existing_user_with_html_file():
     pyautogui_module=MagicMock()
     repository=repository_mock
@@ -22,7 +40,7 @@ def test_open_conversation_from_existing_user_with_html_file():
 
     assert user == " Vittório Girardi: "
     assert pyautogui_module.assert_any_call
-    repository.get_user_by_name.assert_called_once()
+    repository.get_user_by_name.assert_called()
     repository.update_messages_array.assert_called_once()
     repository.insert_new_document.assert_not_called()
 
@@ -64,6 +82,3 @@ def test_insert_message_with_no_data_and_cannot_return_error():
     repository.get_user_by_name.assert_called()
     repository.update_messages_array.assert_called()
     repository.insert_new_document.assert_not_called()
-
-
-

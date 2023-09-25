@@ -1,12 +1,14 @@
 import time
 import random
 import csv
+import re
 
 class FirstMessage:
-    def __init__(self, pyautogui_module, keyboard_module, repository):
+    def __init__(self, pyautogui_module, keyboard_module, repository, file_path):
         self.pyautogui = pyautogui_module
         self.keyboard = keyboard_module
         self.repository = repository
+        self.file_path = file_path
 
     def open_conversation(self):
         time.sleep(4)
@@ -15,17 +17,21 @@ class FirstMessage:
         first_conversation_box_xy = (150, 500) #Talvez o CAIO precise alterar na tela dele
         input_send_message_xy = (880, 952) #Talvez o CAIO precise alterar na tela dele
 
-        message1 = "Olá, tudo bem?"
-        message2 = "Aqui é o Caio da CriaAI!"
-        message3 = "Vocês prestam serviços jurídicos?"
+        messages = [
+            "Olá, tudo bem?",
+            "Aqui é o Caio da CriaAI!",
+            "Vocês prestam serviços jurídicos?"
+        ]
 
-        #CAIO, mudar no seu computador
-        file_path = "c:/Users/fran_/Documents/EMPRESA/CRIA.AI/CriaBot/src/files/phoneNumbers.csv"
-
-        with open(file_path, 'r') as csv_file:
+        with open(self.file_path, 'r') as csv_file:
             phone_numbers_array = csv.reader(csv_file)
             
             for phone_number in phone_numbers_array:
+                regex = r"^\d{2} \d{4,5}-\d{4}$" #expected phone number format: xx xxxx-xxxx OR xx xxxxx-xxxx
+
+                if not re.match(regex, f"{phone_number[0]}"):
+                    continue
+                
                 find_sender_db = self.repository.get_user_by_name(phone_number[0])
                 
                 #If the sender is not in the database yet, a new document will be created for them
@@ -44,18 +50,12 @@ class FirstMessage:
                 time.sleep(2)
                 self.move_to_and_click(xy_position=input_send_message_xy)
                 time.sleep(2)
-                self.keyboard.write(message1)
-                time.sleep(1)
-                self.pyautogui.hotkey('enter')
-                time.sleep(1)
-                self.keyboard.write(message2)
-                time.sleep(1)
-                self.pyautogui.hotkey('enter')
-                time.sleep(2)
-                self.keyboard.write(message3)
-                time.sleep(2)
-                self.pyautogui.hotkey('enter')
-                time.sleep(2)
+
+                for message in messages:
+                    self.keyboard.write(message)
+                    time.sleep(1)
+                    self.pyautogui.hotkey('enter')
+                    time.sleep(2)
 
     def move_to_and_click(self, xy_position):
         self.pyautogui.moveTo(xy_position[0], xy_position[1], duration=0.5*(self.randomize_time()), tween=self.pyautogui.easeInOutQuad)
