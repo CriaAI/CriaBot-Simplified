@@ -4,6 +4,7 @@ sys.path.insert(0, os.path.abspath(os.curdir))
 import time
 import random
 import csv
+from src.utils.isWhatsAppOpen import IsWhatsAppOpen
 from src.config import (
     input_search_new_phone_numbers,
     input_send_message_xy, 
@@ -23,6 +24,10 @@ class FirstMessage:
 
     def open_conversation(self):
         time.sleep(4)
+
+        is_whats_app_open = IsWhatsAppOpen(self.pyautogui).locate_img_on_screen()
+        if not is_whats_app_open:
+            return
 
         messages = [
             "Olá, tudo bem?",

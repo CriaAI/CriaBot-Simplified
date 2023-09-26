@@ -9,6 +9,7 @@ from datetime import datetime
 import random
 from src.errors.extractMessagesErrors import MissingHtmlError
 from src.config import user_name, filter_box_xy, first_conversation_box_xy
+from src.utils.isWhatsAppOpen import IsWhatsAppOpen
 
 class ExtractMessages:
     def __init__(self, pyautogui_module, repository, get_html_from_whatsapp, filter_click_type):
@@ -18,6 +19,10 @@ class ExtractMessages:
         self.filter_click_type = filter_click_type
 
     def open_conversation(self):
+        is_whats_app_open = IsWhatsAppOpen(self.pyautogui).locate_img_on_screen()
+        if not is_whats_app_open:
+            return
+
         if self.filter_click_type == "click":
             self.move_to_and_click(xy_position = filter_box_xy) #filter for unread conversations
         else:
