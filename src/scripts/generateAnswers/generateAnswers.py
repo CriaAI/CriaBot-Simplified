@@ -24,31 +24,22 @@ def main():
     users_to_be_answered = Repository().get_users_by_need_to_generate_answer()
 
     if len(users_to_be_answered) == 0:
-        col1, col2, col3, col4 = st.columns(4)
-        script_subprocess = None
+        col1, col2, col3 = st.columns(3)
 
         with col1:
             if st.button("Enviar 1ª mensagem", key="script1"):
                 st.info("Vá para o whatsapp web SEM A ABA DE INSPECIONAR ABERTA em até 4 segundos")
-                script_subprocess = Subprocess(run_script_first_message)
-                script_subprocess.run_subprocess()
+                Subprocess(run_script_first_message).run_subprocess()
                     
         with col2:
             if st.button("Extrair mensagens", key="script2"):
                 st.info("Vá para o whatsapp web COM A ABA DE INSPECIONAR ABERTA em até 4 segundos")
-                script_subprocess = Subprocess(run_script_extract_messages)
-                script_subprocess.run_subprocess()
+                Subprocess(run_script_extract_messages).run_subprocess()
 
         with col3:
             if st.button("Responder leads", key="script4"):
                 st.info("Vá para o whatsapp web SEM A ABA DE INSPECIONAR ABERTA em até 4 segundos")
-                script_subprocess = Subprocess(run_script_send_messages)
-                script_subprocess.run_subprocess()
-
-        with col4:
-            if st.button("Cancelar", key="esc"):
-                script_subprocess.cancel_subprocess()
-
+                Subprocess(run_script_send_messages).run_subprocess()
     else:
         doc_id = users_to_be_answered[0].id
         user = users_to_be_answered[0].to_dict()

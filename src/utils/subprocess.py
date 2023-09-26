@@ -19,8 +19,3 @@ class Subprocess:
             st.error(f"Ocorreu um erro: {stderr}")
         else:
             st.success("Script executado com sucesso!")
-    
-    def cancel_subprocess(self):
-        if self.process and self.process.poll() is None:
-            self.process.terminate()
-            st.warning("Script cancelado.")
