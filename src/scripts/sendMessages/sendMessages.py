@@ -5,6 +5,17 @@ sys.path.insert(0, os.path.abspath(os.curdir))
 import time
 import random
 from unidecode import unidecode
+from src.utils.isWhatsAppOpen import IsWhatsAppOpen
+from src.config import (
+    attach_file_xy, 
+    first_conversation_box_xy, 
+    input_send_message_xy, 
+    path_to_video_xy, 
+    input_search_box_xy, 
+    photos_and_videos_xy, 
+    video_xy, 
+    video_path
+)
 
 os.environ['PYTHONIOENCODING'] = 'utf-8'
 
@@ -16,14 +27,11 @@ class SendMessages:
 
     def open_conversation(self):
         time.sleep(4)
-        input_search_box_xy = (255, 257) #Talvez o CAIO precise alterar na tela dele
-        first_conversation_box_xy = (150, 400) #Talvez o CAIO precise alterar na tela dele
-        input_send_message_xy = (880, 952) #Talvez o CAIO precise alterar na tela dele
-        attach_file_xy = (695, 950) #Talvez o CAIO precise alterar na tela dele
-        photos_and_videos_xy = (700, 690) #Talvez o CAIO precise alterar na tela dele
-        path_to_video_xy = (900, 200) #Talvez o CAIO precise alterar na tela dele
-        video_xy = (600, 400) #Talvez o CAIO precise alterar na tela dele
 
+        is_whats_app_open = IsWhatsAppOpen(self.pyautogui).locate_img_on_screen()
+        if not is_whats_app_open:
+            return
+        
         users = self.repository.get_users_by_need_to_send_answer()
         
         for user in users:
@@ -42,9 +50,6 @@ class SendMessages:
             if stage == 0 or stage == 1:
                 continue
             elif stage == 2:
-                #CAIO mudar no seu pc
-                video_path = "c:/Users/fran_/Documents/EMPRESA/CRIA.AI/CriaBot/src/videos"
-
                 self.keyboard.write("Minha empresa desenvolveu recentemente uma Inteligência Artificial específica para advogados!")
                 time.sleep(2)
                 self.pyautogui.hotkey('enter')

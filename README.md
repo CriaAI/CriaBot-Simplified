@@ -1,6 +1,6 @@
 # CriaAI ChatBot
 
-## Para rodar o projeto:
+## Configurando o ambiente
 - Preencha o arquivo .env com as seguintes informações:
 <pre>
     <code>
@@ -19,14 +19,15 @@
         API_KEY = xxxxxxxxxxxxx
     </code>
 </pre>
-
-## Abrir o streamlit para rodar os scripts
-- Para rodar o streamlit, digitar no cmd o caminho para o arquivo:
-    - Exemplo do meu pc: streamlit run c:/Users/fran_/Documents/EMPRESA/CRIA.AI/CriaBot/src/scripts/generateAnswers/generateAnswers.py
-- Ao rodar esse comando, uma aba será aberta no navegador automaticamente
-- Inicialmente, havendo leads que estão esperando por respostas, a página irá carregar a geração de mensagens
-- Após todas as mensagens terem sido geradas, aparecerão 3 botões na tela, um para cada script (enviar primeira mensagem, extrair mensagens e enviar mensagens)
-- Ao clicar em cada um desses botões, o respectivo script será rodado (deve-se ir até a página do whats app web)
 <br>
 
-`Observação:` Algumas informações deverão ser mudadas para as informações da pessoa que estiver testando (eu deixei especificado em comentários no código)
+- Vá para o arquivo config.py e preencha as variáveis de acordo com o seu caso específico
+- No arquivo run_app.bat, preencha o caminho para o seu arquivo generateAnswers.py
+
+## Para rodar o projeto:
+- Na linha de comando, digite: `./run_app.bat`
+- Uma aba será aberta no navegador automaticamente
+- Inicialmente, havendo leads que estão esperando por respostas, a página irá carregar a geração de mensagens
+- Após todas as mensagens terem sido geradas, aparecerão 4 botões na tela, um para cada script (enviar primeira mensagem, extrair mensagens e enviar mensagens) e um botão para cancelar a ação do script
+- Ao clicar em cada um desses botões, o respectivo script será rodado (deve-se ir até a página do whatsapp web)
+<br>

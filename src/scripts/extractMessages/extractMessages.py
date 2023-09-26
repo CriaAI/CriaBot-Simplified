@@ -8,6 +8,8 @@ import time
 from datetime import datetime
 import random
 from src.errors.extractMessagesErrors import MissingHtmlError
+from src.config import user_name, filter_box_xy, first_conversation_box_xy
+from src.utils.isWhatsAppOpen import IsWhatsAppOpen
 
 class ExtractMessages:
     def __init__(self, pyautogui_module, repository, get_html_from_whatsapp, filter_click_type):
@@ -17,8 +19,10 @@ class ExtractMessages:
         self.filter_click_type = filter_click_type
 
     def open_conversation(self):
-        filter_box_xy = (465, 241) #Talvez o CAIO precise alterar na tela dele
-        first_conversation_box_xy = (150, 400) #Talvez o CAIO precise alterar na tela dele
+        is_whats_app_open = IsWhatsAppOpen(self.pyautogui).locate_img_on_screen()
+        if not is_whats_app_open:
+            return
+
         if self.filter_click_type == "click":
             self.move_to_and_click(xy_position = filter_box_xy) #filter for unread conversations
         else:
@@ -82,7 +86,7 @@ class ExtractMessages:
         find_sender_db = []
 
         for message in messages:
-            if message["message_sender"] != " Fran Hahn: ": #CAIO terá que colocar como está o nome dele
+            if message["message_sender"] != user_name:
                 find_sender_db = self.repository.get_user_by_name(message["message_sender"])
                 self.repository.update_need_to_generate_answer(find_sender_db[0].id, {"need_to_generate_answer": True})
                 
@@ -95,28 +99,25 @@ class ExtractMessages:
         doc_id = find_sender_db[0].id
         doc_data = find_sender_db[0].to_dict()
 
-        #Making sure that there won't be repeated messages in the db
+        #Making sure that there won't be any repeated messages in the db
         date_time_format = "%H:%M, %d/%m/%Y"
         for message in messages:
             if len(doc_data["messages"]) > 0:
                 last_message_date_db = datetime.strptime(doc_data["messages"][-1]["date"], date_time_format)
                 last_message_text_db = doc_data["messages"][-1]["text"]
                 message_date_time = datetime.strptime(message["message_date"], date_time_format)
-                
-                if last_message_date_db > message_date_time or last_message_text_db == message["message_text"]:
-                    continue
-                else:
-                    doc_data["messages"].append({
-                        "sender": message["message_sender"],
-                        "text": message["message_text"], 
-                        "date": message["message_date"]
-                    })
-            else:
-                doc_data["messages"].append({
+                message_to_insert = {
                     "sender": message["message_sender"],
                     "text": message["message_text"], 
                     "date": message["message_date"]
-                })
+                }
+
+                if last_message_date_db > message_date_time or last_message_text_db == message["message_text"]:
+                    continue
+                else:
+                    doc_data["messages"].append(message_to_insert)
+            else:
+                doc_data["messages"].append(message_to_insert)
 
         self.repository.update_messages_array(doc_id, doc_data["messages"])
         return doc_data["message_sender"]
