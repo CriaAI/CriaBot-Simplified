@@ -7,9 +7,7 @@ from unittest.mock import MagicMock
 from src.scripts.firstMessage.firstMessage import FirstMessage
 from mocks.repositoryMock import repository_mock
 
-#One phone number is in the correct format and the other is not
-#so, only the correct one should be inserted in the database
-def test_send_first_messages_to_correct_numbers():
+def test_send_first_messages_to_correct_number():
     pyautogui_module=MagicMock()
     keyboard_module=MagicMock()
     repository=repository_mock
@@ -23,5 +21,6 @@ def test_send_first_messages_to_correct_numbers():
     ).open_conversation()
 
     assert pyautogui_module.assert_any_call
+    assert keyboard_module.assert_any_call
     repository.get_user_by_name.assert_called_once()
     repository.insert_new_document.assert_called_once()

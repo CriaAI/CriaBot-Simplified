@@ -1,7 +1,9 @@
+import sys, os
+sys.path.insert(0, os.path.abspath(os.curdir))
+
 import time
 import random
 import csv
-import re
 
 class FirstMessage:
     def __init__(self, pyautogui_module, keyboard_module, repository, file_path):
@@ -12,10 +14,12 @@ class FirstMessage:
 
     def open_conversation(self):
         time.sleep(4)
+
         button_start_new_conversation_xy = (475, 198) #Talvez o CAIO precise alterar na tela dele
         input_search_box_xy = (250, 335) #Talvez o CAIO precise alterar na tela dele
         first_conversation_box_xy = (150, 500) #Talvez o CAIO precise alterar na tela dele
         input_send_message_xy = (880, 952) #Talvez o CAIO precise alterar na tela dele
+        return_button_xy = (60, 245) #Talvez o CAIO precise alterar na tela dele
 
         messages = [
             "Olá, tudo bem?",
@@ -27,11 +31,22 @@ class FirstMessage:
             phone_numbers_array = csv.reader(csv_file)
             
             for phone_number in phone_numbers_array:
-                regex = r"^\d{2} \d{4,5}-\d{4}$" #expected phone number format: xx xxxx-xxxx OR xx xxxxx-xxxx
+                self.move_to_and_click(xy_position = button_start_new_conversation_xy)
+                time.sleep(1)
+                self.move_to_and_click(xy_position = input_search_box_xy)
+                time.sleep(1)
+                self.pyautogui.write(phone_number[0])
+                time.sleep(1)
 
-                if not re.match(regex, f"{phone_number[0]}"):
-                    continue
+                self.move_to_and_click(xy_position=first_conversation_box_xy)
+
+                position1 = self.pyautogui.locateOnScreen("c:/Users/fran_/Documents/EMPRESA/CRIA.AI/CriaBot/src/images/nova_conversa_white.png")
+                position2 = self.pyautogui.locateOnScreen("c:/Users/fran_/Documents/EMPRESA/CRIA.AI/CriaBot/src/images/nova_conversa_dark.png")
                 
+                if position1 is None and position2 is None:
+                    self.move_to_and_click(xy_position = return_button_xy)
+                    continue
+
                 find_sender_db = self.repository.get_user_by_name(phone_number[0])
                 
                 #If the sender is not in the database yet, a new document will be created for them
@@ -40,13 +55,6 @@ class FirstMessage:
                 else:
                     continue
 
-                self.move_to_and_click(xy_position = button_start_new_conversation_xy)
-                time.sleep(1)
-                self.move_to_and_click(xy_position = input_search_box_xy)
-                time.sleep(1)
-                self.pyautogui.write(phone_number[0])
-                time.sleep(1)
-                self.move_to_and_click(xy_position=first_conversation_box_xy)
                 time.sleep(2)
                 self.move_to_and_click(xy_position=input_send_message_xy)
                 time.sleep(2)
