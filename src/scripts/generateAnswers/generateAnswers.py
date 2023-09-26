@@ -8,7 +8,7 @@ import streamlit as st
 from datetime import datetime
 from src.repository.repository import Repository
 from src.utils.subprocess import Subprocess
-from src.utils.userLastMessages import user_last_messages
+from src.utils.userLastMessages import UserMessages
 from src.config import user_name, run_script_extract_messages, run_script_first_message, run_script_send_messages
 
 def init():
@@ -44,7 +44,7 @@ def main():
         doc_id = users_to_be_answered[0].id
         user = users_to_be_answered[0].to_dict()
         all_messages = user["messages"]
-        last_messages = user_last_messages(all_messages)
+        last_messages = UserMessages().get_last_messages(all_messages)
 
         if user["stage"] < 3:
             with st.sidebar:
