@@ -23,6 +23,7 @@ class Repository:
         users_ref.add({
             "message_sender": message_sender,
             "stage": 0,
+            "category": "",
             "need_to_generate_answer": False,
             "need_to_send_answer": False,
             "messages": []
@@ -36,4 +37,7 @@ class Repository:
 
     def update_stage_number(self, doc_id, stage_number):
         users_ref.document(doc_id).update({"stage": stage_number})
+
+    def update_category(self, doc_id, category):
+        users_ref.document(doc_id).update({"category": category})
     

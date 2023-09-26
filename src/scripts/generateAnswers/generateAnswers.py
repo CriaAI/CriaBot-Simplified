@@ -8,7 +8,7 @@ import streamlit as st
 from datetime import datetime
 from src.repository.repository import Repository
 from src.utils.subprocess import Subprocess
-from src.utils.userLastMessages import UserMessages
+from src.utils.userMessages import UserMessages
 from src.config import user_name, run_script_extract_messages, run_script_first_message, run_script_send_messages
 
 def init():
@@ -46,14 +46,41 @@ def main():
         all_messages = user["messages"]
         last_messages = UserMessages().get_last_messages(all_messages)
 
-        if user["stage"] < 3:
+        if user["stage"] == 1:
             with st.sidebar:
-                gpt_suggestion = ""
+                gpt_suggestion = openAIstage1(" ".join(last_messages))
+                
+                st.info("Baseando-se nas respostas do usuário e da sugestão da IA, você quer prosseguir com o envio de mensagens?")
+                st.info(gpt_suggestion)
 
-                if user["stage"] == 1:
-                    gpt_suggestion = openAIstage1(last_messages)
-                elif user["stage"] == 2:
-                    gpt_suggestion = openAIstage2(last_messages)
+                col1, col2, col3 = st.columns(3)
+
+                with col1:
+                    if st.button("Rejeitar: É um bot", key=f"reject_bot_{doc_id}"):
+                        Repository().update_stage_number(doc_id, 0)
+                        Repository().update_need_to_generate_answer(doc_id, {"need_to_generate_answer": False})
+                        Repository().update_need_to_send_answer(doc_id, {"need_to_send_answer": False})
+                        Repository().update_category(doc_id, "Bot")
+                        st.experimental_rerun()
+
+                with col2:
+                    if st.button("Rejeitar: Não é advogado", key=f"reject_not_lawyer_{doc_id}"):
+                        Repository().update_stage_number(doc_id, 0)
+                        Repository().update_need_to_generate_answer(doc_id, {"need_to_generate_answer": False})
+                        Repository().update_need_to_send_answer(doc_id, {"need_to_send_answer": False})
+                        Repository().update_category(doc_id, "Not lawyer")
+                        st.experimental_rerun()
+
+                with col3:
+                    if st.button("Aceitar", key=f"accept_{doc_id}"):
+                        Repository().update_stage_number(doc_id, user["stage"] + 1)
+                        Repository().update_need_to_generate_answer(doc_id, {"need_to_generate_answer": False})
+                        Repository().update_need_to_send_answer(doc_id, {"need_to_send_answer": True})
+                        Repository().update_category(doc_id, "Lawyer")
+                        st.experimental_rerun()
+        if user["stage"] == 2:
+            with st.sidebar:
+                gpt_suggestion = openAIstage2(last_messages)
 
                 st.info("Baseando-se nas respostas do usuário e da sugestão da IA, você quer prosseguir com o envio de mensagens?")
                 st.info(gpt_suggestion)
@@ -74,7 +101,7 @@ def main():
                         Repository().update_need_to_send_answer(doc_id, {"need_to_send_answer": True})
                         st.experimental_rerun()
                         
-        elif user["stage"] > 3:
+        elif user["stage"] == 4:
             gpt_answer = openAIstage4(last_messages)
 
             with st.sidebar:

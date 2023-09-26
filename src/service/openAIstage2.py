@@ -38,8 +38,8 @@ def openAIstage2(user_last_messages):
     """
 
     gpt_prompt = [
-        SystemMessage(content="""Você é um vendedor de um serviço de inteligência artificial que cria documentos para advogados. 
-        A sua responsabilidade é avaliar se devemos prosseguir com a conversa com o lead e possível cliente dependendo do 
+        SystemMessage(content="""Você analisa conversas com possíveis clientes de um serviço de inteligência artificial que 
+        cria documentos para advogados. A sua responsabilidade é avaliar se devemos prosseguir com a conversa dependendo do 
         interesse demonstrado na resposta."""),
         HumanMessage(content=content)
     ]

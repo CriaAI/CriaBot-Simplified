@@ -20,22 +20,37 @@ def openAIstage1(user_last_messages):
     content = f"""Baseando-se na resposta do lead, você precisa sugerir se devemos prosseguir com a conversa ou não.
         Resposta do lead: {user_last_messages}
 
-        Exemplos de resposta no formato json:
+        Exemplos de resposta que devem ser extritamente no formato json abaixo:
         {{
-            'Mensagem do lead': 'Olá, não prestamos serviços jurídicos.',
-            'Acao': 'Rejeitar'
+            Mensagem do lead: Olá, não prestamos serviços jurídicos.,
+            Acao: Rejeitar,
+            Motivo: Não é advogado
         }}
 
         {{
-            'Mensagem do lead': 'Sim, prestamos serviços jurídicos',
-            'Acao': 'Aceitar'
+            Mensagem do lead: Sim,
+            Acao: Aceitar,
+            Motivo: É advogado
+        }}
+
+        {{
+            Mensagem do lead: Sim, prestamos serviços jurídicos,
+            Acao: Aceitar,
+            Motivo: É advogado
+        }}
+
+        {{
+            Mensagem do lead: Olá, tudo bem? Como podemos ajudar? Em breve entraremos em contato com você.,
+            Acao: Rejeitar,
+            Motivo: É um bot
         }}
     """
 
     gpt_prompt = [
-        SystemMessage(content="""Você é um vendedor de um serviço de inteligência artificial que cria documentos para advogados. 
-        A sua responsabilidade é avaliar se devemos prosseguir com a conversa com o lead e possível cliente dependendo do 
-        interesse demonstrado na resposta."""),
+        SystemMessage(content="""Você analisa respostas de leads de um serviço de inteligência artificial que cria documentos 
+        para advogados. A sua responsabilidade é avaliar se devemos prosseguir com a conversa com o lead e possível cliente 
+        dependendo do interesse demonstrado na resposta e classificá-lo como advogado, não advogado ou bot. Responda no formato 
+        json"""),
         HumanMessage(content=content)
     ]
 
