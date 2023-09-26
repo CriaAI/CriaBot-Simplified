@@ -4,6 +4,15 @@ sys.path.insert(0, os.path.abspath(os.curdir))
 import time
 import random
 import csv
+from src.config import (
+    input_search_box_xy, 
+    input_send_message_xy, 
+    button_start_new_conversation_xy, 
+    return_button_xy,
+    first_conversation_box_xy,
+    path_to_img_dark_theme,
+    path_to_img_light_theme
+)
 
 class FirstMessage:
     def __init__(self, pyautogui_module, keyboard_module, repository, file_path):
@@ -14,12 +23,6 @@ class FirstMessage:
 
     def open_conversation(self):
         time.sleep(4)
-
-        button_start_new_conversation_xy = (475, 198) #Talvez o CAIO precise alterar na tela dele
-        input_search_box_xy = (250, 335) #Talvez o CAIO precise alterar na tela dele
-        first_conversation_box_xy = (150, 500) #Talvez o CAIO precise alterar na tela dele
-        input_send_message_xy = (880, 952) #Talvez o CAIO precise alterar na tela dele
-        return_button_xy = (60, 245) #Talvez o CAIO precise alterar na tela dele
 
         messages = [
             "Olá, tudo bem?",
@@ -40,10 +43,10 @@ class FirstMessage:
 
                 self.move_to_and_click(xy_position=first_conversation_box_xy)
 
-                position1 = self.pyautogui.locateOnScreen("c:/Users/fran_/Documents/EMPRESA/CRIA.AI/CriaBot/src/images/nova_conversa_white.png")
-                position2 = self.pyautogui.locateOnScreen("c:/Users/fran_/Documents/EMPRESA/CRIA.AI/CriaBot/src/images/nova_conversa_dark.png")
+                image1 = self.pyautogui.locateOnScreen(path_to_img_light_theme)
+                image2 = self.pyautogui.locateOnScreen(path_to_img_dark_theme)
                 
-                if position1 is None and position2 is None:
+                if image1 is None and image2 is None:
                     self.move_to_and_click(xy_position = return_button_xy)
                     continue
 

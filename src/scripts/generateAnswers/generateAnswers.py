@@ -4,12 +4,12 @@ sys.path.insert(0, os.path.abspath(os.curdir))
 from src.service.openAIstage1 import openAIstage1
 from src.service.openAIstage2 import openAIstage2
 from src.service.openAIstage4 import openAIstage4
-import subprocess
 import streamlit as st
 from datetime import datetime
 from src.repository.repository import Repository
 from src.utils.runSubprocess import run_subprocess
 from src.utils.userLastMessages import user_last_messages
+from src.config import user_name, run_script_extract_messages, run_script_first_message, run_script_send_messages
 
 def init():
     st.set_page_config(
@@ -29,23 +29,17 @@ def main():
         with col1:
             if st.button("Enviar 1ª mensagem", key="script1"):
                 st.info("Vá para o whatsapp web SEM A ABA DE INSPECIONAR ABERTA em até 4 segundos")
-
-                #CAIO mudar pelo caminho no teu pc
-                run_subprocess("python c:/Users/fran_/Documents/EMPRESA/CRIA.AI/CriaBot/src/run/runFirstMessageScript.py") 
+                run_subprocess(run_script_first_message) 
                     
         with col2:
             if st.button("Extrair mensagens", key="script2"):
                 st.info("Vá para o whatsapp web COM A ABA DE INSPECIONAR ABERTA em até 4 segundos")
-                
-                #CAIO mudar pelo caminho no teu pc
-                run_subprocess("python c:/Users/fran_/Documents/EMPRESA/CRIA.AI/CriaBot/src/run/runExtractMessagesScript.py")
+                run_subprocess(run_script_extract_messages)
 
         with col3:
             if st.button("Responder leads", key="script4"):
                 st.info("Vá para o whatsapp web SEM A ABA DE INSPECIONAR ABERTA em até 4 segundos")
-
-                #CAIO mudar pelo caminho no teu pc
-                run_subprocess("python c:/Users/fran_/Documents/EMPRESA/CRIA.AI/CriaBot/src/run/runSendMessagesScript.py")
+                run_subprocess(run_script_send_messages)
 
     else:
         doc_id = users_to_be_answered[0].id
@@ -92,7 +86,7 @@ def main():
                         edited_gpt_answer_value = st.session_state.edited_gpt_answer
                         all_messages.append({
                             "date": datetime.now().strftime("%H:%M, %d/%m/%Y"),
-                            "sender": " Fran Hahn: ", #CAIO, mudar pelo seu nome
+                            "sender": user_name,
                             "text": edited_gpt_answer_value
                         })
 
