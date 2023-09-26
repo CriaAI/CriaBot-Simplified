@@ -5,11 +5,11 @@ import time
 import random
 import csv
 from src.config import (
-    input_search_box_xy, 
+    input_search_new_phone_numbers,
     input_send_message_xy, 
     button_start_new_conversation_xy, 
     return_button_xy,
-    first_conversation_box_xy,
+    first_new_conversation_box_xy,
     path_to_img_dark_theme,
     path_to_img_light_theme
 )
@@ -36,12 +36,12 @@ class FirstMessage:
             for phone_number in phone_numbers_array:
                 self.move_to_and_click(xy_position = button_start_new_conversation_xy)
                 time.sleep(1)
-                self.move_to_and_click(xy_position = input_search_box_xy)
+                self.move_to_and_click(xy_position = input_search_new_phone_numbers)
                 time.sleep(1)
                 self.pyautogui.write(phone_number[0])
                 time.sleep(1)
-
-                self.move_to_and_click(xy_position=first_conversation_box_xy)
+                self.move_to_and_click(xy_position=first_new_conversation_box_xy)
+                time.sleep(1)
 
                 image1 = self.pyautogui.locateOnScreen(path_to_img_light_theme)
                 image2 = self.pyautogui.locateOnScreen(path_to_img_dark_theme)
@@ -58,9 +58,8 @@ class FirstMessage:
                 else:
                     continue
 
-                time.sleep(2)
                 self.move_to_and_click(xy_position=input_send_message_xy)
-                time.sleep(2)
+                time.sleep(1)
 
                 for message in messages:
                     self.keyboard.write(message)

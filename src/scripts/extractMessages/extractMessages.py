@@ -94,28 +94,25 @@ class ExtractMessages:
         doc_id = find_sender_db[0].id
         doc_data = find_sender_db[0].to_dict()
 
-        #Making sure that there won't be repeated messages in the db
+        #Making sure that there won't be any repeated messages in the db
         date_time_format = "%H:%M, %d/%m/%Y"
         for message in messages:
             if len(doc_data["messages"]) > 0:
                 last_message_date_db = datetime.strptime(doc_data["messages"][-1]["date"], date_time_format)
                 last_message_text_db = doc_data["messages"][-1]["text"]
                 message_date_time = datetime.strptime(message["message_date"], date_time_format)
-                
-                if last_message_date_db > message_date_time or last_message_text_db == message["message_text"]:
-                    continue
-                else:
-                    doc_data["messages"].append({
-                        "sender": message["message_sender"],
-                        "text": message["message_text"], 
-                        "date": message["message_date"]
-                    })
-            else:
-                doc_data["messages"].append({
+                message_to_insert = {
                     "sender": message["message_sender"],
                     "text": message["message_text"], 
                     "date": message["message_date"]
-                })
+                }
+
+                if last_message_date_db > message_date_time or last_message_text_db == message["message_text"]:
+                    continue
+                else:
+                    doc_data["messages"].append(message_to_insert)
+            else:
+                doc_data["messages"].append(message_to_insert)
 
         self.repository.update_messages_array(doc_id, doc_data["messages"])
         return doc_data["message_sender"]

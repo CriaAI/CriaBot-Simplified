@@ -7,7 +7,7 @@ from src.service.openAIstage4 import openAIstage4
 import streamlit as st
 from datetime import datetime
 from src.repository.repository import Repository
-from src.utils.runSubprocess import run_subprocess
+from src.utils.subprocess import Subprocess
 from src.utils.userLastMessages import user_last_messages
 from src.config import user_name, run_script_extract_messages, run_script_first_message, run_script_send_messages
 
@@ -24,22 +24,30 @@ def main():
     users_to_be_answered = Repository().get_users_by_need_to_generate_answer()
 
     if len(users_to_be_answered) == 0:
-        col1, col2, col3 = st.columns(3)
+        col1, col2, col3, col4 = st.columns(4)
+        script_subprocess = None
 
         with col1:
             if st.button("Enviar 1ª mensagem", key="script1"):
                 st.info("Vá para o whatsapp web SEM A ABA DE INSPECIONAR ABERTA em até 4 segundos")
-                run_subprocess(run_script_first_message) 
+                script_subprocess = Subprocess(run_script_first_message)
+                script_subprocess.run_subprocess()
                     
         with col2:
             if st.button("Extrair mensagens", key="script2"):
                 st.info("Vá para o whatsapp web COM A ABA DE INSPECIONAR ABERTA em até 4 segundos")
-                run_subprocess(run_script_extract_messages)
+                script_subprocess = Subprocess(run_script_extract_messages)
+                script_subprocess.run_subprocess()
 
         with col3:
             if st.button("Responder leads", key="script4"):
                 st.info("Vá para o whatsapp web SEM A ABA DE INSPECIONAR ABERTA em até 4 segundos")
-                run_subprocess(run_script_send_messages)
+                script_subprocess = Subprocess(run_script_send_messages)
+                script_subprocess.run_subprocess()
+
+        with col4:
+            if st.button("Cancelar", key="esc"):
+                script_subprocess.cancel_subprocess()
 
     else:
         doc_id = users_to_be_answered[0].id
