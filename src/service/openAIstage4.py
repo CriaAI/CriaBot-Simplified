@@ -1,9 +1,11 @@
 import sys, os
 sys.path.insert(0, os.path.abspath(os.curdir))
 
+import json
 from dotenv import load_dotenv
 from langchain.chat_models import AzureChatOpenAI
 from langchain.schema import SystemMessage, HumanMessage
+from src.utils.augmentedPrompt import AugmentedPrompt
 
 load_dotenv()
 
@@ -17,12 +19,14 @@ def openAIstage4(user_last_messages):
         temperature=0.4
     )
 
+    augmented_prompt = AugmentedPrompt()
+    content = augmented_prompt.stage_4(user_last_messages)
+ 
     gpt_prompt = [
         SystemMessage(content="""Você é um vendedor de um serviço de inteligência artificial que cria documentos para advogados.
         A empresa que você trabalha se chama Cria.AI e você deve responder as perguntas do lead da melhor forma possível."""),
-        HumanMessage(content="\n".join(user_last_messages))
+        HumanMessage(content=content)
     ]
 
-    gpt_answer = chat(gpt_prompt).content
-
+    gpt_answer =json.loads(chat(gpt_prompt).content)["Resposta"]
     return gpt_answer

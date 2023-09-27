@@ -167,6 +167,14 @@ def main():
                         Repository().update_need_to_generate_answer(doc_id, {"need_to_generate_answer": False})
                         Repository().update_need_to_send_answer(doc_id, {"need_to_send_answer": True})
 
+                        metadata = {
+                            "stage": 4,
+                            "message": last_messages,
+                            "gpt_answer": edited_gpt_answer_value
+                        }
+
+                        PineconeClass().insert_text(index=pinecone_index, ids=uuid.uuid4(), embeds=embeds, metadata=metadata)
+
                     st.form_submit_button("Aceitar", on_click=handle_submit)
                     
                 if st.button("Rejeitar", key=f"reject_{doc_id}"):
