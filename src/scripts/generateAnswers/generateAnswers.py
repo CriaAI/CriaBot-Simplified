@@ -57,12 +57,12 @@ def main():
 
         if user["stage"] == 1:
             with st.sidebar:
-                gpt_suggestion = openAIstage1(last_messages)
+                openAIstage1_result = openAIstage1(last_messages)
                 
                 st.info("Baseando-se nas respostas do usuário e da sugestão da IA, como você classifica o lead?")
-                st.info(gpt_suggestion)
+                st.info(f"RESPOSTA DA IA: {openAIstage1_result['gpt_answer']}")
 
-                col1, col2, col3 = st.columns(3)
+                col1, col2, col3 = st.columns([1, 2, 2])
 
                 with col1:
                     if st.button("Bot", key=f"bot_{doc_id}"):
@@ -108,13 +108,18 @@ def main():
                         }
                         PineconeClass().insert_text(index=pinecone_index, ids=uuid.uuid4(), embeds=embeds, metadata=metadata)
                         st.rerun()
+                                
+                st.info(
+                    f"""PROMPT ENVIADO PARA A IA: \n
+                    {openAIstage1_result['prompt']}"""
+                )
 
         if user["stage"] == 2:
             with st.sidebar:
-                gpt_suggestion = openAIstage2(last_messages)
+                openAIstage2_result = openAIstage2(last_messages)
 
                 st.info("Baseando-se nas respostas do usuário e da sugestão da IA, como você classifica o interesse do lead?")
-                st.info(gpt_suggestion)
+                st.info(f"RESPOSTA DA IA: {openAIstage2_result['gpt_answer']}")
 
                 col1, col2 = st.columns(2)
 
@@ -147,13 +152,18 @@ def main():
 
                         PineconeClass().insert_text(index=pinecone_index, ids=uuid.uuid4(), embeds=embeds, metadata=metadata)
                         st.rerun()
+                
+                st.info(
+                    f"""PROMPT ENVIADO PARA A IA: \n
+                    {openAIstage2_result['prompt']}"""
+                )
                         
         elif user["stage"] == 4:
-            gpt_answer = openAIstage4(last_messages)
+            openAIstage4_result = openAIstage4(last_messages)
 
             with st.sidebar:
                 with st.form("my_form"):
-                    st.text_area(label="Resposta", value=gpt_answer, height=400, key="edited_gpt_answer")
+                    st.text_area(label="Resposta", value=openAIstage4_result["gpt_answer"], height=400, key="edited_gpt_answer")
 
                     def handle_submit():
                         edited_gpt_answer_value = st.session_state.edited_gpt_answer
@@ -179,6 +189,11 @@ def main():
                     
                 if st.button("Rejeitar", key=f"reject_{doc_id}"):
                     print("REJECTED GPT MESSAGE")
+
+                st.info(
+                    f"""PROMPT ENVIADO PARA A IA: \n
+                    {openAIstage4_result['prompt']}"""
+                )
                     
         # Rendering the message history between the lead and the seller
         for message in all_messages:

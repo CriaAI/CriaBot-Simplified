@@ -46,10 +46,10 @@ class AugmentedPrompt:
                 }}
             """
 
-        augmented_prompt = f"""Baseando-se na resposta do lead, você precisa classificá-lo como advogado, não advogado ou bot.
+        augmented_prompt = f"""Baseando-se na resposta do lead, você precisa classificá-lo como Advogado, Não advogado ou Bot.
             Resposta do lead: {user_last_messages}
 
-            Exemplos de resposta que devem ser extritamente no formato json abaixo:
+            Exemplos de resposta que devem ser no formato json:
             {examples}
         """
 
@@ -97,10 +97,10 @@ class AugmentedPrompt:
                 }}
             """
 
-        augmented_prompt = f"""Baseando-se na resposta do lead, você precisa classificá-lo como interessado ou não interessado.
+        augmented_prompt = f"""Baseando-se na resposta do lead, você precisa classificá-lo como Interessado ou Não interessado.
             Resposta do lead: {user_last_messages}
 
-            Exemplos de resposta que devem ser extritamente no formato json abaixo:
+            Exemplos de resposta que devem ser no formato json:
             {examples}
         """
 
@@ -146,7 +146,7 @@ class AugmentedPrompt:
         augmented_prompt = f"""Baseando-se na pergunta do lead, você deve responde-lo com o objetivo de sanar as suas dúvidas.
             Pergunta do lead: {user_last_messages}
 
-            Exemplos de resposta que devem ser extritamente no formato json abaixo:
+            Exemplos de resposta que devem ser no formato json:
             {examples}
         """
 

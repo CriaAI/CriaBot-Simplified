@@ -34,5 +34,5 @@ class PineconeClass:
         index.upsert(vectors=[{"id": str(ids), "values": embeds, "metadata": metadata}])
 
     def get_information_from_vectorstore(self):
-        vectorstore = Pinecone(index=pinecone.Index("cria-ai-bot"), embedding=embed_model.embed_query, text_key="message")
+        vectorstore = Pinecone(index=pinecone.Index("cria-ai-bot"), embedding=embed_model, text_key="message")
         return vectorstore

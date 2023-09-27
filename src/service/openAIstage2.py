@@ -28,4 +28,5 @@ def openAIstage2(user_last_messages):
     ]
 
     gpt_answer = chat(gpt_prompt).content
-    return gpt_answer
+    
+    return {"prompt": content, "gpt_answer": gpt_answer}
