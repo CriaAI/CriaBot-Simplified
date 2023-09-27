@@ -5,9 +5,9 @@ from src.service.pineconeClass import PineconeClass
 
 class AugmentedPrompt:
     def stage_1(self, user_last_messages):
-        filter = {"stage": 1.0}
+        filter_results = {"stage": 1.0}
         vectorstore = PineconeClass().get_information_from_vectorstore()
-        results = vectorstore.similarity_search(query=user_last_messages, filter=filter, k=3)
+        results = vectorstore.similarity_search(query=user_last_messages, filter=filter_results, k=3)
         examples = ""
 
         #I am creating a temporary answer to avoid errors when the vector store is empty
@@ -56,9 +56,9 @@ class AugmentedPrompt:
         return augmented_prompt
     
     def stage_2(self, user_last_messages):
-        filter = {"stage": 2.0}
+        filter_results = {"stage": 2.0}
         vectorstore = PineconeClass().get_information_from_vectorstore()
-        results = vectorstore.similarity_search(query=user_last_messages, filter=filter, k=3)
+        results = vectorstore.similarity_search(query=user_last_messages, filter=filter_results, k=3)
         examples = ""
 
         #I am creating a temporary answer to avoid errors when the vector store is empty
@@ -107,9 +107,9 @@ class AugmentedPrompt:
         return augmented_prompt
     
     def stage_4(self, user_last_messages):
-        filter = {"stage": 4.0}
+        filter_results = {"stage": 4.0}
         vectorstore = PineconeClass().get_information_from_vectorstore()
-        results = vectorstore.similarity_search(query=user_last_messages, filter=filter, k=3)
+        results = vectorstore.similarity_search(query=user_last_messages, filter=filter_results, k=3)
         examples = ""
 
         #I am creating a temporary answer to avoid errors when the vector store is empty

@@ -3,7 +3,6 @@ sys.path.insert(0, os.path.abspath(os.curdir))
 
 import pinecone
 from langchain.vectorstores import Pinecone
-import os
 from dotenv import load_dotenv
 import time
 from src.service.embedModel import embed_model
