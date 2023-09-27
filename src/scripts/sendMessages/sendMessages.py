@@ -5,7 +5,6 @@ sys.path.insert(0, os.path.abspath(os.curdir))
 import time
 import random
 from unidecode import unidecode
-from src.utils.isWhatsAppOpen import IsWhatsAppOpen
 from src.config import (
     attach_file_xy, 
     first_conversation_box_xy, 
@@ -27,10 +26,6 @@ class SendMessages:
 
     def open_conversation(self):
         time.sleep(4)
-
-        is_whats_app_open = IsWhatsAppOpen(self.pyautogui).locate_img_on_screen()
-        if not is_whats_app_open:
-            return
         
         users = self.repository.get_users_by_need_to_send_answer()
         

@@ -1,6 +1,7 @@
 import sys, os
 sys.path.insert(0, os.path.abspath(os.curdir))
 
+from src.utils.subprocess import Subprocess
 from src.service.pineconeClass import PineconeClass
 import uuid
 import streamlit as st
@@ -10,7 +11,6 @@ from src.service.openAIstage1 import openAIstage1
 from src.service.openAIstage2 import openAIstage2
 from src.service.openAIstage4 import openAIstage4
 from src.repository.repository import Repository
-from src.utils.subprocess import Subprocess
 from src.utils.userMessages import UserMessages
 from src.config import user_name, run_script_extract_messages, run_script_first_message, run_script_send_messages
 from src.service.embedModel import embed_model
@@ -34,18 +34,19 @@ def main():
 
         with col1:
             if st.button("Enviar 1ª mensagem", key="script1"):
-                st.info("Vá para o whatsapp web SEM A ABA DE INSPECIONAR ABERTA em até 4 segundos")
+                st.info("Vá para o whatsapp web SEM a aba inspecionar aberta")
                 Subprocess(run_script_first_message).run_subprocess()
-                    
+
         with col2:
             if st.button("Extrair mensagens", key="script2"):
-                st.info("Vá para o whatsapp web COM A ABA DE INSPECIONAR ABERTA em até 4 segundos")
+                st.info("Vá para o whatsapp web COM a aba inspecionar aberta")
                 Subprocess(run_script_extract_messages).run_subprocess()
 
         with col3:
             if st.button("Responder leads", key="script4"):
-                st.info("Vá para o whatsapp web SEM A ABA DE INSPECIONAR ABERTA em até 4 segundos")
+                st.info("Vá para o whatsapp web SEM a aba inspecionar aberta")
                 Subprocess(run_script_send_messages).run_subprocess()
+
     else:
         doc_id = users_to_be_answered[0].id
         user = users_to_be_answered[0].to_dict()

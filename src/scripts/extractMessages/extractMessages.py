@@ -1,5 +1,3 @@
-#extractMessages.py
-# Quando rodar o projeto, ir para a interface do whatsapp em até 4 segundos
 import sys,os
 sys.path.insert(0, os.path.abspath(os.curdir))
 
@@ -9,20 +7,17 @@ from datetime import datetime
 import random
 from src.errors.extractMessagesErrors import MissingHtmlError
 from src.config import user_name, filter_box_xy, first_conversation_box_xy
-from src.utils.isWhatsAppOpen import IsWhatsAppOpen
 
 class ExtractMessages:
-    def __init__(self, pyautogui_module, repository, get_html_from_whatsapp, filter_click_type):
+    def __init__(self, pyautogui_module, keyboard_module, repository, get_html_from_whatsapp, filter_click_type):
         self.pyautogui = pyautogui_module
+        self.keyboard = keyboard_module
         self.repository = repository
         self.get_html_from_whatsapp = get_html_from_whatsapp
         self.filter_click_type = filter_click_type
 
     def open_conversation(self):
-        is_whats_app_open = IsWhatsAppOpen(self.pyautogui).locate_img_on_screen()
-        if not is_whats_app_open:
-            return
-
+        time.sleep(4)
         if self.filter_click_type == "click":
             self.move_to_and_click(xy_position = filter_box_xy) #filter for unread conversations
         else:
@@ -32,6 +27,7 @@ class ExtractMessages:
         time.sleep(2)
         current_sender = self.extract_last_messages()
         return current_sender
+
 
     def extract_last_messages(self):
         try:
