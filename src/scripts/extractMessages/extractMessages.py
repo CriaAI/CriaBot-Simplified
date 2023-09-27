@@ -28,7 +28,6 @@ class ExtractMessages:
         current_sender = self.extract_last_messages()
         return current_sender
 
-
     def extract_last_messages(self):
         try:
             html = self.get_html_from_whatsapp.extract_HTML()

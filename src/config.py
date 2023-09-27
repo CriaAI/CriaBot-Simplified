@@ -21,10 +21,6 @@ return_button_xy = (60, 245) #Ao clicar no botão "Nova conversa", aparece uma s
 #ATENÇÃO: não adicionar o arquivo do vídeo, apenas a pasta
 video_path = "c:/Users/fran_/Documents/EMPRESA/CRIA.AI/CriaBot/src/videos"
 
-#essas duas imagens estão dentro da pasta images. Arrumar o caminho de acordo com o seu pc
-path_to_img_light_theme = "c:/Users/fran_/Documents/EMPRESA/CRIA.AI/CriaBot/src/images/nova_conversa_white.png"
-path_to_img_dark_theme = "c:/Users/fran_/Documents/EMPRESA/CRIA.AI/CriaBot/src/images/nova_conversa_dark.png"
-
 #dentro da pasta files há um arquivo csv. Arrumar de acordo com o seu pc
 csv_file_path = "c:/Users/fran_/Documents/EMPRESA/CRIA.AI/CriaBot/src/files/phoneNumbers.csv"
 
