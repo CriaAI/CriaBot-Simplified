@@ -2,55 +2,33 @@ import sys, os
 sys.path.insert(0, os.path.abspath(os.curdir))
 
 from dotenv import load_dotenv
-from langchain.chat_models import AzureChatOpenAI
+from langchain.chat_models import AzureChatOpenAI, ChatOpenAI
 from langchain.schema import SystemMessage, HumanMessage
+from src.utils.augmentedPrompt import AugmentedPrompt
 
 load_dotenv()
 
-def openAIstage1(user_last_messages):
+def openAIstage1(user_last_messages, embed_model):
     chat = AzureChatOpenAI(
-        openai_api_base=os.getenv("BASE_URL"),
+        openai_api_base=os.getenv("OPENAI_API_BASE"),
         openai_api_version="2023-05-15",
         deployment_name="gpt-35-turbo",
-        openai_api_key=os.getenv("API_KEY"),
+        openai_api_key=os.getenv("OPENAI_API_KEY"),
         openai_api_type="azure",
         temperature=0.4
     )
 
-    content = f"""Baseando-se na resposta do lead, você precisa sugerir se devemos prosseguir com a conversa ou não.
-        Resposta do lead: {user_last_messages}
+    #chat = ChatOpenAI(
+    #    openai_api_key=os.getenv("OPENAI_API_KEY"),
+    #    model='gpt-3.5-turbo'
+    #)
 
-        Exemplos de resposta que devem ser extritamente no formato json abaixo:
-        {{
-            Mensagem do lead: Olá, não prestamos serviços jurídicos.,
-            Acao: Rejeitar,
-            Motivo: Não é advogado
-        }}
-
-        {{
-            Mensagem do lead: Sim,
-            Acao: Aceitar,
-            Motivo: É advogado
-        }}
-
-        {{
-            Mensagem do lead: Sim, prestamos serviços jurídicos,
-            Acao: Aceitar,
-            Motivo: É advogado
-        }}
-
-        {{
-            Mensagem do lead: Olá, tudo bem? Como podemos ajudar? Em breve entraremos em contato com você.,
-            Acao: Rejeitar,
-            Motivo: É um bot
-        }}
-    """
+    augmented_prompt = AugmentedPrompt()
+    content = augmented_prompt.stage_1(user_last_messages, embed_model)
 
     gpt_prompt = [
         SystemMessage(content="""Você analisa respostas de leads de um serviço de inteligência artificial que cria documentos 
-        para advogados. A sua responsabilidade é avaliar se devemos prosseguir com a conversa com o lead e possível cliente 
-        dependendo do interesse demonstrado na resposta e classificá-lo como advogado, não advogado ou bot. Responda no formato 
-        json"""),
+        para advogados. A sua responsabilidade é classificar os leads como advogado, não advogado ou bot."""),
         HumanMessage(content=content)
     ]
 

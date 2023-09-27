@@ -15,8 +15,13 @@
         client_x509_cert_url = xxxxxxxxxxx
         universe_domain = xxxxxxxxxxx
 
-        BASE_URL = xxxxxxxxxxxxx
-        API_KEY = xxxxxxxxxxxxx
+        OPENAI_API_TYPE = xxxxxx
+        OPENAI_API_BASE = xxxxxxxxxxxxxxxxxxxxx
+        OPENAI_API_KEY = xxxxxxxxxxxxxxxxxxxxxxxxx
+        OPENAI_API_VERSION = xxxxxxxx
+
+        PINECONE_API_KEY = xxxxxxxxxxxxxxxxxxxxxx
+        PINECONE_ENVIRONMENT = xxxxxxxxx
     </code>
 </pre>
 <br>
