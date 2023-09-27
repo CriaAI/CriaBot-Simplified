@@ -15,17 +15,21 @@ from src.config import (
     video_xy, 
     video_path
 )
+from src.utils.whatsApp import WhatsApp
 
 os.environ['PYTHONIOENCODING'] = 'utf-8'
 
 class SendMessages:
-    def __init__(self, pyautogui_module, keyboard_module, repository):
+    def __init__(self, pyautogui_module, keyboard_module, pyperclip_module, repository):
         self.pyautogui = pyautogui_module
         self.keyboard = keyboard_module
+        self.pyperclip = pyperclip_module
         self.repository = repository
 
     def open_conversation(self):
-        time.sleep(4)
+        is_whatsapp_open = WhatsApp(self.pyautogui, self.keyboard, self.pyperclip).is_whatsapp_open()
+        if not is_whatsapp_open:
+            return
         
         users = self.repository.get_users_by_need_to_send_answer()
         

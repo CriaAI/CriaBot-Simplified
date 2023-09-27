@@ -8,9 +8,12 @@ from src.config import (
     input_search_new_phone_numbers,
     input_send_message_xy, 
     button_start_new_conversation_xy, 
-    return_button_xy,
-    first_new_conversation_box_xy
+    return_button_outside_input_xy,
+    first_new_conversation_box_xy,
+    input_start_search_phone_number,
+    input_end_search_phone_number
 )
+from src.utils.whatsApp import WhatsApp
 
 class FirstMessage:
     def __init__(self, pyautogui_module, keyboard_module, pyperclip_module, repository, file_path):
@@ -21,7 +24,9 @@ class FirstMessage:
         self.file_path = file_path
 
     def open_conversation(self):
-        time.sleep(4)
+        is_whatsapp_open = WhatsApp(self.pyautogui, self.keyboard, self.pyperclip).is_whatsapp_open()
+        if not is_whatsapp_open:
+            return
 
         messages = [
             "Olá, tudo bem?",
@@ -52,7 +57,7 @@ class FirstMessage:
 
                 #if the whatsapp number does not exist
                 if copy_phone_number == phone_number[0]:
-                    self.move_to_and_click(xy_position=return_button_xy)
+                    self.move_to_and_click(xy_position=return_button_outside_input_xy)
                 else:
                     self.repository.insert_new_document(f" {phone_number[0]}: ")
                     time.sleep(2)
@@ -74,13 +79,10 @@ class FirstMessage:
         self.pyautogui.doubleClick()
 
     def copy_to_variable(self):
-        xy_inicial = (120, 320)
-        xy_final = (320, 320)
-
-        self.move_to_and_click(xy_position=xy_inicial)
+        self.move_to_and_click(xy_position=input_start_search_phone_number)
         time.sleep(1)
         self.pyautogui.mouseDown()
-        self.pyautogui.moveTo(xy_final[0], xy_final[1], duration=0.5*(self.randomize_time()), tween=self.pyautogui.easeInOutQuad)
+        self.pyautogui.moveTo(input_end_search_phone_number[0], input_end_search_phone_number[1], duration=0.5*(self.randomize_time()), tween=self.pyautogui.easeInOutQuad)
         self.pyautogui.mouseUp()
         self.pyautogui.hotkey('ctrl', 'c')
         return self.pyperclip.paste()

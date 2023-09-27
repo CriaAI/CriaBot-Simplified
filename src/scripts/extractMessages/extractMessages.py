@@ -17,7 +17,6 @@ class ExtractMessages:
         self.filter_click_type = filter_click_type
 
     def open_conversation(self):
-        time.sleep(4)
         if self.filter_click_type == "click":
             self.move_to_and_click(xy_position = filter_box_xy) #filter for unread conversations
         else:

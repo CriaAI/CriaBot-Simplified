@@ -7,11 +7,16 @@ import pyperclip
 from src.repository.repository import Repository
 from src.scripts.extractMessages.extractMessages import ExtractMessages
 from src.scripts.extractMessages.getHtmlFromWhatsApp import GetHtmlFromWhatsApp
+from src.utils.whatsApp import WhatsApp
 
 filter_click_type = "click"
 previous_sender = ""
 
 while True:
+    is_whatsapp_open = WhatsApp(pyautogui, keyboard, pyperclip).is_whatsapp_open()
+    if not is_whatsapp_open:
+        break
+
     current_sender = ExtractMessages(
         pyautogui,
         keyboard,
