@@ -67,10 +67,13 @@ def main():
 
                 with col1:
                     if st.button("Bot", key=f"bot_{doc_id}"):
-                        Repository().update_stage_number(doc_id, 0)
-                        Repository().update_need_to_generate_answer(doc_id, {"need_to_generate_answer": False})
-                        Repository().update_need_to_send_answer(doc_id, {"need_to_send_answer": False})
-                        Repository().update_category(doc_id, "Bot")
+                        data_to_update = {
+                            "stage": 0,
+                            "need_to_generate_answer": False,
+                            "need_to_send_answer": False,
+                            "category": "Bot"
+                        }
+                        Repository().update_user_info(doc_id, data_to_update)
                         
                         metadata = {
                             "stage": 1,
@@ -82,10 +85,13 @@ def main():
 
                 with col2:
                     if st.button("Não advogado", key=f"not_lawyer_{doc_id}"):
-                        Repository().update_stage_number(doc_id, 0)
-                        Repository().update_need_to_generate_answer(doc_id, {"need_to_generate_answer": False})
-                        Repository().update_need_to_send_answer(doc_id, {"need_to_send_answer": False})
-                        Repository().update_category(doc_id, "Not lawyer")
+                        data_to_update = {
+                            "stage": 0,
+                            "need_to_generate_answer": False,
+                            "need_to_send_answer": False,
+                            "category": "Not lawyer"
+                        }
+                        Repository().update_user_info(doc_id, data_to_update)
 
                         metadata = {
                             "stage": 1,
@@ -97,10 +103,13 @@ def main():
 
                 with col3:
                     if st.button("Advogado", key=f"lawyer_{doc_id}"):
-                        Repository().update_stage_number(doc_id, user["stage"] + 1)
-                        Repository().update_need_to_generate_answer(doc_id, {"need_to_generate_answer": False})
-                        Repository().update_need_to_send_answer(doc_id, {"need_to_send_answer": True})
-                        Repository().update_category(doc_id, "Lawyer")
+                        data_to_update = {
+                            "stage": 2,
+                            "need_to_generate_answer": False,
+                            "need_to_send_answer": True,
+                            "category": "Lawyer"
+                        }
+                        Repository().update_user_info(doc_id, data_to_update)
 
                         metadata = {
                             "stage": 1,
@@ -126,9 +135,12 @@ def main():
 
                 with col1:
                     if st.button("Não interessado", key=f"reject_{doc_id}"):
-                        Repository().update_stage_number(doc_id, 0)
-                        Repository().update_need_to_generate_answer(doc_id, {"need_to_generate_answer": False})
-                        Repository().update_need_to_send_answer(doc_id, {"need_to_send_answer": False})
+                        data_to_update = {
+                            "stage": 0,
+                            "need_to_generate_answer": False,
+                            "need_to_send_answer": False
+                        }
+                        Repository().update_user_info(doc_id, data_to_update)
 
                         metadata = {
                             "stage": 2,
@@ -141,9 +153,12 @@ def main():
 
                 with col2:
                     if st.button("Interessado", key=f"accept_{doc_id}"):
-                        Repository().update_stage_number(doc_id, user["stage"] + 1)
-                        Repository().update_need_to_generate_answer(doc_id, {"need_to_generate_answer": False})
-                        Repository().update_need_to_send_answer(doc_id, {"need_to_send_answer": True})
+                        data_to_update = {
+                            "stage": 3,
+                            "need_to_generate_answer": False,
+                            "need_to_send_answer": True
+                        }
+                        Repository().update_user_info(doc_id, data_to_update)
 
                         metadata = {
                             "stage": 2,
@@ -174,9 +189,12 @@ def main():
                             "text": edited_gpt_answer_value
                         })
 
-                        Repository().update_messages_array(doc_id, all_messages)
-                        Repository().update_need_to_generate_answer(doc_id, {"need_to_generate_answer": False})
-                        Repository().update_need_to_send_answer(doc_id, {"need_to_send_answer": True})
+                        data_to_update = {
+                            "messages": all_messages,
+                            "need_to_generate_answer": False,
+                            "need_to_send_answer": True
+                        }
+                        Repository().update_user_info(doc_id, data_to_update)
 
                         metadata = {
                             "stage": 4,

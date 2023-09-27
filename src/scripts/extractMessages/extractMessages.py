@@ -82,12 +82,12 @@ class ExtractMessages:
         for message in messages:
             if message["message_sender"] != user_name:
                 find_sender_db = self.repository.get_user_by_name(message["message_sender"])
-                self.repository.update_need_to_generate_answer(find_sender_db[0].id, {"need_to_generate_answer": True})
+                self.repository.update_user_info(find_sender_db[0].id, {"need_to_generate_answer": True})
                 
                 #if the user stage is 0, after this first interaction, it will be updated to 1
                 stage = find_sender_db[0].to_dict()["stage"]
                 if stage == 0:
-                    self.repository.update_stage_number(find_sender_db[0].id, 1)
+                    self.repository.update_user_info(find_sender_db[0].id, {"stage": 1})
         
         #Now, the messages will be inserted in the db inside the messages array
         doc_id = find_sender_db[0].id
@@ -113,5 +113,5 @@ class ExtractMessages:
             else:
                 doc_data["messages"].append(message_to_insert)
 
-        self.repository.update_messages_array(doc_id, doc_data["messages"])
+        self.repository.update_user_info(doc_id, {"messages": doc_data["messages"]})
         return doc_data["message_sender"]
