@@ -6,11 +6,8 @@ from langchain.embeddings.openai import OpenAIEmbeddings
 
 load_dotenv()
 
-#embed_model = OpenAIEmbeddings(model="text-embedding-ada-002", openai_api_key=os.getenv("OPENAI_API_KEY"))
-
 embed_model = OpenAIEmbeddings(
-    #deployment="cria-ai-chatbot",
-    model="text-embedding-ada-002",
+    deployment="text-embedding-ada-002",
     openai_api_base=os.getenv("OPENAI_API_BASE"),
     openai_api_type="azure"
 )
