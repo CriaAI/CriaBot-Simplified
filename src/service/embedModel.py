@@ -8,6 +8,7 @@ load_dotenv()
 
 embed_model = OpenAIEmbeddings(
     deployment="text-embedding-ada-002",
-    openai_api_base=os.getenv("OPENAI_API_BASE"),
+    openai_api_base=os.getenv("BASE_URL"),
+    openai_api_key=os.getenv("API_KEY"),
     openai_api_type="azure"
 )

@@ -1,18 +1,18 @@
 import sys, os
 sys.path.insert(0, os.path.abspath(os.curdir))
 
+from src.service.pineconeClass import PineconeClass
 import uuid
+import streamlit as st
+from datetime import datetime
 from dotenv import load_dotenv
 from src.service.openAIstage1 import openAIstage1
 from src.service.openAIstage2 import openAIstage2
 from src.service.openAIstage4 import openAIstage4
-import streamlit as st
-from datetime import datetime
 from src.repository.repository import Repository
 from src.utils.subprocess import Subprocess
 from src.utils.userMessages import UserMessages
 from src.config import user_name, run_script_extract_messages, run_script_first_message, run_script_send_messages
-from src.service.pineconeClass import PineconeClass
 from src.service.embedModel import embed_model
 
 load_dotenv()
@@ -52,12 +52,12 @@ def main():
         all_messages = user["messages"]
         last_messages = UserMessages().get_last_messages(all_messages)
 
+        pinecone_index = PineconeClass().create_index("cria-ai-bot")
+        embeds = embed_model.embed_query(last_messages)
+
         if user["stage"] == 1:
             with st.sidebar:
-                index = PineconeClass().create_index("cria-ai-stage1")
-                embeds = embed_model.embed_query(last_messages)
- 
-                gpt_suggestion = openAIstage1(last_messages, embed_model)
+                gpt_suggestion = openAIstage1(last_messages)
                 
                 st.info("Baseando-se nas respostas do usuário e da sugestão da IA, como você classifica o lead?")
                 st.info(gpt_suggestion)
@@ -65,72 +65,88 @@ def main():
                 col1, col2, col3 = st.columns(3)
 
                 with col1:
-                    if st.button("É um bot", key=f"bot_{doc_id}"):
+                    if st.button("Bot", key=f"bot_{doc_id}"):
                         Repository().update_stage_number(doc_id, 0)
                         Repository().update_need_to_generate_answer(doc_id, {"need_to_generate_answer": False})
                         Repository().update_need_to_send_answer(doc_id, {"need_to_send_answer": False})
                         Repository().update_category(doc_id, "Bot")
                         
                         metadata = {
-                            "category": "bot",
+                            "stage": 1,
+                            "category": "Bot",
                             "message": last_messages
                         }
-                        PineconeClass().insert_text(index=index, ids=uuid.uuid4(), embeds=embeds, metadata=metadata)
-
-                        st.experimental_rerun()
+                        PineconeClass().insert_text(index=pinecone_index, ids=uuid.uuid4(), embeds=embeds, metadata=metadata)
+                        st.rerun()
 
                 with col2:
-                    if st.button("Não é advogado", key=f"not_lawyer_{doc_id}"):
+                    if st.button("Não advogado", key=f"not_lawyer_{doc_id}"):
                         Repository().update_stage_number(doc_id, 0)
                         Repository().update_need_to_generate_answer(doc_id, {"need_to_generate_answer": False})
                         Repository().update_need_to_send_answer(doc_id, {"need_to_send_answer": False})
                         Repository().update_category(doc_id, "Not lawyer")
 
                         metadata = {
-                            "category": "not_lawyer",
+                            "stage": 1,
+                            "category": "Nao advogado",
                             "message": last_messages
                         }
-                        PineconeClass().insert_text(index=index, ids=uuid.uuid4(), embeds=embeds, metadata=metadata)
-
-                        st.experimental_rerun()
+                        PineconeClass().insert_text(index=pinecone_index, ids=uuid.uuid4(), embeds=embeds, metadata=metadata)
+                        st.rerun()
 
                 with col3:
-                    if st.button("É advogado", key=f"lawyer_{doc_id}"):
+                    if st.button("Advogado", key=f"lawyer_{doc_id}"):
                         Repository().update_stage_number(doc_id, user["stage"] + 1)
                         Repository().update_need_to_generate_answer(doc_id, {"need_to_generate_answer": False})
                         Repository().update_need_to_send_answer(doc_id, {"need_to_send_answer": True})
                         Repository().update_category(doc_id, "Lawyer")
 
                         metadata = {
-                            "category": "lawyer",
+                            "stage": 1,
+                            "category": "Advogado",
                             "message": last_messages
                         }
-                        PineconeClass().insert_text(index=index, ids=uuid.uuid4(), embeds=embeds, metadata=metadata)
-                        print("PINECONE DADOS: ", index.describe_index_stats())
-                        st.experimental_rerun()
+                        PineconeClass().insert_text(index=pinecone_index, ids=uuid.uuid4(), embeds=embeds, metadata=metadata)
+                        st.rerun()
 
         if user["stage"] == 2:
             with st.sidebar:
                 gpt_suggestion = openAIstage2(last_messages)
 
-                st.info("Baseando-se nas respostas do usuário e da sugestão da IA, você quer prosseguir com o envio de mensagens?")
+                st.info("Baseando-se nas respostas do usuário e da sugestão da IA, como você classifica o interesse do lead?")
                 st.info(gpt_suggestion)
 
                 col1, col2 = st.columns(2)
 
                 with col1:
-                    if st.button("Rejeitar", key=f"reject_{doc_id}"):
+                    if st.button("Não interessado", key=f"reject_{doc_id}"):
                         Repository().update_stage_number(doc_id, 0)
                         Repository().update_need_to_generate_answer(doc_id, {"need_to_generate_answer": False})
                         Repository().update_need_to_send_answer(doc_id, {"need_to_send_answer": False})
-                        st.experimental_rerun()
+
+                        metadata = {
+                            "stage": 2,
+                            "category": "Nao interessado",
+                            "message": last_messages
+                        }
+
+                        PineconeClass().insert_text(index=pinecone_index, ids=uuid.uuid4(), embeds=embeds, metadata=metadata)
+                        st.rerun()
 
                 with col2:
-                    if st.button("Aceitar", key=f"accept_{doc_id}"):
+                    if st.button("Interessado", key=f"accept_{doc_id}"):
                         Repository().update_stage_number(doc_id, user["stage"] + 1)
                         Repository().update_need_to_generate_answer(doc_id, {"need_to_generate_answer": False})
                         Repository().update_need_to_send_answer(doc_id, {"need_to_send_answer": True})
-                        st.experimental_rerun()
+
+                        metadata = {
+                            "stage": 2,
+                            "category": "Interessado",
+                            "message": last_messages
+                        }
+
+                        PineconeClass().insert_text(index=pinecone_index, ids=uuid.uuid4(), embeds=embeds, metadata=metadata)
+                        st.rerun()
                         
         elif user["stage"] == 4:
             gpt_answer = openAIstage4(last_messages)

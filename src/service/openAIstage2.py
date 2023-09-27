@@ -4,6 +4,7 @@ sys.path.insert(0, os.path.abspath(os.curdir))
 from dotenv import load_dotenv
 from langchain.chat_models import AzureChatOpenAI
 from langchain.schema import SystemMessage, HumanMessage
+from src.utils.augmentedPrompt import AugmentedPrompt
 
 load_dotenv()
 
@@ -17,33 +18,14 @@ def openAIstage2(user_last_messages):
         temperature=0.4
     )
 
-    content = f"""Baseando-se na resposta do lead, você precisa sugerir se devemos prosseguir com a conversa ou não.
-        Resposta do lead: {user_last_messages}
-
-        Exemplos de resposta no formato json:
-        {{
-            'Mensagem do lead': 👍,
-            'Acao': 'Aceitar'
-        }}
-
-        {{
-            'Mensagem do lead': 'Sim',
-            'Acao': 'Aceitar'
-        }}
-
-        {{
-            'Mensagem do lead': 'Não',
-            'Acao': 'Rejeitar'
-        }}
-    """
+    augmented_prompt = AugmentedPrompt()
+    content = augmented_prompt.stage_2(user_last_messages)
 
     gpt_prompt = [
         SystemMessage(content="""Você analisa conversas com possíveis clientes de um serviço de inteligência artificial que 
-        cria documentos para advogados. A sua responsabilidade é avaliar se devemos prosseguir com a conversa dependendo do 
-        interesse demonstrado na resposta."""),
+        cria documentos para advogados. A sua responsabilidade é classificar o lead como Interessado ou Nao interessado."""),
         HumanMessage(content=content)
     ]
 
     gpt_answer = chat(gpt_prompt).content
-
     return gpt_answer

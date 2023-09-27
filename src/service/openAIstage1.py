@@ -8,7 +8,7 @@ from src.utils.augmentedPrompt import AugmentedPrompt
 
 load_dotenv()
 
-def openAIstage1(user_last_messages, embed_model):
+def openAIstage1(user_last_messages):
     chat = AzureChatOpenAI(
         openai_api_base=os.getenv("BASE_URL"),
         openai_api_version="2023-05-15",
@@ -19,11 +19,11 @@ def openAIstage1(user_last_messages, embed_model):
     )
 
     augmented_prompt = AugmentedPrompt()
-    content = augmented_prompt.stage_1(user_last_messages, embed_model)
+    content = augmented_prompt.stage_1(user_last_messages)
 
     gpt_prompt = [
         SystemMessage(content="""Você analisa respostas de leads de um serviço de inteligência artificial que cria documentos 
-        para advogados. A sua responsabilidade é classificar os leads como advogado, não advogado ou bot."""),
+        para advogados. A sua responsabilidade é classificar os leads como Advogado, Nao advogado ou Bot."""),
         HumanMessage(content=content)
     ]
 

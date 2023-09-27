@@ -6,6 +6,7 @@ from langchain.vectorstores import Pinecone
 import os
 from dotenv import load_dotenv
 import time
+from src.service.embedModel import embed_model
 
 load_dotenv()
 
@@ -32,6 +33,6 @@ class PineconeClass:
     def insert_text(self, index, ids, embeds, metadata):
         index.upsert(vectors=[{"id": str(ids), "values": embeds, "metadata": metadata}])
 
-    def get_information_from_vectorstore(self, index, embed_model):
-        vectorstore = Pinecone(index=index, embedding=embed_model.embed_query, text_key="message")
+    def get_information_from_vectorstore(self):
+        vectorstore = Pinecone(index=pinecone.Index("cria-ai-bot"), embedding=embed_model.embed_query, text_key="message")
         return vectorstore
