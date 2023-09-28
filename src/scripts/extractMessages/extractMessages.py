@@ -9,9 +9,8 @@ from src.errors.extractMessagesErrors import MissingHtmlError
 from src.config import user_name, filter_box_xy, first_conversation_box_xy
 
 class ExtractMessages:
-    def __init__(self, pyautogui_module, keyboard_module, repository, get_html_from_whatsapp, filter_click_type):
+    def __init__(self, pyautogui_module, repository, get_html_from_whatsapp, filter_click_type):
         self.pyautogui = pyautogui_module
-        self.keyboard = keyboard_module
         self.repository = repository
         self.get_html_from_whatsapp = get_html_from_whatsapp
         self.filter_click_type = filter_click_type
