@@ -82,13 +82,33 @@ class ExtractMessages:
         for message in messages:
             if message["message_sender"] != user_name:
                 find_sender_db = self.repository.get_user_by_name(message["message_sender"])
-                self.repository.update_user_info(find_sender_db[0].id, {"need_to_generate_answer": True})
+
+                #checking the time of the last message. If it was less than 5 minutes ago, we go to the next message
+                last_message = messages[-1]
+                message_time = datetime.strptime(last_message["message_date"], "%H:%M, %d/%m/%Y")
+                now = datetime.now()
+
+                if (now - message_time).total_seconds() / 60 < 5:
+                    return {"sender": last_message["message_sender"].strip().replace(":", "")}
+
+                #if the sender is not in the database, he will be added to it
+                if len(find_sender_db) == 0:
+                    self.repository.insert_new_document(f"{message['message_sender']}")
+                    find_sender_db = self.repository.get_user_by_name(message["message_sender"])
+                    data_to_be_updated = {
+                        "stage": 4, 
+                        "category": "Lawyer", 
+                        "need_to_generate_answer": True
+                    }
+                    self.repository.update_user_info(find_sender_db[0].id, data_to_be_updated)
+                else:
+                    self.repository.update_user_info(find_sender_db[0].id, {"need_to_generate_answer": True})
                 
-                #if the user stage is 0, after this first interaction, it will be updated to 1
-                stage = find_sender_db[0].to_dict()["stage"]
-                if stage == 0:
-                    self.repository.update_user_info(find_sender_db[0].id, {"stage": 1})
-                break
+                    #if the user stage is 0, after this first interaction, it will be updated to 1
+                    stage = find_sender_db[0].to_dict()["stage"]
+                    if stage == 0:
+                        self.repository.update_user_info(find_sender_db[0].id, {"stage": 1})
+                    break
         
         #Now, the messages will be inserted in the db inside the messages array
         doc_id = find_sender_db[0].id

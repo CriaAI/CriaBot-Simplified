@@ -5,8 +5,7 @@ import time
 import random
 from src.config import (
     input_search_box_xy, 
-    return_button_inside_input_with_inspect_tool_xy, 
-    return_button_inside_input_without_inspect_tool_xy
+    return_button_inside_input
 )
 
 class WhatsApp:
@@ -26,9 +25,8 @@ class WhatsApp:
         word_copied = self.copy_to_variable()
         time.sleep(1)
         if word_copied == "checando":
-            self.move_to_and_click(return_button_inside_input_without_inspect_tool_xy)
+            self.move_to_and_click(return_button_inside_input)
             time.sleep(1)
-            self.move_to_and_click(return_button_inside_input_with_inspect_tool_xy)
             return True
         else:
             return False

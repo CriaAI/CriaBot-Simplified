@@ -15,7 +15,6 @@ from src.config import (
     video_xy, 
     video_path
 )
-from src.utils.whatsApp import WhatsApp
 
 os.environ['PYTHONIOENCODING'] = 'utf-8'
 
