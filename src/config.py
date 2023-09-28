@@ -8,6 +8,8 @@ filter_box_xy = (465, 241) #Botão de filtrar mensagens não lidas no whatsapp
 first_conversation_box_xy = (150, 400) #Box da primeira conversa que aparece no whatsapp (conversas existentes)
 first_new_conversation_box_xy = (150, 450) #Box da primeira conversa que aparece no whatsapp (conversas novas)
 
+word_service = (1640, 870) #Localização da palavra serviços que é enviada na primeira mensagem para o lead
+
 input_search_box_xy = (160, 250) #Input para buscar conversas existentes
 input_search_new_phone_numbers = (255, 315) #Input para buscar novas conversas
 input_send_message_xy = (880, 952) #Input de enviar mensagens

@@ -9,6 +9,7 @@ from src.config import (
     input_send_message_xy, 
     button_start_new_conversation_xy, 
     first_new_conversation_box_xy,
+    word_service
 )
 from src.utils.whatsApp import WhatsApp
 
@@ -59,7 +60,7 @@ class FirstMessage:
                     self.pyautogui.hotkey('enter')
                     time.sleep(2)
 
-                self.move_to_and_double_click((1640, 870))
+                self.move_to_and_double_click(xy_position=word_service)
                 time.sleep(1)
                 copied_word = self.copy_to_variable()
                 time.sleep(1)
