@@ -96,15 +96,16 @@ class ExtractMessages:
         #Making sure that there won't be any repeated messages in the db
         date_time_format = "%H:%M, %d/%m/%Y"
         for message in messages:
+            message_to_insert = {
+                "sender": message["message_sender"],
+                "text": message["message_text"], 
+                "date": message["message_date"]
+            }
+            
             if len(doc_data["messages"]) > 0:
                 last_message_date_db = datetime.strptime(doc_data["messages"][-1]["date"], date_time_format)
                 last_message_text_db = doc_data["messages"][-1]["text"]
                 message_date_time = datetime.strptime(message["message_date"], date_time_format)
-                message_to_insert = {
-                    "sender": message["message_sender"],
-                    "text": message["message_text"], 
-                    "date": message["message_date"]
-                }
 
                 if last_message_date_db > message_date_time or last_message_text_db == message["message_text"]:
                     continue
