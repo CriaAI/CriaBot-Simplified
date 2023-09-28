@@ -2,19 +2,28 @@ import sys,os
 sys.path.insert(0, os.path.abspath(os.curdir))
 
 from unittest.mock import MagicMock
-from tests.mocks.usersMock import usersMock, User
+from .userMock import User
+from .listOfUsersMock import list_of_users_mock
 
 repository_mock = MagicMock()
 
 repository_mock.get_user_by_name.side_effect = lambda message_sender: (
-    [User(id="id", message_sender=message_sender, messages=[], need_to_generate_answer=False, need_to_send_answer=False, stage=0)]
+    [User(
+        user_id="id", 
+        message_sender=message_sender, 
+        messages=[], 
+        need_to_generate_answer=False, 
+        need_to_send_answer=False, 
+        stage=0,
+        category=""
+    )]
     if message_sender == " Vittório Girardi: " or message_sender == " Carol Martins: "
     else []
 )
 
 repository_mock.get_users_by_need_to_send_answer.return_value = [
     User(
-        id="id1",
+        user_id="id1",
         message_sender=" Vittório Girardi: ",
         messages=[{
             "sender": " Vittório Girardi: ",
@@ -23,13 +32,14 @@ repository_mock.get_users_by_need_to_send_answer.return_value = [
         }],
         need_to_generate_answer=False,
         need_to_send_answer=True,
-        stage=2
+        stage=2,
+        category="Lawyer"
     )
 ]
 
 repository_mock.get_users_by_need_to_generate_answer.return_value = [
     User(
-        id="id2",
+        user_id="id2",
         message_sender=" Carol Martins: ",
         messages=[{
             "sender": " Carol Martins: ",
@@ -38,13 +48,14 @@ repository_mock.get_users_by_need_to_generate_answer.return_value = [
         }],
         need_to_generate_answer=True,
         need_to_send_answer=False,
-        stage=4
+        stage=4,
+        category="Lawyer"
     )
 ]
 
 repository_mock.get_users_by_stage.side_effect = lambda stage: (
-    usersMock[0] if stage == 2 else
-    usersMock[1] if stage == 4 else
+    list_of_users_mock[0] if stage == 2 else
+    list_of_users_mock[1] if stage == 4 else
     []
 )
 
