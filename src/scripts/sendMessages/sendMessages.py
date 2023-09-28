@@ -27,10 +27,6 @@ class SendMessages:
         self.repository = repository
 
     def open_conversation(self):
-        is_whatsapp_open = WhatsApp(self.pyautogui, self.keyboard, self.pyperclip).is_whatsapp_open()
-        if not is_whatsapp_open:
-            return
-        
         users = self.repository.get_users_by_need_to_send_answer()
 
         for user in users:

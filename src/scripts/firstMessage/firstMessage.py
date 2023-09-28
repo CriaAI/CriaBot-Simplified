@@ -11,7 +11,6 @@ from src.config import (
     first_new_conversation_box_xy,
     word_service
 )
-from src.utils.whatsApp import WhatsApp
 
 class FirstMessage:
     def __init__(self, pyautogui_module, keyboard_module, pyperclip_module, repository, file_path):
@@ -22,10 +21,6 @@ class FirstMessage:
         self.file_path = file_path
 
     def open_conversation(self):
-        is_whatsapp_open = WhatsApp(self.pyautogui, self.keyboard, self.pyperclip).is_whatsapp_open()
-        if not is_whatsapp_open:
-            return
-
         messages = [
             "Olá, tudo bem?",
             "Aqui é o Caio da CriaAI!",

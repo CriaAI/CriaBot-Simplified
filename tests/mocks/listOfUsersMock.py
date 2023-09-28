@@ -6,7 +6,7 @@ from .userMock import User
 list_of_users_mock = [
     {
         User(
-            user_id="id1",
+            id="id1",
             message_sender=" Vittório Girardi: ",
             messages=[{
                 "sender": " Vittório Girardi: ",
@@ -19,7 +19,7 @@ list_of_users_mock = [
             category="Lawyer"
         ),
         User(
-            user_id="id2",
+            id="id2",
             message_sender=" Carol Martins: ",
             messages=[{
                 "sender": " Carol Martins: ",

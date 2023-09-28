@@ -8,11 +8,14 @@ import pyperclip
 from src.scripts.firstMessage.firstMessage import FirstMessage
 from src.repository.repository import Repository
 from src.config import csv_file_path
+from src.utils.whatsApp import WhatsApp
 
-FirstMessage(
-    pyautogui, 
-    keyboard,
-    pyperclip,
-    Repository(), 
-    csv_file_path
-).open_conversation()
+is_whatsapp_open = WhatsApp(pyautogui, keyboard, pyperclip).is_whatsapp_open()
+if is_whatsapp_open:
+    FirstMessage(
+        pyautogui, 
+        keyboard,
+        pyperclip,
+        Repository(), 
+        csv_file_path
+    ).open_conversation()

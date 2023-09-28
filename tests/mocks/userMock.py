@@ -2,8 +2,8 @@ import sys,os
 sys.path.insert(0, os.path.abspath(os.curdir))
 
 class User:
-    def __init__(self, user_id, message_sender, messages, need_to_generate_answer, need_to_send_answer, stage, category):
-        self.user_id = user_id
+    def __init__(self, id, message_sender, messages, need_to_generate_answer, need_to_send_answer, stage, category):
+        self.id = id
         self.message_sender = message_sender
         self.messages = messages
         self.need_to_generate_answer = need_to_generate_answer

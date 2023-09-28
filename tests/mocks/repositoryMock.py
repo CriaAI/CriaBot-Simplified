@@ -9,7 +9,7 @@ repository_mock = MagicMock()
 
 repository_mock.get_user_by_name.side_effect = lambda message_sender: (
     [User(
-        user_id="id", 
+        id="id", 
         message_sender=message_sender, 
         messages=[], 
         need_to_generate_answer=False, 
@@ -23,7 +23,7 @@ repository_mock.get_user_by_name.side_effect = lambda message_sender: (
 
 repository_mock.get_users_by_need_to_send_answer.return_value = [
     User(
-        user_id="id1",
+        id="id1",
         message_sender=" Vittório Girardi: ",
         messages=[{
             "sender": " Vittório Girardi: ",
@@ -39,7 +39,7 @@ repository_mock.get_users_by_need_to_send_answer.return_value = [
 
 repository_mock.get_users_by_need_to_generate_answer.return_value = [
     User(
-        user_id="id2",
+        id="id2",
         message_sender=" Carol Martins: ",
         messages=[{
             "sender": " Carol Martins: ",

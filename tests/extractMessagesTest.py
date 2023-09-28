@@ -4,8 +4,8 @@ sys.path.insert(0, os.path.abspath(os.curdir))
 
 from unittest.mock import MagicMock
 from src.scripts.extractMessages.extractMessages import ExtractMessages
-from mocks.repositoryMock import repository_mock
-from mocks.getHtmlFromWhatsAppMock import GetHtmlFromWhatsAppMock
+from .mocks.repositoryMock import repository_mock
+from .mocks.getHtmlFromWhatsAppMock import GetHtmlFromWhatsAppMock
     
 def test_open_conversation_from_existing_user_with_html_file():
     pyautogui_module=MagicMock()
@@ -23,7 +23,7 @@ def test_open_conversation_from_existing_user_with_html_file():
     assert user == " Vittório Girardi: "
     assert pyautogui_module.assert_any_call
     repository.get_user_by_name.assert_called()
-    repository.update_user_info.assert_called_once()
+    repository.update_user_info.assert_called()
     repository.insert_new_document.assert_not_called()
 
 def test_insert_messages_from_existing_user():

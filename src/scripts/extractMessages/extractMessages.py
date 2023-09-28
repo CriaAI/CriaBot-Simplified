@@ -77,7 +77,8 @@ class ExtractMessages:
 
     def insert_messages(self, messages):
         find_sender_db = []
-
+        
+        #finding out who the message sender is
         for message in messages:
             if message["message_sender"] != user_name:
                 find_sender_db = self.repository.get_user_by_name(message["message_sender"])
@@ -87,12 +88,13 @@ class ExtractMessages:
                 stage = find_sender_db[0].to_dict()["stage"]
                 if stage == 0:
                     self.repository.update_user_info(find_sender_db[0].id, {"stage": 1})
+                break
         
         #Now, the messages will be inserted in the db inside the messages array
         doc_id = find_sender_db[0].id
         doc_data = find_sender_db[0].to_dict()
 
-        #Making sure that there won't be any repeated messages in the db
+        #Making sure there won't be any repeated messages in the db
         date_time_format = "%H:%M, %d/%m/%Y"
         for message in messages:
             message_to_insert = {
