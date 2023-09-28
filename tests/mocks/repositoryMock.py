@@ -48,10 +48,6 @@ repository_mock.get_users_by_stage.side_effect = lambda stage: (
     []
 )
 
-repository_mock.update_messages_array.side_effect = lambda doc_id, messages: print(f"Mocked update_messages_array({doc_id}, {messages})")
+repository_mock.update_user_info.side_effect = lambda doc_id, data: print(f"Mocked update_user_info({doc_id}, {data})")
 
 repository_mock.insert_new_document.side_effect = lambda message_sender: print(f"Mocked insert_new_document({message_sender})")
-
-repository_mock.update_need_to_send_answer.side_effect = lambda doc_id, object: print(f"Mocked update_need_to_send_answer({doc_id})")
-
-repository_mock.update_stage_number.side_effect = lambda doc_id, stage_number: print(f"Mocked update_stage_number for doc_id {doc_id} to stage {stage_number}")
