@@ -17,7 +17,6 @@ if is_whatsapp_open:
     while True:
         current_sender = ExtractMessages(
             pyautogui,
-            keyboard,
             Repository(),
             GetHtmlFromWhatsApp(pyautogui, pyperclip),
             filter_click_type
