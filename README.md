@@ -36,3 +36,6 @@
 - Após todas as mensagens terem sido geradas, aparecerão 4 botões na tela, um para cada script (enviar primeira mensagem, extrair mensagens e enviar mensagens) e um botão para cancelar a ação do script
 - Ao clicar em cada um desses botões, o respectivo script será rodado (deve-se ir até a página do whatsapp web)
 <br>
+
+## Instalação de bibliotecas
+- Rode o comando `pip install -r requirements.txt`
