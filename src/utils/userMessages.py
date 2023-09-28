@@ -15,4 +15,4 @@ class UserMessages:
         
         user_last_messages = list(reversed(user_last_messages))
 
-        return user_last_messages
+        return " ".join(user_last_messages)

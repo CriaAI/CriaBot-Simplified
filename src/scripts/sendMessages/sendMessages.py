@@ -5,7 +5,6 @@ sys.path.insert(0, os.path.abspath(os.curdir))
 import time
 import random
 from unidecode import unidecode
-from src.utils.isWhatsAppOpen import IsWhatsAppOpen
 from src.config import (
     attach_file_xy, 
     first_conversation_box_xy, 
@@ -16,24 +15,24 @@ from src.config import (
     video_xy, 
     video_path
 )
+from src.utils.whatsApp import WhatsApp
 
 os.environ['PYTHONIOENCODING'] = 'utf-8'
 
 class SendMessages:
-    def __init__(self, pyautogui_module, keyboard_module, repository):
+    def __init__(self, pyautogui_module, keyboard_module, pyperclip_module, repository):
         self.pyautogui = pyautogui_module
         self.keyboard = keyboard_module
+        self.pyperclip = pyperclip_module
         self.repository = repository
 
     def open_conversation(self):
-        time.sleep(4)
-
-        is_whats_app_open = IsWhatsAppOpen(self.pyautogui).locate_img_on_screen()
-        if not is_whats_app_open:
+        is_whatsapp_open = WhatsApp(self.pyautogui, self.keyboard, self.pyperclip).is_whatsapp_open()
+        if not is_whatsapp_open:
             return
         
         users = self.repository.get_users_by_need_to_send_answer()
-        
+
         for user in users:
             phone_number = unidecode(user.to_dict()["message_sender"]).strip().rstrip(':')
             stage = user.to_dict()["stage"]
@@ -54,15 +53,7 @@ class SendMessages:
                 time.sleep(2)
                 self.pyautogui.hotkey('enter')
                 time.sleep(2)
-                self.move_to_and_click(attach_file_xy)
-                time.sleep(1)
-                self.move_to_and_click(photos_and_videos_xy)
-                time.sleep(1)
-                self.move_to_and_click(path_to_video_xy)
-                time.sleep(2)
-                self.keyboard.write(video_path)
-                time.sleep(1)
-                self.pyautogui.hotkey('enter')
+                self.send_video()
                 time.sleep(1)
                 self.move_to_and_double_click(video_xy)
                 time.sleep(2)
@@ -70,29 +61,43 @@ class SendMessages:
                 time.sleep(2)
                 self.keyboard.write("Estou buscando advogados interessados em fazer o teste da nossa solução de forma 100% gratuita. Se tiver interesse, só mandar um 👍 que eu envio o link!")
             elif stage == 3:
-                self.keyboard.write("Segue o link: https://criaai.com/")
-                time.sleep(2)
-                self.pyautogui.hotkey('enter')
-                time.sleep(2)
-                self.keyboard.write("Vou deixar liberado acesso até hoje para criar sua conta! Só fazer o cadastro e testar à vontade! Não leva nem 1 minuto.")
-                time.sleep(2)
-                self.pyautogui.hotkey('enter')
-                time.sleep(2)
-                self.keyboard.write("""E uma dica: Para nosso teste não ser ainda mais um peso na sua semana, indicamos testar a plataforma já buscando economizar o tempo em alguma demanda.
-                Quanto mais real e específico for o caso que você passar para a IA, melhores e mais surpreendentes serão os resultados obtidos 😉""")
+                messages = [
+                    "Segue o link: https://criaai.com/",
+                    """Vou deixar liberado acesso até hoje para criar sua conta! Só fazer o cadastro e testar à vontade! 
+                    Não leva nem 1 minuto.""",
+                    """E uma dica: Para nosso teste não ser ainda mais um peso na sua semana, indicamos testar a plataforma já 
+                    buscando economizar o tempo em alguma demanda. Quanto mais real e específico for o caso que você passar para a 
+                    IA, melhores e mais surpreendentes serão os resultados obtidos 😉"""
+                ]
+
+                for message in messages:
+                    self.keyboard.write(message)
+                    time.sleep(2)
+                    self.pyautogui.hotkey('enter')
+                    time.sleep(2)
             elif stage == 4:
                 message_to_be_sent = user.to_dict()["messages"][-1]["text"]
                 self.keyboard.write(message_to_be_sent)
             
-            time.sleep(6)
+            time.sleep(4)
             self.pyautogui.hotkey('enter')
             time.sleep(2)
             
-            self.repository.update_need_to_send_answer(user.id, {"need_to_send_answer": False})
-            
             if stage == 3:
-                self.repository.update_stage_number(user.id, 4)
+                self.repository.update_user_info(user.id, {"stage": 4, "need_to_send_answer": False})
+            else:
+                self.repository.update_user_info(user.id, {"need_to_send_answer": False})
 
+    def send_video(self):
+        self.move_to_and_click(attach_file_xy)
+        time.sleep(1)
+        self.move_to_and_click(photos_and_videos_xy)
+        time.sleep(1)
+        self.move_to_and_click(path_to_video_xy)
+        time.sleep(2)
+        self.keyboard.write(video_path)
+        time.sleep(1)
+        self.pyautogui.hotkey('enter')
 
     def move_to_and_click(self, xy_position):
         self.pyautogui.moveTo(xy_position[0], xy_position[1], duration=0.5*(self.randomize_time()), tween=self.pyautogui.easeInOutQuad)

@@ -1,5 +1,3 @@
-#extractMessages.py
-# Quando rodar o projeto, ir para a interface do whatsapp em até 4 segundos
 import sys,os
 sys.path.insert(0, os.path.abspath(os.curdir))
 
@@ -9,20 +7,16 @@ from datetime import datetime
 import random
 from src.errors.extractMessagesErrors import MissingHtmlError
 from src.config import user_name, filter_box_xy, first_conversation_box_xy
-from src.utils.isWhatsAppOpen import IsWhatsAppOpen
 
 class ExtractMessages:
-    def __init__(self, pyautogui_module, repository, get_html_from_whatsapp, filter_click_type):
+    def __init__(self, pyautogui_module, keyboard_module, repository, get_html_from_whatsapp, filter_click_type):
         self.pyautogui = pyautogui_module
+        self.keyboard = keyboard_module
         self.repository = repository
         self.get_html_from_whatsapp = get_html_from_whatsapp
         self.filter_click_type = filter_click_type
 
     def open_conversation(self):
-        is_whats_app_open = IsWhatsAppOpen(self.pyautogui).locate_img_on_screen()
-        if not is_whats_app_open:
-            return
-
         if self.filter_click_type == "click":
             self.move_to_and_click(xy_position = filter_box_xy) #filter for unread conversations
         else:
@@ -88,12 +82,12 @@ class ExtractMessages:
         for message in messages:
             if message["message_sender"] != user_name:
                 find_sender_db = self.repository.get_user_by_name(message["message_sender"])
-                self.repository.update_need_to_generate_answer(find_sender_db[0].id, {"need_to_generate_answer": True})
+                self.repository.update_user_info(find_sender_db[0].id, {"need_to_generate_answer": True})
                 
                 #if the user stage is 0, after this first interaction, it will be updated to 1
                 stage = find_sender_db[0].to_dict()["stage"]
                 if stage == 0:
-                    self.repository.update_stage_number(find_sender_db[0].id, 1)
+                    self.repository.update_user_info(find_sender_db[0].id, {"stage": 1})
         
         #Now, the messages will be inserted in the db inside the messages array
         doc_id = find_sender_db[0].id
@@ -102,15 +96,16 @@ class ExtractMessages:
         #Making sure that there won't be any repeated messages in the db
         date_time_format = "%H:%M, %d/%m/%Y"
         for message in messages:
+            message_to_insert = {
+                "sender": message["message_sender"],
+                "text": message["message_text"], 
+                "date": message["message_date"]
+            }
+            
             if len(doc_data["messages"]) > 0:
                 last_message_date_db = datetime.strptime(doc_data["messages"][-1]["date"], date_time_format)
                 last_message_text_db = doc_data["messages"][-1]["text"]
                 message_date_time = datetime.strptime(message["message_date"], date_time_format)
-                message_to_insert = {
-                    "sender": message["message_sender"],
-                    "text": message["message_text"], 
-                    "date": message["message_date"]
-                }
 
                 if last_message_date_db > message_date_time or last_message_text_db == message["message_text"]:
                     continue
@@ -119,5 +114,5 @@ class ExtractMessages:
             else:
                 doc_data["messages"].append(message_to_insert)
 
-        self.repository.update_messages_array(doc_id, doc_data["messages"])
+        self.repository.update_user_info(doc_id, {"messages": doc_data["messages"]})
         return doc_data["message_sender"]
