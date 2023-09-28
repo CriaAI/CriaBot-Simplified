@@ -10,8 +10,6 @@ first_new_conversation_box_xy = (150, 450) #Box da primeira conversa que aparece
 
 input_search_box_xy = (160, 250) #Input para buscar conversas existentes
 input_search_new_phone_numbers = (255, 315) #Input para buscar novas conversas
-input_start_search_phone_number = (120, 320) #Input para buscar por novo número (posição inicial do número de celular)
-input_end_search_phone_number = (320, 320) #Input para buscar por novo número (posição final do número de celular)
 input_send_message_xy = (880, 952) #Input de enviar mensagens
 
 attach_file_xy = (695, 950) #O "+" do conto inferior esquerdo para anexar arquivos/videos/imagens
