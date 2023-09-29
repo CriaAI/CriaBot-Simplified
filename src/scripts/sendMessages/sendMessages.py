@@ -54,7 +54,10 @@ class SendMessages:
                 time.sleep(2)
                 self.pyautogui.hotkey('enter')
                 time.sleep(1)
-                self.keyboard.write("Estou buscando advogados interessados em fazer o teste da nossa solução de forma 100% gratuita. Se tiver interesse, só mandar um 👍 que eu envio o link!")
+                self.keyboard.write(
+                    """Estou buscando advogados interessados em fazer o teste da nossa solução de forma 100% gratuita. 
+                    Se tiver interesse, só mandar um 👍 que eu envio o link!"""
+                )
             elif stage == 3:
                 messages = [
                     "Segue o link: https://criaai.com/",

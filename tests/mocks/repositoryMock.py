@@ -60,7 +60,6 @@ repository_mock.insert_new_document.side_effect = lambda message_sender: list_of
     )
 )
 
-"""
 repository_mock.get_users_by_need_to_send_answer.return_value = [
     User(
         id="id1",
@@ -100,4 +99,3 @@ repository_mock.get_users_by_stage.side_effect = lambda stage: (
 )
 
 repository_mock.update_user_info.side_effect = lambda doc_id, data: print(f"Mocked update_user_info({doc_id}, {data})")
-"""

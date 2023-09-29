@@ -59,7 +59,7 @@ class FirstMessage:
 
                 #checking to see if the whatsapp number exists
                 extract_messages = ""
-                extract_messages = self.get_html().extract_last_messages()
+                extract_messages = self.get_html.extract_last_messages()
                 if len(extract_messages) > 0:
                     self.repository.insert_new_document(f" {phone_number[0]}: ")
                 
