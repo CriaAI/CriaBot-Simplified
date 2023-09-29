@@ -8,7 +8,13 @@ import time
 from src.repository.repository import Repository
 from src.scripts.extractMessages.extractMessages import ExtractMessages
 from src.utils.getHtml import GetHtml
-from src.config import input_search_box_xy, return_button_inside_input_xy, arrow_inside_conversation_box, mark_as_unread_option
+from src.config import (
+    input_search_box_xy, 
+    return_button_inside_input_xy, 
+    arrow_inside_conversation_box, 
+    mark_as_unread_option,
+    filter_box_xy
+)
 
 filter_click_type = "click"
 previous_sender = ""
@@ -40,6 +46,9 @@ if get_whatsapp_title == "WhatsApp":
     
     #percorrer lista dos que precisa marcar como não lidos
     for sender in sender_to_mark_as_unread:
+        pyautogui.moveTo(filter_box_xy[0], filter_box_xy[1], duration=0.5, tween=pyautogui.easeInOutQuad)
+        pyautogui.click()
+        time.sleep(1)    
         pyautogui.moveTo(input_search_box_xy[0], input_search_box_xy[1], duration=0.5, tween=pyautogui.easeInOutQuad)
         pyautogui.click()
         time.sleep(1)
