@@ -10,13 +10,13 @@ from src.config import (
 import time
 import random
 import csv
-from src.utils.getHtml import GetHtml
 
 class FirstMessage:
-    def __init__(self, pyautogui_module, keyboard_module, pyperclip_module, repository, file_path):
+    def __init__(self, pyautogui_module, keyboard_module, pyperclip_module, get_html, repository, file_path):
         self.pyautogui = pyautogui_module
         self.keyboard = keyboard_module
         self.pyperclip = pyperclip_module
+        self.get_html = get_html
         self.repository = repository
         self.file_path = file_path
 
@@ -59,7 +59,7 @@ class FirstMessage:
 
                 #checking to see if the whatsapp number exists
                 extract_messages = ""
-                extract_messages = GetHtml(self.pyautogui, self.pyperclip).extract_last_messages()
+                extract_messages = self.get_html().extract_last_messages()
                 if len(extract_messages) > 0:
                     self.repository.insert_new_document(f" {phone_number[0]}: ")
                 
