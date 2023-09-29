@@ -1,6 +1,7 @@
 import sys,os
 sys.path.insert(0, os.path.abspath(os.curdir))
 
+import time
 import random
 from bs4 import BeautifulSoup
 
@@ -46,6 +47,7 @@ class GetHtml:
         return messages_list
     
     def get_html_from_start_page(self):
+        time.sleep(4)
         html = self.extract_HTML()
         
         if html == "":

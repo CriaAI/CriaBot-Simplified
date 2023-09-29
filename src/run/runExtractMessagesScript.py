@@ -10,7 +10,6 @@ from src.scripts.extractMessages.extractMessages import ExtractMessages
 from src.utils.getHtml import GetHtml
 from src.config import input_search_box_xy, return_button_inside_input, arrow_inside_conversation_box, mark_as_unread_option
 
-time.sleep(4)
 filter_click_type = "click"
 previous_sender = ""
 sender_to_mark_as_unread = []

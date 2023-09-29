@@ -29,8 +29,12 @@ class FirstMessage:
 
         with open(self.file_path, 'r') as csv_file:
             phone_numbers_array = csv.reader(csv_file)
-            
+            line = 1
+
             for phone_number in phone_numbers_array:
+                if line > 10:
+                    break
+
                 find_sender_db = self.repository.get_user_by_name(f" {phone_number[0]}: ")
                 copied_word = ""
 
@@ -64,6 +68,17 @@ class FirstMessage:
                     self.repository.insert_new_document(f" {phone_number[0]}: ")
                 
                 self.pyautogui.hotkey('esc')
+                line += 1
+
+        with open(self.file_path, 'r', newline='') as csv_file:
+            #selecting all the rows but the first 10
+            lines = list(csv.reader(csv_file))
+            lines = lines[10:]
+        
+        with open(self.file_path, 'w', newline='') as csv_file:
+            #excluding the first 10 phone numbers from the csv file
+            csv_writer = csv.writer(csv_file)
+            csv_writer.writerows(lines)
 
     def move_to_and_click(self, xy_position):
         self.pyautogui.moveTo(xy_position[0], xy_position[1], duration=0.5*(self.randomize_time()), tween=self.pyautogui.easeInOutQuad)
