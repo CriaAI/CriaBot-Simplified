@@ -15,28 +15,20 @@ for element in screenMapping:
     name = element['Name']
     value = element['Value']
     exec(f"{name} = {tuple(value)}")
-    
-filter_box_xy = (465, 241) #Botão de filtrar mensagens não lidas no whatsapp
-first_conversation_box_xy = (150, 400) #Box da primeira conversa que aparece no whatsapp (conversas existentes)
-first_new_conversation_box_xy = (150, 450) #Box da primeira conversa que aparece no whatsapp (conversas novas)
-arrow_inside_conversation_box = (455, 410) #Seta dentro da caixa de conversa, logo abaixo da data
-mark_as_unread_option = (520, 655) #após clicar no arrow_inside_conversation_box, haverá a opção de marcar como não lido
 
-word_service = (1640, 870) #Localização da palavra serviços que é enviada na primeira mensagem para o lead
-
-input_search_box_xy = (160, 250) #Input para buscar conversas existentes
-input_search_new_phone_numbers = (255, 315) #Input para buscar novas conversas
-input_send_message_xy = (880, 952) #Input de enviar mensagens
-
-attach_file_xy = (695, 950) #O "+" do conto inferior esquerdo para anexar arquivos/videos/imagens
-photos_and_videos_xy = (700, 690) #Após clicar no attach_file_xy, vão aparecer várias opções, e uma delas são fotos e vídeos
-path_to_video_xy = (900, 200) #Após clicar em photos_and_videos_xy, queremos clicar na seta para baixo logo ao lado do caminho para o arquivo
-video_xy = (600, 400) #Clicar em cima do vídeo
-
-button_start_new_conversation_xy = (475, 198) #Botão do canto superior esquerdo "Nova conversa"
-return_button_outside_input_xy = (60, 245) #Ao clicar no botão "Nova conversa", aparece uma seta para retornar para as conversas (deve ser a primeira e a maior que aparece)
-return_button_inside_input = (40, 245) #Dentro do input para digitar números, há um pequena seta para retonar
-
+filter_box_xy = (461, 238)
+first_conversation_box_xy = (241, 303)
+first_new_conversation_box_xy = (198, 469)
+input_search_box_xy = (137, 241)
+input_search_new_phone_numbers = (171, 300)
+input_send_message_xy = (739, 983)
+attach_file_xy = (590, 977)
+photos_and_videos_xy = (662, 705)
+path_to_video_xy = (907, 213)
+video_xy = (591, 382)
+button_start_new_conversation_xy = (381, 174)
+return_button_outside_input_xy = (43, 231)
+return_button_inside_input_xy = (42, 237)
 
 base_path = Path(__file__).parents[1].as_posix()
 video_path = f"{base_path}/src/videos"

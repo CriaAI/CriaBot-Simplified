@@ -8,7 +8,7 @@ import time
 from src.repository.repository import Repository
 from src.scripts.extractMessages.extractMessages import ExtractMessages
 from src.utils.getHtml import GetHtml
-from src.config import input_search_box_xy, return_button_inside_input, arrow_inside_conversation_box, mark_as_unread_option
+from src.config import input_search_box_xy, return_button_inside_input_xy, arrow_inside_conversation_box, mark_as_unread_option
 
 filter_click_type = "click"
 previous_sender = ""
@@ -51,6 +51,6 @@ if get_whatsapp_title == "WhatsApp":
         pyautogui.moveTo(mark_as_unread_option[0], mark_as_unread_option[1], duration=0.5, tween=pyautogui.easeInOutQuad)
         pyautogui.click()
         time.sleep(1)
-        pyautogui.moveTo(return_button_inside_input[0], return_button_inside_input[1], duration=0.5, tween=pyautogui.easeInOutQuad)
+        pyautogui.moveTo(return_button_inside_input_xy[0], return_button_inside_input_xy[1], duration=0.5, tween=pyautogui.easeInOutQuad)
         pyautogui.click()
         time.sleep(1)

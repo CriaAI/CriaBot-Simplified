@@ -1,11 +1,11 @@
 import sys,os
 sys.path.insert(0, os.path.abspath(os.curdir))
 
+from src.config import user_name, filter_box_xy, first_conversation_box_xy
 import time
 from datetime import datetime
 import random
 from src.utils.getHtml import GetHtml
-from src.config import user_name, filter_box_xy, first_conversation_box_xy
 
 class ExtractMessages:
     def __init__(self, pyautogui_module, pyperclip_module, repository, filter_click_type):
