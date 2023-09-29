@@ -2,8 +2,20 @@
 import sys,os
 sys.path.insert(0, os.path.abspath(os.curdir))
 
+from pathlib import Path
+import json
+
 user_name = " Fran Hahn: " #Nome que aparece no whatsapp. Deve ter um espaço antes e depois e os dois pontos
 
+with open(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'setup\screenMapping.json'), 'r', encoding="utf-8") as f:
+    screenMapping = json.load(f)
+
+#set variables from json
+for element in screenMapping:
+    name = element['Name']
+    value = element['Value']
+    exec(f"{name} = {tuple(value)}")
+    
 filter_box_xy = (465, 241) #Botão de filtrar mensagens não lidas no whatsapp
 first_conversation_box_xy = (150, 400) #Box da primeira conversa que aparece no whatsapp (conversas existentes)
 first_new_conversation_box_xy = (150, 450) #Box da primeira conversa que aparece no whatsapp (conversas novas)
@@ -25,14 +37,11 @@ button_start_new_conversation_xy = (475, 198) #Botão do canto superior esquerdo
 return_button_outside_input_xy = (60, 245) #Ao clicar no botão "Nova conversa", aparece uma seta para retornar para as conversas (deve ser a primeira e a maior que aparece)
 return_button_inside_input = (40, 245) #Dentro do input para digitar números, há um pequena seta para retonar
 
-#Esse video está dentro da pasta videos. Arrumar o caminho de acordo com o seu pc
-#ATENÇÃO: não adicionar o arquivo do vídeo, apenas a pasta
-video_path = "c:/Users/fran_/Documents/EMPRESA/CRIA.AI/CriaBot/src/videos"
 
-#dentro da pasta files há um arquivo csv. Arrumar de acordo com o seu pc
-csv_file_path = "c:/Users/fran_/Documents/EMPRESA/CRIA.AI/CriaBot/src/files/phoneNumbers.csv"
+base_path = Path(__file__).parents[1].as_posix()
+video_path = f"{base_path}/src/videos"
+csv_file_path = f"{base_path}/src/files/phoneNumbers.csv"
 
-#Esses são os caminhos para que possamos rodar os scripts. Arrumar de acordo com o seu pc
-run_script_extract_messages = "python c:/Users/fran_/Documents/EMPRESA/CRIA.AI/CriaBot/src/run/runExtractMessagesScript.py"
-run_script_first_message = "python c:/Users/fran_/Documents/EMPRESA/CRIA.AI/CriaBot/src/run/runFirstMessageScript.py"
-run_script_send_messages = "python c:/Users/fran_/Documents/EMPRESA/CRIA.AI/CriaBot/src/run/runSendMessagesScript.py"
+run_script_extract_messages = f"python {base_path}/src/run/runExtractMessagesScript.py"
+run_script_first_message = f"python {base_path}/src/run/runFirstMessageScript.py"
+run_script_send_messages = f"python {base_path}/src/run/runSendMessagesScript.py"
