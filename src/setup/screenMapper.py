@@ -16,9 +16,20 @@ def elementsToMap():
             "Value": (150, 450)
         },
         {
+            "Name":"arrow_inside_conversation_box",
+            "Description": "Seta dentro do box de conversa",
+            "Value": (150, 450)
+        },
+        {
+            "Name":"mark_as_unread_option",
+            "Description": "Após clicar na seta dentro do box de conversa, aparecerá a opção de marcar msg como não lida",
+            "Value": (150, 450)
+        },
+        {
             "Name":"input_search_box_xy",
             "Description": "Input para buscar conversas existentes",
-            "Value": (160, 250)},
+            "Value": (160, 250)
+        },
         {
             "Name":"input_search_new_phone_numbers",
             "Description": "Input para buscar novas conversas",
