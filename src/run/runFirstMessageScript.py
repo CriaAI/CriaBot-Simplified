@@ -13,7 +13,7 @@ from src.utils.getHtml import GetHtml
 
 get_whatsapp_title = GetHtml(pyautogui, pyperclip).get_html_from_start_page()
 
-if get_whatsapp_title == "WhatsApp":
+if "WhatsApp" in get_whatsapp_title:
     FirstMessage(
         pyautogui, 
         keyboard,

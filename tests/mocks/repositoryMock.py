@@ -4,7 +4,6 @@ sys.path.insert(0, os.path.abspath(os.curdir))
 from unittest.mock import MagicMock
 from .userMock import User
 from .listOfUsersMock import list_of_users_mock
-
 from unittest.mock import MagicMock
 
 class RepositoryMock:

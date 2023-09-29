@@ -15,7 +15,6 @@ for element in screenMapping:
     name = element['Name']
     value = element['Value']
     exec(f"{name} = {tuple(value)}")
-    print(f"{name} = {tuple(value)}")
 
 filter_box_xy = (465, 238)
 first_conversation_box_xy = (230, 393)
