@@ -7,22 +7,22 @@ import pyperclip
 import time
 from src.repository.repository import Repository
 from src.scripts.extractMessages.extractMessages import ExtractMessages
-from src.scripts.extractMessages.getHtmlFromWhatsApp import GetHtmlFromWhatsApp
-from src.utils.whatsApp import WhatsApp
+from src.utils.getHtml import GetHtml
 from src.config import input_search_box_xy, return_button_inside_input, arrow_inside_conversation_box, mark_as_unread_option
 
+time.sleep(4)
 filter_click_type = "click"
 previous_sender = ""
 sender_to_mark_as_unread = []
-is_whatsapp_open = WhatsApp(pyautogui, keyboard, pyperclip).is_whatsapp_open()
+get_whatsapp_title = GetHtml(pyautogui, pyperclip).get_html_from_start_page()
 i = 0
 
-if is_whatsapp_open:
+if get_whatsapp_title == "WhatsApp":
     while i < 10:
         current_sender = ExtractMessages(
             pyautogui,
+            pyperclip,
             Repository(),
-            GetHtmlFromWhatsApp(pyautogui, pyperclip),
             filter_click_type
         ).open_conversation()
 

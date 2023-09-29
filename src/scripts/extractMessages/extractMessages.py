@@ -1,18 +1,17 @@
 import sys,os
 sys.path.insert(0, os.path.abspath(os.curdir))
 
-from bs4 import BeautifulSoup
 import time
 from datetime import datetime
 import random
-from src.errors.extractMessagesErrors import MissingHtmlError
+from src.utils.getHtml import GetHtml
 from src.config import user_name, filter_box_xy, first_conversation_box_xy
 
 class ExtractMessages:
-    def __init__(self, pyautogui_module, repository, get_html_from_whatsapp, filter_click_type):
+    def __init__(self, pyautogui_module, pyperclip_module, repository, filter_click_type):
         self.pyautogui = pyautogui_module
+        self.pyperclip = pyperclip_module
         self.repository = repository
-        self.get_html_from_whatsapp = get_html_from_whatsapp
         self.filter_click_type = filter_click_type
 
     def open_conversation(self):
@@ -23,46 +22,9 @@ class ExtractMessages:
         time.sleep(1)
         self.move_to_and_click(xy_position=first_conversation_box_xy)
         time.sleep(2)
-        current_sender = self.extract_last_messages()
+        messages = GetHtml(self.pyautogui, self.pyperclip).extract_last_messages()
+        current_sender = self.insert_messages(messages)
         return current_sender
-
-    def extract_last_messages(self):
-        try:
-            html = self.get_html_from_whatsapp.extract_HTML()
-            soup = BeautifulSoup(html, 'html.parser')
-            my_divs = soup.find_all("div", {"class": "_21Ahp"})
-            
-            if len(my_divs) == 0:
-                raise MissingHtmlError("There are no html components for this conversation.")
-
-            messages_list = []
-
-            for element in my_divs:
-                message_meta_data:str = element.parent.get('data-pre-plain-text') #Sometimes it returns None
-
-                if message_meta_data == None:
-                    continue
-
-                message_date = message_meta_data.split(']')[0].split('[')[-1]
-                message_sender = "]".join(message_meta_data.split(']')[1:])
-                message_text:str = element.find("span", {"class": "_11JPr selectable-text copyable-text"}) #Sometimes it returns None
-                
-                if message_text == None:
-                    message = {
-                        'message_text': 'Não foi possível extrair essa mensagem', 
-                        'message_sender': message_sender,
-                        'message_date': message_date
-                    }
-                    messages_list.append(message)
-                    continue
-                
-                message_text = message_text.text
-                message = {'message_text': message_text, 'message_sender': message_sender, 'message_date': message_date}
-                messages_list.append(message)
-            current_sender = self.insert_messages(messages_list)
-            return current_sender
-        except MissingHtmlError as err:
-            return err
 
     def move_to_and_click(self, xy_position):
         self.pyautogui.moveTo(xy_position[0], xy_position[1], duration=0.5*(self.randomize_time()), tween=self.pyautogui.easeInOutQuad)  # Use tweening/easing function to move mouse over 2 seconds.
