@@ -5,16 +5,8 @@ sys.path.insert(0, os.path.abspath(os.curdir))
 import time
 import random
 from unidecode import unidecode
-from src.config import (
-    attach_file_xy, 
-    first_conversation_box_xy, 
-    input_send_message_xy, 
-    path_to_video_xy, 
-    input_search_box_xy, 
-    photos_and_videos_xy, 
-    video_xy, 
-    video_path
-)
+from src.config import video_path
+from src.config import screen_variables as sv
 
 os.environ['PYTHONIOENCODING'] = 'utf-8'
 
@@ -32,13 +24,13 @@ class SendMessages:
             phone_number = unidecode(user.to_dict()["message_sender"]).strip().rstrip(':')
             stage = user.to_dict()["stage"]
 
-            self.move_to_and_click(xy_position = input_search_box_xy)
+            self.move_to_and_click(xy_position = sv["input_search_box_xy"])
             time.sleep(1)
             self.pyautogui.write(phone_number)
             time.sleep(1)
-            self.move_to_and_click(xy_position=first_conversation_box_xy)
+            self.move_to_and_click(xy_position=sv["first_conversation_box_xy"])
             time.sleep(2)
-            self.move_to_and_click(xy_position=input_send_message_xy)
+            self.move_to_and_click(xy_position=sv["input_send_message_xy"])
             time.sleep(2)
 
             if stage == 0 or stage == 1:
@@ -50,7 +42,7 @@ class SendMessages:
                 time.sleep(1)
                 self.send_video()
                 time.sleep(1)
-                self.move_to_and_double_click(video_xy)
+                self.move_to_and_double_click(sv["video_xy"])
                 time.sleep(2)
                 self.pyautogui.hotkey('enter')
                 time.sleep(1)
@@ -87,11 +79,11 @@ class SendMessages:
                 self.repository.update_user_info(user.id, {"need_to_send_answer": False})
 
     def send_video(self):
-        self.move_to_and_click(attach_file_xy)
+        self.move_to_and_click(sv["attach_file_xy"])
         time.sleep(1)
-        self.move_to_and_click(photos_and_videos_xy)
+        self.move_to_and_click(sv["photos_and_videos_xy"])
         time.sleep(1)
-        self.move_to_and_click(path_to_video_xy)
+        self.move_to_and_click(sv["path_to_video_xy"])
         time.sleep(2)
         self.keyboard.write(video_path)
         time.sleep(1)

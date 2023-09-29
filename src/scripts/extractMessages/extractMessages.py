@@ -1,12 +1,12 @@
 import sys,os
 sys.path.insert(0, os.path.abspath(os.curdir))
 
-from src.config import user_name, filter_box_xy, first_conversation_box_xy
+from src.config import screen_variables as sv
+from src.config import user_name
 import time
 from datetime import datetime
 import random
 from src.utils.getHtml import GetHtml
-from tests.mocks.listOfUsersMock import list_of_users_mock
 
 class ExtractMessages:
     def __init__(self, pyautogui_module, pyperclip_module, repository, filter_click_type):
@@ -17,11 +17,11 @@ class ExtractMessages:
 
     def open_conversation(self):
         if self.filter_click_type == "click":
-            self.move_to_and_click(xy_position = filter_box_xy) #filter for unread conversations
+            self.move_to_and_click(xy_position = sv["filter_box_xy"]) #filter for unread conversations
         else:
-            self.move_to_and_double_click(xy_position = filter_box_xy) #filter for unread conversations
+            self.move_to_and_double_click(xy_position = sv["filter_box_xy"]) #filter for unread conversations
         time.sleep(1)
-        self.move_to_and_click(xy_position=first_conversation_box_xy)
+        self.move_to_and_click(xy_position=sv["first_conversation_box_xy"])
         time.sleep(2)
         messages = GetHtml(self.pyautogui, self.pyperclip).extract_last_messages()
         current_sender = self.insert_messages(messages)

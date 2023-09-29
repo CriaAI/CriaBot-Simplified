@@ -1,12 +1,7 @@
 import sys, os
 sys.path.insert(0, os.path.abspath(os.curdir))
 
-from src.config import (
-    input_search_new_phone_numbers,
-    input_send_message_xy, 
-    button_start_new_conversation_xy, 
-    first_new_conversation_box_xy
-)
+from src.config import screen_variables as sv
 import time
 import random
 import csv
@@ -40,15 +35,15 @@ class FirstMessage:
                 if len(find_sender_db) > 0:
                     continue
                 
-                self.move_to_and_click(xy_position=button_start_new_conversation_xy)
+                self.move_to_and_click(xy_position=sv["button_start_new_conversation_xy"])
                 time.sleep(1)
-                self.move_to_and_click(xy_position=input_search_new_phone_numbers)
+                self.move_to_and_click(xy_position=sv["input_search_new_phone_numbers"])
                 time.sleep(1)
                 self.pyautogui.write(phone_number[0])
                 time.sleep(1)
-                self.move_to_and_click(xy_position=first_new_conversation_box_xy)
+                self.move_to_and_click(xy_position=sv["first_new_conversation_box_xy"])
                 time.sleep(1)
-                self.move_to_and_click(xy_position=input_send_message_xy)
+                self.move_to_and_click(xy_position=sv["input_send_message_xy"])
                 time.sleep(1)
 
                 for message in messages:
@@ -64,7 +59,7 @@ class FirstMessage:
                     self.repository.insert_new_document(f" {phone_number[0]}: ")
                 
                 time.sleep(1)
-                self.move_to_and_click(xy_position=input_send_message_xy)
+                self.move_to_and_click(xy_position=sv["input_send_message_xy"])
                 self.pyautogui.hotkey('esc')
                 line += 1
 
@@ -93,3 +88,5 @@ class FirstMessage:
 
     def randomize_time(self):
         return random.uniform(0.8000, 1.2000)
+    
+    
