@@ -1,2 +1,0 @@
-class MissingHtmlError(Exception):
-    pass

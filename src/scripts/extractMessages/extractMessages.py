@@ -1,19 +1,17 @@
 import sys,os
 sys.path.insert(0, os.path.abspath(os.curdir))
 
-from bs4 import BeautifulSoup
+from src.config import user_name, filter_box_xy, first_conversation_box_xy
 import time
 from datetime import datetime
 import random
-from src.errors.extractMessagesErrors import MissingHtmlError
-from src.config import user_name, filter_box_xy, first_conversation_box_xy
+from src.utils.getHtml import GetHtml
 
 class ExtractMessages:
-    def __init__(self, pyautogui_module, keyboard_module, repository, get_html_from_whatsapp, filter_click_type):
+    def __init__(self, pyautogui_module, pyperclip_module, repository, filter_click_type):
         self.pyautogui = pyautogui_module
-        self.keyboard = keyboard_module
+        self.pyperclip = pyperclip_module
         self.repository = repository
-        self.get_html_from_whatsapp = get_html_from_whatsapp
         self.filter_click_type = filter_click_type
 
     def open_conversation(self):
@@ -24,46 +22,9 @@ class ExtractMessages:
         time.sleep(1)
         self.move_to_and_click(xy_position=first_conversation_box_xy)
         time.sleep(2)
-        current_sender = self.extract_last_messages()
+        messages = GetHtml(self.pyautogui, self.pyperclip).extract_last_messages()
+        current_sender = self.insert_messages(messages)
         return current_sender
-
-    def extract_last_messages(self):
-        try:
-            html = self.get_html_from_whatsapp.extract_HTML()
-            soup = BeautifulSoup(html, 'html.parser')
-            my_divs = soup.find_all("div", {"class": "_21Ahp"})
-            
-            if len(my_divs) == 0:
-                raise MissingHtmlError("There are no html components for this conversation.")
-
-            messages_list = []
-
-            for element in my_divs:
-                message_meta_data:str = element.parent.get('data-pre-plain-text') #Sometimes it returns None
-
-                if message_meta_data == None:
-                    continue
-
-                message_date = message_meta_data.split(']')[0].split('[')[-1]
-                message_sender = "]".join(message_meta_data.split(']')[1:])
-                message_text:str = element.find("span", {"class": "_11JPr selectable-text copyable-text"}) #Sometimes it returns None
-                
-                if message_text == None:
-                    message = {
-                        'message_text': 'Não foi possível extrair essa mensagem', 
-                        'message_sender': message_sender,
-                        'message_date': message_date
-                    }
-                    messages_list.append(message)
-                    continue
-                
-                message_text = message_text.text
-                message = {'message_text': message_text, 'message_sender': message_sender, 'message_date': message_date}
-                messages_list.append(message)
-            current_sender = self.insert_messages(messages_list)
-            return current_sender
-        except MissingHtmlError as err:
-            return err
 
     def move_to_and_click(self, xy_position):
         self.pyautogui.moveTo(xy_position[0], xy_position[1], duration=0.5*(self.randomize_time()), tween=self.pyautogui.easeInOutQuad)  # Use tweening/easing function to move mouse over 2 seconds.
@@ -78,22 +39,44 @@ class ExtractMessages:
 
     def insert_messages(self, messages):
         find_sender_db = []
-
+        
+        #finding out who the message sender is
         for message in messages:
             if message["message_sender"] != user_name:
                 find_sender_db = self.repository.get_user_by_name(message["message_sender"])
-                self.repository.update_user_info(find_sender_db[0].id, {"need_to_generate_answer": True})
+
+                #checking the time of the last message. If it was less than 5 minutes ago, we go to the next message
+                last_message = messages[-1]
+                message_time = datetime.strptime(last_message["message_date"], "%H:%M, %d/%m/%Y")
+                now = datetime.now()
+
+                if (now - message_time).total_seconds() / 60 < 5:
+                    return {"sender": last_message["message_sender"].strip().replace(":", "")}
+
+                #if the sender is not in the database, he will be added to it
+                if len(find_sender_db) == 0:
+                    self.repository.insert_new_document(f"{message['message_sender']}")
+                    find_sender_db = self.repository.get_user_by_name(message["message_sender"])
+                    data_to_be_updated = {
+                        "stage": 4, 
+                        "category": "Lawyer", 
+                        "need_to_generate_answer": True
+                    }
+                    self.repository.update_user_info(find_sender_db[0].id, data_to_be_updated)
+                else:
+                    self.repository.update_user_info(find_sender_db[0].id, {"need_to_generate_answer": True})
                 
-                #if the user stage is 0, after this first interaction, it will be updated to 1
-                stage = find_sender_db[0].to_dict()["stage"]
-                if stage == 0:
-                    self.repository.update_user_info(find_sender_db[0].id, {"stage": 1})
+                    #if the user stage is 0, after this first interaction, it will be updated to 1
+                    stage = find_sender_db[0].to_dict()["stage"]
+                    if stage == 0:
+                        self.repository.update_user_info(find_sender_db[0].id, {"stage": 1})
+                    break
         
         #Now, the messages will be inserted in the db inside the messages array
         doc_id = find_sender_db[0].id
         doc_data = find_sender_db[0].to_dict()
 
-        #Making sure that there won't be any repeated messages in the db
+        #Making sure there won't be any repeated messages in the db
         date_time_format = "%H:%M, %d/%m/%Y"
         for message in messages:
             message_to_insert = {

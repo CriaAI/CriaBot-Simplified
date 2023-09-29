@@ -15,7 +15,6 @@ from src.config import (
     video_xy, 
     video_path
 )
-from src.utils.whatsApp import WhatsApp
 
 os.environ['PYTHONIOENCODING'] = 'utf-8'
 
@@ -27,10 +26,6 @@ class SendMessages:
         self.repository = repository
 
     def open_conversation(self):
-        is_whatsapp_open = WhatsApp(self.pyautogui, self.keyboard, self.pyperclip).is_whatsapp_open()
-        if not is_whatsapp_open:
-            return
-        
         users = self.repository.get_users_by_need_to_send_answer()
 
         for user in users:
@@ -50,15 +45,15 @@ class SendMessages:
                 continue
             elif stage == 2:
                 self.keyboard.write("Minha empresa desenvolveu recentemente uma Inteligência Artificial específica para advogados!")
-                time.sleep(2)
+                time.sleep(1)
                 self.pyautogui.hotkey('enter')
-                time.sleep(2)
+                time.sleep(1)
                 self.send_video()
                 time.sleep(1)
                 self.move_to_and_double_click(video_xy)
                 time.sleep(2)
                 self.pyautogui.hotkey('enter')
-                time.sleep(2)
+                time.sleep(1)
                 self.keyboard.write("Estou buscando advogados interessados em fazer o teste da nossa solução de forma 100% gratuita. Se tiver interesse, só mandar um 👍 que eu envio o link!")
             elif stage == 3:
                 messages = [
@@ -72,16 +67,16 @@ class SendMessages:
 
                 for message in messages:
                     self.keyboard.write(message)
-                    time.sleep(2)
+                    time.sleep(1)
                     self.pyautogui.hotkey('enter')
-                    time.sleep(2)
+                    time.sleep(1)
             elif stage == 4:
                 message_to_be_sent = user.to_dict()["messages"][-1]["text"]
                 self.keyboard.write(message_to_be_sent)
             
             time.sleep(4)
             self.pyautogui.hotkey('enter')
-            time.sleep(2)
+            time.sleep(1)
             
             if stage == 3:
                 self.repository.update_user_info(user.id, {"stage": 4, "need_to_send_answer": False})

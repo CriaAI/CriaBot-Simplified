@@ -32,7 +32,7 @@ class AugmentedPrompt:
             examples = f"""
                 {{
                     Mensagem do lead: {results[0].page_content},
-                    Categoria: {results[0].metadata["category"]}
+                    Categoria": {results[0].metadata["category"]}
                 }}
 
                 {{
@@ -128,18 +128,18 @@ class AugmentedPrompt:
         else:
             examples = f"""
                 {{
-                    Pergunta do lead: {results[0].page_content},
-                    Resposta: {results[0].metadata["gpt_answer"]}
+                    "Pergunta do lead": "{results[0].page_content}",
+                    "Resposta": "{results[0].metadata["gpt_answer"]}"
                 }}
 
                 {{
-                    Pergunta do lead: {results[1].page_content},
-                    Resposta: {results[1].metadata["gpt_answer"]}
+                    "Pergunta do lead": "{results[1].page_content}",
+                    "Resposta": "{results[1].metadata["gpt_answer"]}"
                 }}
 
                 {{
-                    Pergunta do lead: {results[2].page_content},
-                    Resposta: {results[2].metadata["gpt_answer"]}
+                    "Pergunta do lead": "{results[2].page_content}",
+                    "Resposta": "{results[2].metadata["gpt_answer"]}"
                 }}
             """
 

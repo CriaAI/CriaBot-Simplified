@@ -4,26 +4,8 @@ sys.path.insert(0, os.path.abspath(os.curdir))
 
 from unittest.mock import MagicMock
 from src.scripts.extractMessages.extractMessages import ExtractMessages
-from mocks.repositoryMock import repository_mock
-from mocks.getHtmlFromWhatsAppMock import GetHtmlFromWhatsAppMock
-
-class User:
-    def __init__(self, id, message_sender, messages, need_to_generate_answer, need_to_send_answer, stage):
-        self.id = id
-        self.message_sender = message_sender
-        self.messages = messages
-        self.need_to_generate_answer = need_to_generate_answer
-        self.need_to_send_answer = need_to_send_answer
-        self.stage = stage
-
-    def to_dict(self):
-        return {
-            "message_sender": self.message_sender,
-            "messages": self.messages,
-            "need_to_generate_answer": self.need_to_generate_answer,
-            "need_to_send_answer": self.need_to_send_answer,
-            "stage": self.stage
-        }
+from .mocks.repositoryMock import repository_mock
+from .mocks.getHtmlFromWhatsAppMock import GetHtmlFromWhatsAppMock
     
 def test_open_conversation_from_existing_user_with_html_file():
     pyautogui_module=MagicMock()
@@ -41,7 +23,7 @@ def test_open_conversation_from_existing_user_with_html_file():
     assert user == " Vittório Girardi: "
     assert pyautogui_module.assert_any_call
     repository.get_user_by_name.assert_called()
-    repository.update_messages_array.assert_called_once()
+    repository.update_user_info.assert_called()
     repository.insert_new_document.assert_not_called()
 
 def test_insert_messages_from_existing_user():
@@ -60,7 +42,7 @@ def test_insert_messages_from_existing_user():
     ).insert_messages(messages)
 
     repository.get_user_by_name.assert_called()
-    repository.update_messages_array.assert_called()
+    repository.update_user_info.assert_called()
     repository.insert_new_document.assert_not_called()
     assert result == ' Vittório Girardi: '
 
@@ -80,5 +62,5 @@ def test_insert_message_with_no_data_and_cannot_return_error():
     ).insert_messages(messages)
 
     repository.get_user_by_name.assert_called()
-    repository.update_messages_array.assert_called()
+    repository.update_user_info.assert_called()
     repository.insert_new_document.assert_not_called()

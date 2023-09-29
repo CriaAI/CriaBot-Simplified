@@ -1,25 +1,9 @@
 import sys,os
 sys.path.insert(0, os.path.abspath(os.curdir))
 
-class User:
-    def __init__(self, id, message_sender, messages, need_to_generate_answer, need_to_send_answer, stage):
-        self.id = id
-        self.message_sender = message_sender
-        self.messages = messages
-        self.need_to_generate_answer = need_to_generate_answer
-        self.need_to_send_answer = need_to_send_answer
-        self.stage = stage
+from .userMock import User
 
-    def to_dict(self):
-        return {
-            "message_sender": self.message_sender,
-            "messages": self.messages,
-            "need_to_generate_answer": self.need_to_generate_answer,
-            "need_to_send_answer": self.need_to_send_answer,
-            "stage": self.stage
-        }
-
-usersMock = [
+list_of_users_mock = [
     {
         User(
             id="id1",
@@ -31,7 +15,8 @@ usersMock = [
             }],
             need_to_generate_answer=False,
             need_to_send_answer=True,
-            stage=2
+            stage=2,
+            category="Lawyer"
         ),
         User(
             id="id2",
@@ -43,7 +28,8 @@ usersMock = [
             }],
             need_to_generate_answer=True,
             need_to_send_answer=False,
-            stage=4
+            stage=4,
+            category="Lawyer"
         )
     }
 ]

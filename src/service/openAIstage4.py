@@ -28,6 +28,7 @@ def openAIstage4(user_last_messages):
         HumanMessage(content=content)
     ]
 
-    gpt_answer =json.loads(chat(gpt_prompt).content)["Resposta"]
+    gpt_answer = chat(gpt_prompt).content
+    gpt_answer =json.loads(gpt_answer)["Resposta"]
     
     return {"prompt": content, "gpt_answer": gpt_answer}

@@ -34,7 +34,7 @@ def main():
 
         with col1:
             if st.button("Enviar 1ª mensagem", key="script1"):
-                st.info("Vá para o whatsapp web SEM a aba inspecionar aberta")
+                st.info("Vá para o whatsapp web COM a aba inspecionar aberta")
                 Subprocess(run_script_first_message).run_subprocess()
 
         with col2:
@@ -44,7 +44,7 @@ def main():
 
         with col3:
             if st.button("Responder leads", key="script4"):
-                st.info("Vá para o whatsapp web SEM a aba inspecionar aberta")
+                st.info("Vá para o whatsapp web COM a aba inspecionar aberta")
                 Subprocess(run_script_send_messages).run_subprocess()
 
     else:
