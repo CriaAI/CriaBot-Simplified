@@ -16,7 +16,7 @@ sender_to_mark_as_unread = []
 get_whatsapp_title = GetHtml(pyautogui, pyperclip).get_html_from_start_page()
 i = 0
 
-if get_whatsapp_title == "WhatsApp":
+if get_whatsapp_title is not None and "WhatsApp" in get_whatsapp_title:
     while i < 10:
         current_sender = ExtractMessages(
             pyautogui,
