@@ -22,8 +22,7 @@ class FirstMessage:
 
     def open_conversation(self):
         messages = [
-            "Olá, tudo bem?",
-            "Aqui é o Caio da CriaAI!",
+            "Olá, tudo bem? Aqui é o Caio da CriaAI!",
             "Vocês prestam serviços jurídicos?"
         ]
 
@@ -57,7 +56,7 @@ class FirstMessage:
                     self.keyboard.write(message)
                     time.sleep(1)
                     self.pyautogui.hotkey('enter')
-                    time.sleep(2)
+                    time.sleep(1)
 
                 self.move_to_and_double_click(xy_position=word_service)
                 time.sleep(1)
