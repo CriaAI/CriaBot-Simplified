@@ -6,6 +6,7 @@ import time
 from datetime import datetime
 import random
 from src.utils.getHtml import GetHtml
+from tests.mocks.listOfUsersMock import list_of_users_mock
 
 class ExtractMessages:
     def __init__(self, pyautogui_module, pyperclip_module, repository, filter_click_type):
@@ -52,7 +53,7 @@ class ExtractMessages:
 
                 if (now - message_time).total_seconds() / 60 < 5:
                     return {"sender": last_message["message_sender"].strip().replace(":", "")}
-
+         
                 #if the sender is not in the database, he will be added to it
                 if len(find_sender_db) == 0:
                     self.repository.insert_new_document(f"{message['message_sender']}")
