@@ -19,13 +19,15 @@ class Repository:
     def update_user_info(self, doc_id, data):
         users_ref.document(doc_id).update(data)
 
-    def insert_new_document(self, message_sender):
+    def insert_new_document(self, lead, message_sender, date):
         users_ref.add({
+            "lead": lead,
             "message_sender": message_sender,
             "stage": 0,
             "category": "",
             "need_to_generate_answer": False,
             "need_to_send_answer": False,
-            "messages": []
+            "messages": [],
+            "created_at": date
         })
     

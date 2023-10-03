@@ -56,7 +56,7 @@ class ExtractMessages:
          
                 #if the sender is not in the database, he will be added to it
                 if len(find_sender_db) == 0:
-                    self.repository.insert_new_document(f"{message['message_sender']}")
+                    self.repository.insert_new_document(f"{message['message_sender']}", now.strftime("%H:%M, %d/%m/%Y"))
                     find_sender_db = self.repository.get_user_by_name(message["message_sender"])
                     data_to_be_updated = {
                         "stage": 4, 

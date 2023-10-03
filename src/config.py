@@ -8,6 +8,7 @@ import json
 user_name = " Fran Hahn: " #Nome que aparece no whatsapp. Deve ter um espaço antes e depois e os dois pontos
 
 screen_variables = {
+    "message_sender_xy": (434, 669),
     "filter_box_xy": (465, 238),
     "first_conversation_box_xy": (230, 393),
     "first_new_conversation_box_xy": (249, 459),

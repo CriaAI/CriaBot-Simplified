@@ -3,6 +3,7 @@ sys.path.insert(0, os.path.abspath(os.curdir))
 
 from src.config import screen_variables as sv
 import time
+from datetime import datetime
 import random
 import csv
 
@@ -16,6 +17,21 @@ class FirstMessage:
         self.file_path = file_path
 
     def open_conversation(self):
+        #checking the user name or message_sender
+        self.move_to_and_click(sv["first_conversation_box_xy"])
+        time.sleep(1)
+        self.keyboard.press_and_release("ctrl+alt+p")
+        time.sleep(0.5)
+        self.move_to_and_click(sv["message_sender_xy"])
+        time.sleep(1)
+        self.keyboard.press_and_release("ctrl+a")
+        time.sleep(0.5)
+        message_sender = self.copy_to_variable()
+        time.sleep(0.5)
+        self.keyboard.press_and_release("esc")
+        time.sleep(0.5)
+        self.keyboard.press_and_release("esc")
+
         messages = [
             "Olá, tudo bem? Aqui é o Caio da CriaAI!",
             "Vocês prestam serviços jurídicos?"
@@ -56,7 +72,8 @@ class FirstMessage:
                 extract_messages = ""
                 extract_messages = self.get_html.extract_last_messages()
                 if len(extract_messages) > 0:
-                    self.repository.insert_new_document(f" {phone_number[0]}: ")
+                    now = datetime.now().strftime("%H:%M, %d/%m/%Y")
+                    self.repository.insert_new_document(lead=f" {phone_number[0]}: ", message_sender=message_sender, date=now)
                 
                 time.sleep(1)
                 self.move_to_and_click(xy_position=sv["input_send_message_xy"])

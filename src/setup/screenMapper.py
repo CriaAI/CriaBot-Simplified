@@ -1,6 +1,11 @@
 def elementsToMap():
     return [
         {
+            "Name":"message_sender_xy",
+            "Description": "Botão para editar o nome do usuário",
+            "Value":(465, 241)
+        },
+        {
             "Name":"filter_box_xy",
             "Description": "Botão de filtrar mensagens não lidas no whatsapp",
             "Value":(465, 241)
