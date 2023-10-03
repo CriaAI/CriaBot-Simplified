@@ -21,20 +21,18 @@ class FirstMessage:
         phone_chip = PhoneChip(self.keyboard, self.pyautogui, self.pyperclip)
         message_sender = phone_chip.check_phone_chip()
 
-        messages = [
-            "Olá, tudo bem? Aqui é o Caio da CriaAI!",
-            "Vocês prestam serviços jurídicos?"
-        ]
+        message = "Olá, tudo bem? Aqui é o Caio da CriaAI! Vocês prestam serviços jurídicos?"
 
         with open(self.file_path, 'r') as csv_file:
             phone_numbers_array = csv.reader(csv_file)
             line = 1
 
+            #we will only send 10 messages at a time
             for phone_number in phone_numbers_array:
                 if line > 10:
                     break
 
-                find_sender_db = self.repository.get_user_by_name(f" {phone_number[0]}: ")
+                find_sender_db = self.repository.get_user_by_phone_number(f" {phone_number[0]}: ")
 
                 #If the sender is in the database, he will be ignored
                 if len(find_sender_db) > 0:
@@ -50,16 +48,15 @@ class FirstMessage:
                 time.sleep(1)
                 self.move_to_and_click(xy_position=sv["input_send_message_xy"])
                 time.sleep(1)
-
-                for message in messages:
-                    self.keyboard.write(message)
-                    time.sleep(1)
-                    self.pyautogui.hotkey('enter')
-                    time.sleep(1)
+                self.keyboard.write(message)
+                time.sleep(1)
+                self.pyautogui.hotkey('enter')
+                time.sleep(1)
 
                 #checking to see if the whatsapp number exists
                 extract_messages = ""
                 extract_messages = self.get_html.extract_last_messages()
+                
                 if len(extract_messages) > 0:
                     now = datetime.now().strftime("%H:%M, %d/%m/%Y")
                     self.repository.insert_new_document(
@@ -68,7 +65,7 @@ class FirstMessage:
                         messages = [{
                             "date": now,
                             "sender": message_sender,
-                            "text": "Olá, tudo bem? Aqui é o Caio da CriaAI! Vocês prestam serviços jurídicos?"
+                            "text": message
                         }],
                         date=now
                     )

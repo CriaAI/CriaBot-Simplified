@@ -1,8 +1,8 @@
 from src.databaseConfig.firebaseConfig import users_ref
 
 class Repository:
-    def get_user_by_name(self, sender):
-        return users_ref.where("lead", "==", sender).get()
+    def get_user_by_phone_number(self, sender_phone):
+        return users_ref.where("lead", "==", sender_phone).get()
     
     def get_users_by_need_to_send_answer(self, message_sender):
         users = users_ref.where("need_to_send_answer", "==", True).where("message_sender", "==", message_sender).get()
