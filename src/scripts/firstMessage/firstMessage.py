@@ -2,6 +2,7 @@ import sys, os
 sys.path.insert(0, os.path.abspath(os.curdir))
 
 from src.config import screen_variables as sv
+from src.utils.phoneChip import PhoneChip
 import time
 from datetime import datetime
 import random
@@ -17,20 +18,8 @@ class FirstMessage:
         self.file_path = file_path
 
     def open_conversation(self):
-        #checking the user name or message_sender
-        self.move_to_and_click(sv["first_conversation_box_xy"])
-        time.sleep(1)
-        self.keyboard.press_and_release("ctrl+alt+p")
-        time.sleep(0.5)
-        self.move_to_and_click(sv["message_sender_xy"])
-        time.sleep(1)
-        self.keyboard.press_and_release("ctrl+a")
-        time.sleep(0.5)
-        message_sender = self.copy_to_variable()
-        time.sleep(0.5)
-        self.keyboard.press_and_release("esc")
-        time.sleep(0.5)
-        self.keyboard.press_and_release("esc")
+        phone_chip = PhoneChip(self.keyboard, self.pyautogui, self.pyperclip)
+        message_sender = phone_chip.check_phone_chip()
 
         messages = [
             "Olá, tudo bem? Aqui é o Caio da CriaAI!",
@@ -106,11 +95,6 @@ class FirstMessage:
     def move_to_and_double_click(self, xy_position):
         self.pyautogui.moveTo(xy_position[0], xy_position[1], duration=0.5*(self.randomize_time()), tween=self.pyautogui.easeInOutQuad)  # Use tweening/easing function to move mouse over 2 seconds.
         self.pyautogui.doubleClick()
-
-    def copy_to_variable(self):
-        self.pyperclip.copy('')
-        self.pyautogui.hotkey('ctrl', 'c')
-        return self.pyperclip.paste()
 
     def randomize_time(self):
         return random.uniform(0.8000, 1.2000)
