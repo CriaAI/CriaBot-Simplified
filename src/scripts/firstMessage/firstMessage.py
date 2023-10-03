@@ -73,7 +73,16 @@ class FirstMessage:
                 extract_messages = self.get_html.extract_last_messages()
                 if len(extract_messages) > 0:
                     now = datetime.now().strftime("%H:%M, %d/%m/%Y")
-                    self.repository.insert_new_document(lead=f" {phone_number[0]}: ", message_sender=message_sender, date=now)
+                    self.repository.insert_new_document(
+                        lead=f" {phone_number[0]}: ", 
+                        message_sender=message_sender,
+                        messages = [{
+                            "date": now,
+                            "sender": message_sender,
+                            "text": "Olá, tudo bem? Aqui é o Caio da CriaAI! Vocês prestam serviços jurídicos?"
+                        }],
+                        date=now
+                    )
                 
                 time.sleep(1)
                 self.move_to_and_click(xy_position=sv["input_send_message_xy"])
