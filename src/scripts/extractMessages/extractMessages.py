@@ -1,7 +1,8 @@
 import sys,os
 sys.path.insert(0, os.path.abspath(os.curdir))
 
-from src.config import user_name, filter_box_xy, first_conversation_box_xy
+from src.config import screen_variables as sv
+from src.config import user_name
 import time
 from datetime import datetime
 import random
@@ -16,11 +17,11 @@ class ExtractMessages:
 
     def open_conversation(self):
         if self.filter_click_type == "click":
-            self.move_to_and_click(xy_position = filter_box_xy) #filter for unread conversations
+            self.move_to_and_click(xy_position = sv["filter_box_xy"]) #filter for unread conversations
         else:
-            self.move_to_and_double_click(xy_position = filter_box_xy) #filter for unread conversations
+            self.move_to_and_double_click(xy_position = sv["filter_box_xy"]) #filter for unread conversations
         time.sleep(1)
-        self.move_to_and_click(xy_position=first_conversation_box_xy)
+        self.move_to_and_click(xy_position=sv["first_conversation_box_xy"])
         time.sleep(2)
         messages = GetHtml(self.pyautogui, self.pyperclip).extract_last_messages()
         current_sender = self.insert_messages(messages)
@@ -42,7 +43,7 @@ class ExtractMessages:
         
         #finding out who the message sender is
         for message in messages:
-            if message["message_sender"] != user_name:
+            if message["message_sender"].strip().rstrip(':') not in user_name:
                 find_sender_db = self.repository.get_user_by_name(message["message_sender"])
 
                 #checking the time of the last message. If it was less than 5 minutes ago, we go to the next message
@@ -52,16 +53,23 @@ class ExtractMessages:
 
                 if (now - message_time).total_seconds() / 60 < 5:
                     return {"sender": last_message["message_sender"].strip().replace(":", "")}
-
+         
                 #if the sender is not in the database, he will be added to it
                 if len(find_sender_db) == 0:
-                    self.repository.insert_new_document(f"{message['message_sender']}")
+                    self.repository.insert_new_document(
+                        lead=f"{message['message_sender']}",
+                        message_sender=user_name,
+                        messages=[],
+                        date=now.strftime("%H:%M, %d/%m/%Y")
+                    )
+
                     find_sender_db = self.repository.get_user_by_name(message["message_sender"])
                     data_to_be_updated = {
                         "stage": 4, 
                         "category": "Lawyer", 
                         "need_to_generate_answer": True
                     }
+
                     self.repository.update_user_info(find_sender_db[0].id, data_to_be_updated)
                 else:
                     self.repository.update_user_info(find_sender_db[0].id, {"need_to_generate_answer": True})
@@ -98,4 +106,4 @@ class ExtractMessages:
                 doc_data["messages"].append(message_to_insert)
 
         self.repository.update_user_info(doc_id, {"messages": doc_data["messages"]})
-        return doc_data["message_sender"]
+        return doc_data["lead"]

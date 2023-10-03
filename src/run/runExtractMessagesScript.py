@@ -4,62 +4,64 @@ sys.path.insert(0, os.path.abspath(os.curdir))
 import keyboard
 import pyautogui
 import pyperclip
+import pygetwindow as gw
 import time
 from src.repository.repository import Repository
 from src.scripts.extractMessages.extractMessages import ExtractMessages
 from src.utils.getHtml import GetHtml
-from src.config import (
-    input_search_box_xy, 
-    return_button_inside_input_xy, 
-    arrow_inside_conversation_box, 
-    mark_as_unread_option,
-    filter_box_xy
-)
+from src.config import screen_variables as sv
 
-filter_click_type = "click"
-previous_sender = ""
-sender_to_mark_as_unread = []
 get_whatsapp_title = GetHtml(pyautogui, pyperclip).get_html_from_start_page()
-i = 0
 
-if get_whatsapp_title == "WhatsApp":
-    while i < 10:
-        current_sender = ExtractMessages(
-            pyautogui,
-            pyperclip,
-            Repository(),
-            filter_click_type
-        ).open_conversation()
+if get_whatsapp_title is not None and "WhatsApp" in get_whatsapp_title:
+    all_windows = gw.getWindowsWithTitle("")
 
-        if not isinstance(current_sender, str):
-            sender_to_mark_as_unread.append(current_sender["sender"])
+    for window in all_windows:
+        if "WhatsApp" in window.title:
+            window.activate()
 
-        if filter_click_type == "click":
-            filter_click_type = "double_click"
+            filter_click_type = "click"
+            previous_sender = ""
+            sender_to_mark_as_unread = []
+            i = 0
 
-        #This is to avoid an infinite loop
-        if previous_sender == current_sender:
-            break
+            while i < 10:
+                current_sender = ExtractMessages(
+                    pyautogui,
+                    pyperclip,
+                    Repository(),
+                    filter_click_type
+                ).open_conversation()
 
-        previous_sender = current_sender
-        i += 1
-    
-    pyautogui.moveTo(filter_box_xy[0], filter_box_xy[1], duration=0.5, tween=pyautogui.easeInOutQuad)
-    #percorrer lista dos que precisa marcar como não lidos
-    for sender in sender_to_mark_as_unread:
-        pyautogui.click()
-        time.sleep(1)    
-        pyautogui.moveTo(input_search_box_xy[0], input_search_box_xy[1], duration=0.5, tween=pyautogui.easeInOutQuad)
-        pyautogui.click()
-        time.sleep(1)
-        keyboard.write(sender)
-        time.sleep(1)
-        pyautogui.moveTo(arrow_inside_conversation_box[0], arrow_inside_conversation_box[1], duration=0.5, tween=pyautogui.easeInOutQuad)
-        pyautogui.click()
-        time.sleep(1)
-        pyautogui.moveTo(mark_as_unread_option[0], mark_as_unread_option[1], duration=0.5, tween=pyautogui.easeInOutQuad)
-        pyautogui.click()
-        time.sleep(1)
-        pyautogui.moveTo(return_button_inside_input_xy[0], return_button_inside_input_xy[1], duration=0.5, tween=pyautogui.easeInOutQuad)
-        pyautogui.click()
-        time.sleep(1)
+                if not isinstance(current_sender, str):
+                    sender_to_mark_as_unread.append(current_sender["sender"])
+
+                if filter_click_type == "click":
+                    filter_click_type = "double_click"
+
+                #This is to avoid an infinite loop
+                if previous_sender == current_sender:
+                    break
+
+                previous_sender = current_sender
+                i += 1
+            
+            pyautogui.moveTo(sv["filter_box_xy"][0], sv["filter_box_xy"][1], duration=0.5, tween=pyautogui.easeInOutQuad)
+            #percorrer lista dos que precisa marcar como não lidos
+            for sender in sender_to_mark_as_unread:
+                pyautogui.click()
+                time.sleep(1)    
+                pyautogui.moveTo(sv["input_search_box_xy"][0], sv["input_search_box_xy"][1], duration=0.5, tween=pyautogui.easeInOutQuad)
+                pyautogui.click()
+                time.sleep(1)
+                keyboard.write(sender)
+                time.sleep(1)
+                pyautogui.moveTo(sv["arrow_inside_conversation_box"][0], sv["arrow_inside_conversation_box"][1], duration=0.5, tween=pyautogui.easeInOutQuad)
+                pyautogui.click()
+                time.sleep(1)
+                pyautogui.moveTo(sv["mark_as_unread_option"][0], sv["mark_as_unread_option"][1], duration=0.5, tween=pyautogui.easeInOutQuad)
+                pyautogui.click()
+                time.sleep(1)
+                pyautogui.moveTo(sv["return_button_inside_input_xy"][0], sv["return_button_inside_input_xy"][1], duration=0.5, tween=pyautogui.easeInOutQuad)
+                pyautogui.click()
+                time.sleep(1)

@@ -2,6 +2,7 @@ import sys, os
 sys.path.insert(0, os.path.abspath(os.curdir))
 
 import json
+import time
 from dotenv import load_dotenv
 from langchain.chat_models import AzureChatOpenAI
 from langchain.schema import SystemMessage, HumanMessage
@@ -29,6 +30,11 @@ def openAIstage4(user_last_messages):
     ]
 
     gpt_answer = chat(gpt_prompt).content
-    gpt_answer =json.loads(gpt_answer)["Resposta"]
+
+    try:
+        gpt_answer = json.loads(gpt_answer)["Resposta"]
+        return {"prompt": content, "gpt_answer": gpt_answer}
+    except json.JSONDecodeError as e:
+        print("A resposta não é um JSON válido:")
+        return {"prompt": content, "gpt_answer": gpt_answer}
     
-    return {"prompt": content, "gpt_answer": gpt_answer}

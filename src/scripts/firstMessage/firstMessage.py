@@ -1,26 +1,37 @@
 import sys, os
 sys.path.insert(0, os.path.abspath(os.curdir))
 
-from src.config import (
-    input_search_new_phone_numbers,
-    input_send_message_xy, 
-    button_start_new_conversation_xy, 
-    first_new_conversation_box_xy
-)
+from src.config import screen_variables as sv
 import time
+from datetime import datetime
 import random
 import csv
-from src.utils.getHtml import GetHtml
 
 class FirstMessage:
-    def __init__(self, pyautogui_module, keyboard_module, pyperclip_module, repository, file_path):
+    def __init__(self, pyautogui_module, keyboard_module, pyperclip_module, get_html, repository, file_path):
         self.pyautogui = pyautogui_module
         self.keyboard = keyboard_module
         self.pyperclip = pyperclip_module
+        self.get_html = get_html
         self.repository = repository
         self.file_path = file_path
 
     def open_conversation(self):
+        #checking the user name or message_sender
+        self.move_to_and_click(sv["first_conversation_box_xy"])
+        time.sleep(1)
+        self.keyboard.press_and_release("ctrl+alt+p")
+        time.sleep(0.5)
+        self.move_to_and_click(sv["message_sender_xy"])
+        time.sleep(1)
+        self.keyboard.press_and_release("ctrl+a")
+        time.sleep(0.5)
+        message_sender = self.copy_to_variable()
+        time.sleep(0.5)
+        self.keyboard.press_and_release("esc")
+        time.sleep(0.5)
+        self.keyboard.press_and_release("esc")
+
         messages = [
             "Olá, tudo bem? Aqui é o Caio da CriaAI!",
             "Vocês prestam serviços jurídicos?"
@@ -40,15 +51,15 @@ class FirstMessage:
                 if len(find_sender_db) > 0:
                     continue
                 
-                self.move_to_and_click(xy_position=button_start_new_conversation_xy)
+                self.move_to_and_click(xy_position=sv["button_start_new_conversation_xy"])
                 time.sleep(1)
-                self.move_to_and_click(xy_position=input_search_new_phone_numbers)
+                self.move_to_and_click(xy_position=sv["input_search_new_phone_numbers"])
                 time.sleep(1)
                 self.pyautogui.write(phone_number[0])
                 time.sleep(1)
-                self.move_to_and_click(xy_position=first_new_conversation_box_xy)
+                self.move_to_and_click(xy_position=sv["first_new_conversation_box_xy"])
                 time.sleep(1)
-                self.move_to_and_click(xy_position=input_send_message_xy)
+                self.move_to_and_click(xy_position=sv["input_send_message_xy"])
                 time.sleep(1)
 
                 for message in messages:
@@ -59,12 +70,22 @@ class FirstMessage:
 
                 #checking to see if the whatsapp number exists
                 extract_messages = ""
-                extract_messages = GetHtml(self.pyautogui, self.pyperclip).extract_last_messages()
+                extract_messages = self.get_html.extract_last_messages()
                 if len(extract_messages) > 0:
-                    self.repository.insert_new_document(f" {phone_number[0]}: ")
+                    now = datetime.now().strftime("%H:%M, %d/%m/%Y")
+                    self.repository.insert_new_document(
+                        lead=f" {phone_number[0]}: ", 
+                        message_sender=message_sender,
+                        messages = [{
+                            "date": now,
+                            "sender": message_sender,
+                            "text": "Olá, tudo bem? Aqui é o Caio da CriaAI! Vocês prestam serviços jurídicos?"
+                        }],
+                        date=now
+                    )
                 
                 time.sleep(1)
-                self.move_to_and_click(xy_position=input_send_message_xy)
+                self.move_to_and_click(xy_position=sv["input_send_message_xy"])
                 self.pyautogui.hotkey('esc')
                 line += 1
 
@@ -93,3 +114,5 @@ class FirstMessage:
 
     def randomize_time(self):
         return random.uniform(0.8000, 1.2000)
+    
+    

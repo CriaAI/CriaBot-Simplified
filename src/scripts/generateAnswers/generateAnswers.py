@@ -118,7 +118,36 @@ def main():
                         }
                         PineconeClass().insert_text(index=pinecone_index, ids=uuid.uuid4(), embeds=embeds, metadata=metadata)
                         st.rerun()
-                                
+
+                with st.form("response_stage_1"):
+                    st.text_area(label="Resposta personalizada", value="", height=200, key="response_stage_1")
+
+                    def handle_submit_stage_1():
+                        response = st.session_state.response_stage_1
+                        all_messages.append({
+                            "date": datetime.now().strftime("%H:%M, %d/%m/%Y"),
+                            "sender": user_name,
+                            "text": response
+                        })
+
+                        data_to_update = {
+                            "stage": 1,
+                            "messages": all_messages,
+                            "need_to_generate_answer": False,
+                            "need_to_send_answer": True,
+                            "category": ""
+                        }
+                        Repository().update_user_info(doc_id, data_to_update)
+
+                        metadata = {
+                            "stage": 4,
+                            "message": last_messages,
+                            "gpt_answer": response
+                        }
+                        PineconeClass().insert_text(index=pinecone_index, ids=uuid.uuid4(), embeds=embeds, metadata=metadata)
+                    
+                    st.form_submit_button("Enviar", on_click=handle_submit_stage_1)
+
                 st.info(
                     f"""PROMPT ENVIADO PARA A IA: \n
                     {openAIstage1_result['prompt']}"""
@@ -169,6 +198,34 @@ def main():
                         PineconeClass().insert_text(index=pinecone_index, ids=uuid.uuid4(), embeds=embeds, metadata=metadata)
                         st.rerun()
                 
+                with st.form("response_stage_2"):
+                    st.text_area(label="Resposta personalizada", value="", height=200, key="response_stage_2")
+
+                    def handle_submit_stage_2():
+                        response = st.session_state.response_stage_2
+                        all_messages.append({
+                            "date": datetime.now().strftime("%H:%M, %d/%m/%Y"),
+                            "sender": user_name,
+                            "text": response
+                        })
+
+                        data_to_update = {
+                            "stage": 2,
+                            "messages": all_messages,
+                            "need_to_generate_answer": False,
+                            "need_to_send_answer": True
+                        }
+                        Repository().update_user_info(doc_id, data_to_update)
+
+                        metadata = {
+                            "stage": 4,
+                            "message": last_messages,
+                            "gpt_answer": response
+                        }
+                        PineconeClass().insert_text(index=pinecone_index, ids=uuid.uuid4(), embeds=embeds, metadata=metadata)
+                    
+                    st.form_submit_button("Enviar", on_click=handle_submit_stage_2)
+
                 st.info(
                     f"""PROMPT ENVIADO PARA A IA: \n
                     {openAIstage2_result['prompt']}"""
@@ -181,7 +238,7 @@ def main():
                 with st.form("my_form"):
                     st.text_area(label="Resposta", value=openAIstage4_result["gpt_answer"], height=400, key="edited_gpt_answer")
 
-                    def handle_submit():
+                    def handle_submit_stage_4():
                         edited_gpt_answer_value = st.session_state.edited_gpt_answer
                         all_messages.append({
                             "date": datetime.now().strftime("%H:%M, %d/%m/%Y"),
@@ -204,7 +261,7 @@ def main():
 
                         PineconeClass().insert_text(index=pinecone_index, ids=uuid.uuid4(), embeds=embeds, metadata=metadata)
 
-                    st.form_submit_button("Aceitar", on_click=handle_submit)
+                    st.form_submit_button("Aceitar", on_click=handle_submit_stage_4)
                     
                 if st.button("Rejeitar", key=f"reject_{doc_id}"):
                     print("REJECTED GPT MESSAGE")
