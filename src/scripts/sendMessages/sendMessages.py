@@ -18,11 +18,29 @@ class SendMessages:
         self.repository = repository
 
     def open_conversation(self):
-        users = self.repository.get_users_by_need_to_send_answer()
+        #checking the user name or message_sender
+        self.move_to_and_click(sv["first_conversation_box_xy"])
+        time.sleep(1)
+        self.keyboard.press_and_release("ctrl+alt+p")
+        time.sleep(0.5)
+        self.move_to_and_click(sv["message_sender_xy"])
+        time.sleep(1)
+        self.keyboard.press_and_release("ctrl+a")
+        time.sleep(0.5)
+        message_sender = self.copy_to_variable()
+        time.sleep(0.5)
+        self.keyboard.press_and_release("esc")
+        time.sleep(0.5)
+        self.keyboard.press_and_release("esc")
+
+        users = self.repository.get_users_by_need_to_send_answer(message_sender)
 
         for user in users:
-            phone_number = unidecode(user.to_dict()["message_sender"]).strip().rstrip(':')
+            phone_number = unidecode(user.to_dict()["lead"]).strip().rstrip(":")
             stage = user.to_dict()["stage"]
+            messages = user.to_dict()["messages"]
+            last_message = messages[-1]["text"]
+            last_message_sender = messages[-1]["sender"]
 
             self.move_to_and_click(xy_position = sv["input_search_box_xy"])
             time.sleep(1)
@@ -33,38 +51,51 @@ class SendMessages:
             self.move_to_and_click(xy_position=sv["input_send_message_xy"])
             time.sleep(2)
 
-            if stage == 0 or stage == 1:
-                continue
+            if stage == 1: #in this case, the lead will receive a personalized answer
+                self.keyboard.write(last_message)
+                time.sleep(1)
+                self.pyautogui.hotkey('enter')
             elif stage == 2:
-                self.keyboard.write("Minha empresa desenvolveu recentemente uma Inteligência Artificial específica para advogados!")
-                time.sleep(1)
-                self.pyautogui.hotkey('enter')
-                time.sleep(1)
-                self.send_video()
-                time.sleep(1)
-                self.move_to_and_double_click(sv["video_xy"])
-                time.sleep(2)
-                self.pyautogui.hotkey('enter')
-                time.sleep(1)
-                self.keyboard.write(
-                    """Estou buscando advogados interessados em fazer o teste da nossa solução de forma 100% gratuita. 
-                    Se tiver interesse, só mandar um 👍 que eu envio o link!"""
-                )
-            elif stage == 3:
-                messages = [
-                    "Segue o link: https://criaai.com/",
-                    """Vou deixar liberado acesso até hoje para criar sua conta! Só fazer o cadastro e testar à vontade! 
-                    Não leva nem 1 minuto.""",
-                    """E uma dica: Para nosso teste não ser ainda mais um peso na sua semana, indicamos testar a plataforma já 
-                    buscando economizar o tempo em alguma demanda. Quanto mais real e específico for o caso que você passar para a 
-                    IA, melhores e mais surpreendentes serão os resultados obtidos 😉"""
-                ]
-
-                for message in messages:
-                    self.keyboard.write(message)
+                #if the last message in the db is not from the seller, we send the messages below
+                if last_message_sender != f" {message_sender}: ":
+                    self.keyboard.write("Minha empresa desenvolveu recentemente uma Inteligência Artificial específica para advogados!")
                     time.sleep(1)
                     self.pyautogui.hotkey('enter')
                     time.sleep(1)
+                    self.send_video()
+                    time.sleep(1)
+                    self.move_to_and_double_click(sv["video_xy"])
+                    time.sleep(2)
+                    self.pyautogui.hotkey('enter')
+                    time.sleep(1)
+                    self.keyboard.write(
+                        """Estou buscando advogados interessados em fazer o teste da nossa solução de forma 100% gratuita. 
+                        Se tiver interesse, só mandar um 👍 que eu envio o link!"""
+                    )
+                else: #otherwise, we send the message that is in the database
+                    self.keyboard.write(last_message)
+                    time.sleep(1)
+                    self.pyautogui.hotkey('enter')
+            elif stage == 3:
+                if last_message_sender != f" {message_sender}: ":
+                    messages = [
+                        "Segue o link: https://criaai.com/",
+                        """Vou deixar liberado acesso até hoje para criar sua conta! Só fazer o cadastro e testar à vontade! 
+                        Não leva nem 1 minuto.""",
+                        """E uma dica: Para nosso teste não ser ainda mais um peso na sua semana, indicamos testar a plataforma já 
+                        buscando economizar o tempo em alguma demanda. Quanto mais real e específico for o caso que você passar para a 
+                        IA, melhores e mais surpreendentes serão os resultados obtidos 😉"""
+                    ]
+
+                    for message in messages:
+                        self.keyboard.write(message)
+                        time.sleep(1)
+                        self.pyautogui.hotkey('enter')
+                        time.sleep(1)
+                else:
+                    self.keyboard.write(last_message)
+                    time.sleep(1)
+                    self.pyautogui.hotkey('enter')
             elif stage == 4:
                 message_to_be_sent = user.to_dict()["messages"][-1]["text"]
                 self.keyboard.write(message_to_be_sent)
@@ -96,6 +127,11 @@ class SendMessages:
     def move_to_and_double_click(self, xy_position):
         self.pyautogui.moveTo(xy_position[0], xy_position[1], duration=0.5*(self.randomize_time()), tween=self.pyautogui.easeInOutQuad)  # Use tweening/easing function to move mouse over 2 seconds.
         self.pyautogui.doubleClick()
+
+    def copy_to_variable(self):
+        self.pyperclip.copy("")
+        self.pyautogui.hotkey("ctrl", "c")
+        return self.pyperclip.paste()
 
     def randomize_time(self):
         return random.uniform(0.8000, 1.2000)

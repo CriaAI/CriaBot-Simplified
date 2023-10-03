@@ -35,11 +35,6 @@ class ExtractMessages:
         self.pyautogui.moveTo(xy_position[0], xy_position[1], duration=0.5*(self.randomize_time()), tween=self.pyautogui.easeInOutQuad)  # Use tweening/easing function to move mouse over 2 seconds.
         self.pyautogui.doubleClick()
 
-    def copy_to_variable(self):
-        self.pyperclip.copy('')
-        self.pyautogui.hotkey('ctrl', 'c')
-        return self.pyperclip.paste()
-
     def randomize_time(self):
         return random.uniform(0.8000, 1.2000)
 
