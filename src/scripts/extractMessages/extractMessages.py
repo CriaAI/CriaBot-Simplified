@@ -44,7 +44,7 @@ class ExtractMessages:
         #finding out who the message sender is
         for message in messages:
             if message["message_sender"].strip().rstrip(':') not in user_name:
-                find_sender_db = self.repository.get_user_by_name(message["message_sender"])
+                find_sender_db = self.repository.get_user_by_phone_number(message["message_sender"])
 
                 #checking the time of the last message. If it was less than 5 minutes ago, we go to the next message
                 last_message = messages[-1]

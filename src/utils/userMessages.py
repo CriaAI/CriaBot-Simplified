@@ -8,7 +8,7 @@ class UserMessages:
         user_last_messages = []
         
         for message in list(reversed(all_messages)):
-            if message["sender"] != user_name:
+            if user_name not in message["sender"]:
                 user_last_messages.append(message["text"])
             else:
                 break
