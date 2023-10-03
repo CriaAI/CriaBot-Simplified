@@ -5,7 +5,7 @@ sys.path.insert(0, os.path.abspath(os.curdir))
 from pathlib import Path
 import json
 
-user_name = " Fran Hahn: " #Nome que aparece no whatsapp. Deve ter um espaço antes e depois e os dois pontos
+user_name = "Fran Hahn"
 
 screen_variables = {
     "message_sender_xy": (434, 669),

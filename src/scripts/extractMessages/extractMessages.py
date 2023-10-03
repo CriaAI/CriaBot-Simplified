@@ -35,6 +35,11 @@ class ExtractMessages:
         self.pyautogui.moveTo(xy_position[0], xy_position[1], duration=0.5*(self.randomize_time()), tween=self.pyautogui.easeInOutQuad)  # Use tweening/easing function to move mouse over 2 seconds.
         self.pyautogui.doubleClick()
 
+    def copy_to_variable(self):
+        self.pyperclip.copy('')
+        self.pyautogui.hotkey('ctrl', 'c')
+        return self.pyperclip.paste()
+
     def randomize_time(self):
         return random.uniform(0.8000, 1.2000)
 
@@ -43,7 +48,7 @@ class ExtractMessages:
         
         #finding out who the message sender is
         for message in messages:
-            if message["message_sender"] != user_name:
+            if message["message_sender"].strip().rstrip(':') not in user_name:
                 find_sender_db = self.repository.get_user_by_name(message["message_sender"])
 
                 #checking the time of the last message. If it was less than 5 minutes ago, we go to the next message
@@ -56,13 +61,20 @@ class ExtractMessages:
          
                 #if the sender is not in the database, he will be added to it
                 if len(find_sender_db) == 0:
-                    self.repository.insert_new_document(f"{message['message_sender']}", now.strftime("%H:%M, %d/%m/%Y"))
+                    self.repository.insert_new_document(
+                        lead=f"{message['message_sender']}",
+                        message_sender=user_name,
+                        messages=[],
+                        date=now.strftime("%H:%M, %d/%m/%Y")
+                    )
+
                     find_sender_db = self.repository.get_user_by_name(message["message_sender"])
                     data_to_be_updated = {
                         "stage": 4, 
                         "category": "Lawyer", 
                         "need_to_generate_answer": True
                     }
+
                     self.repository.update_user_info(find_sender_db[0].id, data_to_be_updated)
                 else:
                     self.repository.update_user_info(find_sender_db[0].id, {"need_to_generate_answer": True})
@@ -99,4 +111,4 @@ class ExtractMessages:
                 doc_data["messages"].append(message_to_insert)
 
         self.repository.update_user_info(doc_id, {"messages": doc_data["messages"]})
-        return doc_data["message_sender"]
+        return doc_data["lead"]
