@@ -48,7 +48,7 @@ if get_whatsapp_title is not None and "WhatsApp" in get_whatsapp_title:
             
             pyautogui.moveTo(sv["filter_box_xy"][0], sv["filter_box_xy"][1], duration=0.5, tween=pyautogui.easeInOutQuad)
             #percorrer lista dos que precisa marcar como não lidos
-            for sender in sender_to_mark_as_unread:
+            for sender in sender_to_mark_as_unread[:-1]:
                 pyautogui.click()
                 time.sleep(1)    
                 pyautogui.moveTo(sv["input_search_box_xy"][0], sv["input_search_box_xy"][1], duration=0.5, tween=pyautogui.easeInOutQuad)
