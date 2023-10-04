@@ -56,7 +56,7 @@ class FirstMessage:
                 #checking to see if the whatsapp number exists
                 extract_messages = ""
                 extract_messages = self.get_html.extract_last_messages()
-                
+
                 if len(extract_messages) > 0:
                     now = datetime.now().strftime("%H:%M, %d/%m/%Y")
                     self.repository.insert_new_document(
@@ -67,7 +67,8 @@ class FirstMessage:
                             "sender": message_sender,
                             "text": message
                         }],
-                        date=now
+                        stage=0,
+                        created_at=now
                     )
                 
                 time.sleep(1)

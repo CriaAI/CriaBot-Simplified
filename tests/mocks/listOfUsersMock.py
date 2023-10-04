@@ -6,7 +6,8 @@ from .userMock import User
 list_of_users_mock = [
     User(
         id="id1",
-        message_sender=" Vittório Girardi: ",
+        message_sender="Fran Hahn",
+        lead=" Vittório Girardi: ",
         messages=[{
             "sender": " Vittório Girardi: ",
             "text": "Hello world",
@@ -15,11 +16,13 @@ list_of_users_mock = [
         need_to_generate_answer=False,
         need_to_send_answer=True,
         stage=2,
-        category="Lawyer"
+        category="Lawyer",
+        created_at="16:14, 01/10/2023"
     ),
     User(
         id="id2",
-        message_sender=" Carol Martins: ",
+        message_sender="Fran Hahn",
+        lead=" Carol Martins: ",
         messages=[{
             "sender": " Carol Martins: ",
             "text": "Hello world 2",
@@ -28,6 +31,7 @@ list_of_users_mock = [
         need_to_generate_answer=True,
         need_to_send_answer=False,
         stage=4,
-        category="Lawyer"
+        category="Lawyer",
+        created_at="16:14, 02/10/2023"
     )
 ]

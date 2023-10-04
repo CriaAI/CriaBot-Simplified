@@ -22,7 +22,7 @@ def test_insert_messages_from_existing_user():
         filter_click_type=filter_click_type
     ).insert_messages(messages)
 
-    repository.get_user_by_name.assert_called()
+    repository.get_user_by_phone_number.assert_called()
     repository.update_user_info.assert_called()
     repository.insert_new_document.assert_not_called()
     assert result == " Vittório Girardi: "
@@ -44,7 +44,7 @@ def test_insert_messages_from_new_user():
 
     assert user == " New User: "
     assert pyautogui_module.assert_any_call
-    repository.get_user_by_name.assert_called()
+    repository.get_user_by_phone_number.assert_called()
     repository.update_user_info.assert_called()
     repository.insert_new_document.assert_called()
 
@@ -63,7 +63,7 @@ def test_insert_message_with_no_data_and_cannot_return_error():
         filter_click_type=filter_click_type
     ).insert_messages(messages)
 
-    repository.get_user_by_name.assert_called()
+    repository.get_user_by_phone_number.assert_called()
     repository.update_user_info.assert_called()
 
 def test_insert_messages_from_existing_user_which_the_last_message_was_sent_less_than_5min_ago():
@@ -82,5 +82,5 @@ def test_insert_messages_from_existing_user_which_the_last_message_was_sent_less
         filter_click_type=filter_click_type
     ).insert_messages(messages)
 
-    repository.get_user_by_name.assert_called()
+    repository.get_user_by_phone_number.assert_called()
     assert result["sender"] == "Vittório Girardi"
