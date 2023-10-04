@@ -36,5 +36,4 @@ def openAIstage4(user_last_messages):
         return {"prompt": content, "gpt_answer": gpt_answer}
     except json.JSONDecodeError as e:
         print("A resposta não é um JSON válido:")
-        return {"prompt": content, "gpt_answer": gpt_answer}
     

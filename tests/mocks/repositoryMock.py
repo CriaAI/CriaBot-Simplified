@@ -7,25 +7,27 @@ from .listOfUsersMock import list_of_users_mock
 from unittest.mock import MagicMock
 
 class RepositoryMock:
-    def insert_new_document(self, message_sender):
+    def insert_new_document(self, lead, messages, created_at, stage, message_sender="Fran Hahn"):
         new_user = User(
             id="id3", 
+            lead=lead,
             message_sender=message_sender, 
-            messages=[], 
+            messages=messages,
             need_to_generate_answer=False, 
             need_to_send_answer=False, 
-            stage=0,
-            category=""
+            stage=stage,
+            category="",
+            created_at=created_at
         )
         list_of_users_mock.append(new_user)
 
-    def get_user_by_name(self, message_sender):
+    def get_user_by_phone_number(self, message_sender):
         for user in list_of_users_mock:
             if user.message_sender == message_sender:
                 return [user]
         return []
     
-    def get_users_by_need_to_send_answer(self):
+    def get_users_by_need_to_send_answer(self, username):
         return [list_of_users_mock[0]]
     
     def get_users_by_need_to_generate_answer(self):
@@ -43,26 +45,29 @@ class RepositoryMock:
 
 repository_mock = MagicMock(spec=RepositoryMock)
 
-repository_mock.get_user_by_name.side_effect = lambda message_sender: [
-    user for user in list_of_users_mock if user.message_sender == message_sender
+repository_mock.get_user_by_phone_number.side_effect = lambda lead: [
+    user for user in list_of_users_mock if user.lead == lead
 ]
 
-repository_mock.insert_new_document.side_effect = lambda message_sender: list_of_users_mock.append(
+repository_mock.insert_new_document.side_effect = lambda lead, stage, messages, created_at, message_sender="Fran Hahn": list_of_users_mock.append(
     User(
         id="id3", 
+        lead=lead,
         message_sender=message_sender, 
-        messages=[], 
+        messages=messages, 
         need_to_generate_answer=False, 
         need_to_send_answer=False, 
-        stage=0,
-        category=""
+        stage=stage,
+        category="",
+        created_at=created_at
     )
 )
 
-repository_mock.get_users_by_need_to_send_answer.return_value = [
+repository_mock.get_users_by_need_to_send_answer.side_effect = lambda message_sender: [
     User(
         id="id1",
-        message_sender=" Vittório Girardi: ",
+        lead=" Vittório Girardi: ",
+        message_sender="Fran Hahn",
         messages=[{
             "sender": " Vittório Girardi: ",
             "text": "Hello world",
@@ -71,14 +76,16 @@ repository_mock.get_users_by_need_to_send_answer.return_value = [
         need_to_generate_answer=False,
         need_to_send_answer=True,
         stage=2,
-        category="Lawyer"
+        category="Lawyer",
+        created_at="16:14, 03/10/2023"
     )
 ]
 
 repository_mock.get_users_by_need_to_generate_answer.return_value = [
     User(
         id="id2",
-        message_sender=" Carol Martins: ",
+        message_sender="Fran Hahn",
+        lead=" Carol Martins: ",
         messages=[{
             "sender": " Carol Martins: ",
             "text": "Hello world 2",
@@ -87,7 +94,8 @@ repository_mock.get_users_by_need_to_generate_answer.return_value = [
         need_to_generate_answer=True,
         need_to_send_answer=False,
         stage=4,
-        category="Lawyer"
+        category="Lawyer",
+        created_at="16:14, 03/10/2023"
     )
 ]
 

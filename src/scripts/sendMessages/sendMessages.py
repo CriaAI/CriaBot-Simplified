@@ -1,4 +1,3 @@
-#Ao rodar esse script, ir em até 4 segundos para a página do whatsapp web SEM a aba inspecionar aberta
 import sys, os
 sys.path.insert(0, os.path.abspath(os.curdir))
 
@@ -7,6 +6,7 @@ import random
 from unidecode import unidecode
 from src.config import video_path
 from src.config import screen_variables as sv
+from src.utils.phoneChip import PhoneChip
 
 os.environ['PYTHONIOENCODING'] = 'utf-8'
 
@@ -18,20 +18,8 @@ class SendMessages:
         self.repository = repository
 
     def open_conversation(self):
-        #checking the user name or message_sender
-        self.move_to_and_click(sv["first_conversation_box_xy"])
-        time.sleep(1)
-        self.keyboard.press_and_release("ctrl+alt+p")
-        time.sleep(0.5)
-        self.move_to_and_click(sv["message_sender_xy"])
-        time.sleep(1)
-        self.keyboard.press_and_release("ctrl+a")
-        time.sleep(0.5)
-        message_sender = self.copy_to_variable()
-        time.sleep(0.5)
-        self.keyboard.press_and_release("esc")
-        time.sleep(0.5)
-        self.keyboard.press_and_release("esc")
+        phone_chip = PhoneChip(self.keyboard, self.pyautogui, self.pyperclip)
+        message_sender = phone_chip.check_phone_chip()
 
         users = self.repository.get_users_by_need_to_send_answer(message_sender)
 
