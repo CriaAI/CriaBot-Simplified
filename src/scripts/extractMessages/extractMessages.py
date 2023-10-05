@@ -41,7 +41,7 @@ class ExtractMessages:
 
     def insert_messages(self, messages):
         find_sender_db = []
-        
+
         #finding out who the message sender is
         for message in messages:
             if message["message_sender"].strip().rstrip(':') not in user_name:
@@ -50,6 +50,7 @@ class ExtractMessages:
                 #checking the time of the last message. If it was less than 5 minutes ago, we go to the next message
                 #it will be marked as unread later on
                 last_message = messages[-1]
+
                 message_time = datetime.strptime(last_message["message_date"], "%H:%M, %d/%m/%Y")
                 now = datetime.now()
 

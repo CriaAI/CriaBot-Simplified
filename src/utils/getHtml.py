@@ -18,14 +18,27 @@ class GetHtml:
     def extract_last_messages(self):
         html = self.extract_HTML()
         soup = BeautifulSoup(html, 'html.parser')
-        my_divs = soup.find_all("div", {"class": "_21Ahp"})
-        
+        my_divs = soup.find_all("div", {"class": ["_21Ahp", "_1kgzQ"]})
+
         messages_list = []
 
         for element in my_divs:
             message_meta_data:str = element.parent.get('data-pre-plain-text') #Sometimes it returns None
 
             if message_meta_data == None:
+                user = soup.find("span", class_="l7jjieqr")
+                print("Not possible to extract this message")
+                date = ""
+                if len(messages_list) > 0:
+                    messages_list[-1]["message_date"]
+
+                message = {
+                    "message_text": 'Não foi possível extrair essa mensagem', 
+                    "message_sender": f" {user.get('title')}: ",
+                    "message_date": date
+                }
+
+                messages_list.append(message)
                 continue
 
             message_date = message_meta_data.split(']')[0].split('[')[-1]
@@ -33,6 +46,8 @@ class GetHtml:
             message_text:str = element.find("span", {"class": "_11JPr selectable-text copyable-text"}) #Sometimes it returns None
             
             if message_text == None:
+                print("Not possible to extract this message")
+                
                 message = {
                     'message_text': 'Não foi possível extrair essa mensagem', 
                     'message_sender': message_sender,

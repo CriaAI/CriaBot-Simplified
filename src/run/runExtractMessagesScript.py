@@ -12,6 +12,7 @@ from src.utils.getHtml import GetHtml
 from src.config import screen_variables as sv
 
 get_whatsapp_title = GetHtml(pyautogui, pyperclip).get_html_from_start_page()
+current_sender = ""
 
 if get_whatsapp_title is not None and "WhatsApp" in get_whatsapp_title:
     all_windows = gw.getWindowsWithTitle("")
