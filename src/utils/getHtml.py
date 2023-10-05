@@ -30,7 +30,7 @@ class GetHtml:
                 print("Not possible to extract this message")
                 date = ""
                 if len(messages_list) > 0:
-                    messages_list[-1]["message_date"]
+                    date = messages_list[-1]["message_date"]
 
                 message = {
                     "message_text": 'Não foi possível extrair essa mensagem', 
@@ -47,7 +47,6 @@ class GetHtml:
             
             if message_text == None:
                 print("Not possible to extract this message")
-                
                 message = {
                     'message_text': 'Não foi possível extrair essa mensagem', 
                     'message_sender': message_sender,
