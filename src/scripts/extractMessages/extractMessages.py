@@ -7,6 +7,7 @@ import time
 from datetime import datetime
 import random
 from src.utils.getHtml import GetHtml
+import copy
 
 class ExtractMessages:
     def __init__(self, pyautogui_module, pyperclip_module, repository, filter_click_type):
@@ -40,7 +41,7 @@ class ExtractMessages:
 
     def insert_messages(self, messages):
         find_sender_db = []
-        
+
         #finding out who the message sender is
         for message in messages:
             if message["message_sender"].strip().rstrip(':') not in user_name:
@@ -49,6 +50,7 @@ class ExtractMessages:
                 #checking the time of the last message. If it was less than 5 minutes ago, we go to the next message
                 #it will be marked as unread later on
                 last_message = messages[-1]
+
                 message_time = datetime.strptime(last_message["message_date"], "%H:%M, %d/%m/%Y")
                 now = datetime.now()
 
@@ -80,24 +82,25 @@ class ExtractMessages:
 
         #Making sure there won't be any repeated messages in the db
         date_time_format = "%H:%M, %d/%m/%Y"
+        list_of_messages_to_update = copy.deepcopy(doc_data["messages"])
+
         for message in messages:
             message_to_insert = {
                 "sender": message["message_sender"],
                 "text": message["message_text"], 
                 "date": message["message_date"]
             }
-            
+
             if len(doc_data["messages"]) > 0:
                 last_message_date_db = datetime.strptime(doc_data["messages"][-1]["date"], date_time_format)
-                last_message_text_db = doc_data["messages"][-1]["text"]
                 message_date_time = datetime.strptime(message["message_date"], date_time_format)
 
-                if last_message_date_db > message_date_time or last_message_text_db == message["message_text"]:
+                if last_message_date_db >= message_date_time:
                     continue
                 else:
-                    doc_data["messages"].append(message_to_insert)
+                    list_of_messages_to_update.append(message_to_insert)
             else:
-                doc_data["messages"].append(message_to_insert)
+                list_of_messages_to_update.append(message_to_insert)
 
-        self.repository.update_user_info(doc_id, {"messages": doc_data["messages"]})
+        self.repository.update_user_info(doc_id, {"messages": list_of_messages_to_update})
         return doc_data["lead"]

@@ -21,7 +21,7 @@ class FirstMessage:
         phone_chip = PhoneChip(self.keyboard, self.pyautogui, self.pyperclip)
         message_sender = phone_chip.check_phone_chip()
 
-        message = "Olá, tudo bem? Aqui é o Caio da CriaAI! Vocês prestam serviços jurídicos?"
+        messages = ["Olá, tudo bem? Aqui é o Caio da CriaAI!", "Vocês prestam serviços jurídicos?"]
 
         with open(self.file_path, 'r') as csv_file:
             phone_numbers_array = csv.reader(csv_file)
@@ -48,25 +48,35 @@ class FirstMessage:
                 time.sleep(1)
                 self.move_to_and_click(xy_position=sv["input_send_message_xy"])
                 time.sleep(1)
-                self.keyboard.write(message)
-                time.sleep(1)
-                self.pyautogui.hotkey('enter')
-                time.sleep(1)
+
+                for message in messages:
+                    self.keyboard.write(message)
+                    time.sleep(1)
+                    self.pyautogui.hotkey('enter')
+                    time.sleep(1)
 
                 #checking to see if the whatsapp number exists
                 extract_messages = ""
                 extract_messages = self.get_html.extract_last_messages()
 
+                #if it exists, a new document will be created for the lead
                 if len(extract_messages) > 0:
                     now = datetime.now().strftime("%H:%M, %d/%m/%Y")
                     self.repository.insert_new_document(
                         lead=f" {phone_number[0]}: ", 
                         message_sender=message_sender,
-                        messages = [{
-                            "date": now,
-                            "sender": message_sender,
-                            "text": message
-                        }],
+                        messages = [
+                            {
+                                "date": now,
+                                "sender": message_sender,
+                                "text": messages[0]
+                            },
+                            {
+                                "date": now,
+                                "sender": message_sender,
+                                "text": messages[1]
+                            }
+                        ],
                         stage=0,
                         created_at=now
                     )
