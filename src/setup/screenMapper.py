@@ -1,6 +1,11 @@
 def elementsToMap():
     return [
         {
+            "Name": "profile_picture_xy",
+            "Description": "Foto de perfil do usuário",
+            "Value":(60, 198)
+        },
+        {
             "Name":"message_sender_xy",
             "Description": "Botão para editar o nome do usuário",
             "Value":(465, 241)

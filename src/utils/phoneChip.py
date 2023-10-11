@@ -12,10 +12,8 @@ class PhoneChip:
         self.pyperclip = pyperclip_module
 
     def check_phone_chip(self):
-        self.move_to_and_click(sv["first_conversation_box_xy"])
+        self.move_to_and_click(sv["profile_picture_xy"])
         time.sleep(1)
-        self.keyboard.press_and_release("ctrl+alt+p")
-        time.sleep(0.5)
         self.move_to_and_click(sv["message_sender_xy"])
         time.sleep(1)
         self.keyboard.press_and_release("ctrl+a")

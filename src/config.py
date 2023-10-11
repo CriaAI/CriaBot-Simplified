@@ -8,6 +8,7 @@ import json
 user_name = "Fran Hahn"
 
 screen_variables = {
+    "profile_picture_xy": (60, 170),
     "message_sender_xy": (434, 669),
     "filter_box_xy": (465, 238),
     "first_conversation_box_xy": (230, 393),
