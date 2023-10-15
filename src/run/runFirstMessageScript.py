@@ -10,7 +10,6 @@ from src.scripts.firstMessage.firstMessage import FirstMessage
 from src.repository.repository import Repository
 from src.config import csv_file_path
 from src.utils.getHtml import GetHtml
-from src.utils.getHtml import GetHtml
 
 get_whatsapp_title = GetHtml(pyautogui, pyperclip).get_html_from_start_page()
 
