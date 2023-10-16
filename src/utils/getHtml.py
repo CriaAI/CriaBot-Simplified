@@ -28,9 +28,11 @@ class GetHtml:
             if message_meta_data == None:
                 user = soup.find("span", class_="l7jjieqr")
                 print("Not possible to extract this message")
-                date = ""
+
                 if len(messages_list) > 0:
                     date = messages_list[-1]["message_date"]
+                else:
+                    date = ""
 
                 message = {
                     "message_text": 'Não foi possível extrair essa mensagem', 
@@ -58,6 +60,17 @@ class GetHtml:
             message_text = message_text.text
             message = {'message_text': message_text, 'message_sender': message_sender, 'message_date': message_date}
             messages_list.append(message)
+        
+        #checking to see if any dates are empty or text senders are None
+        i = 0
+        for message in messages_list:
+            if message["message_date"] == "":
+                for j in range(i, len(messages_list)):
+                    if messages_list[j+1]["message_date"] != "":
+                        message["message_date"] = messages_list[j+1]["message_date"]
+                        break
+            i += 1
+        
         return messages_list
     
     def get_html_from_start_page(self):
