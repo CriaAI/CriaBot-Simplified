@@ -9,12 +9,12 @@ class GetHtml:
     def __init__(self, pyautogui_module, pyperclip_module):
         self.pyautogui = pyautogui_module
         self.pyperclip = pyperclip_module
-        
+
     def extract_HTML(self):
         htmlXY = (1800, 205)
         self.move_to_and_click(xy_position=htmlXY)
         return self.copy_to_variable()
-    
+
     def extract_last_messages(self):
         html = self.extract_HTML()
         soup = BeautifulSoup(html, 'html.parser')
@@ -35,7 +35,7 @@ class GetHtml:
                     date = ""
 
                 message = {
-                    "message_text": 'Não foi possível extrair essa mensagem', 
+                    "message_text": 'Não foi possível extrair essa mensagem',
                     "message_sender": f" {user.get('title')}: ",
                     "message_date": date
                 }
@@ -45,22 +45,30 @@ class GetHtml:
 
             message_date = message_meta_data.split(']')[0].split('[')[-1]
             message_sender = "]".join(message_meta_data.split(']')[1:])
+            #text
             message_text:str = element.find("span", {"class": "_11JPr selectable-text copyable-text"}) #Sometimes it returns None
-            
+            if message_text != None:
+                message_text = message_text.text
+                message = {'message_text': message_text, 'message_sender': message_sender, 'message_date': message_date}
+                messages_list.append(message)
+                continue
+            #emoji
+            emoji_text:str = element.find("span", {"class": "Ov-s3"}).find("img")
+            if emoji_text != None:
+                emoji_text = emoji_text.get('data-plain-text')
+                message = {'message_text': emoji_text, 'message_sender': message_sender, 'message_date': message_date}
+                messages_list.append(message)
+                continue
             if message_text == None:
                 print("Not possible to extract this message")
                 message = {
-                    'message_text': 'Não foi possível extrair essa mensagem', 
+                    'message_text': 'Não foi possível extrair essa mensagem',
                     'message_sender': message_sender,
                     'message_date': message_date
                 }
                 messages_list.append(message)
                 continue
-            
-            message_text = message_text.text
-            message = {'message_text': message_text, 'message_sender': message_sender, 'message_date': message_date}
-            messages_list.append(message)
-        
+
         #checking to see if any dates are empty or text senders are None
         i = 0
         for message in messages_list:
@@ -70,13 +78,13 @@ class GetHtml:
                         message["message_date"] = messages_list[j+1]["message_date"]
                         break
             i += 1
-        
+
         return messages_list
-    
+
     def get_html_from_start_page(self):
         time.sleep(4)
         html = self.extract_HTML()
-        
+
         if html == "":
             return
 
