@@ -44,7 +44,7 @@ class ExtractMessages:
 
         #finding out who the message sender is
         for message in messages:
-            if message["message_sender"].strip().rstrip(':') not in user_name:
+            if user_name not in message["message_sender"].strip().rstrip(':'):
                 find_sender_db = self.repository.get_user_by_phone_number(message["message_sender"])
 
                 #checking the time of the last message. If it was less than 5 minutes ago, we go to the next message
@@ -93,12 +93,21 @@ class ExtractMessages:
 
             if len(doc_data["messages"]) > 0:
                 last_message_date_db = datetime.strptime(doc_data["messages"][-1]["date"], date_time_format)
+                last_message_text_db = doc_data["messages"][-1]["text"]
                 message_date_time = datetime.strptime(message["message_date"], date_time_format)
-
-                if last_message_date_db >= message_date_time:
-                    continue
-                else:
+                
+                #if the message we want to insert in the db was sent after the last message in the database, it will be added to it
+                if last_message_date_db < message_date_time:
                     list_of_messages_to_update.append(message_to_insert)
+
+                #if the message we want to insert in the db was sent at the same time the last message in the database
+                # it will be added to it only if the content of the message is not the same
+                elif last_message_date_db == message_date_time and last_message_text_db != message["message_text"]:
+                    list_of_messages_to_update.append(message_to_insert)
+                
+                #otherwise, it means the message is already in the database and will not be added again
+                else:
+                    continue
             else:
                 list_of_messages_to_update.append(message_to_insert)
 
