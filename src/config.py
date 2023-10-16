@@ -5,7 +5,7 @@ sys.path.insert(0, os.path.abspath(os.curdir))
 from pathlib import Path
 import json
 
-user_name = "Fran"
+user_name = "Caio"
 
 screen_variables = {
     "profile_picture_xy": (60, 170),

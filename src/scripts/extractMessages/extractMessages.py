@@ -10,11 +10,12 @@ from src.utils.getHtml import GetHtml
 import copy
 
 class ExtractMessages:
-    def __init__(self, pyautogui_module, pyperclip_module, repository, filter_click_type):
+    def __init__(self, pyautogui_module, pyperclip_module, repository, filter_click_type, last_sender:str):
         self.pyautogui = pyautogui_module
         self.pyperclip = pyperclip_module
         self.repository = repository
         self.filter_click_type = filter_click_type
+        self.last_sender = last_sender
 
     def open_conversation(self):
         if self.filter_click_type == "click":
@@ -41,7 +42,7 @@ class ExtractMessages:
 
     def insert_messages(self, messages):
         find_sender_db = []
-        
+
         #finding out who the message sender is
         for message in messages:
             if user_name not in message["message_sender"].strip().rstrip(':') and message["message_sender"] != " None: ":
@@ -56,7 +57,7 @@ class ExtractMessages:
 
                 if (now - message_time).total_seconds() / 60 < 5:
                     return {"sender": last_message["message_sender"].strip().replace(":", "")}
-         
+
                 #if the sender is not in the database, he will be added to it
                 if len(find_sender_db) == 0:
                     self.repository.insert_new_document(
@@ -69,25 +70,31 @@ class ExtractMessages:
 
                 find_sender_db = self.repository.get_user_by_phone_number(message["message_sender"])
                 self.repository.update_user_info(find_sender_db[0].id, {"need_to_generate_answer": True})
-                
+
                 #if the user stage is 0, after this first interaction, it will be updated to 1
                 stage = find_sender_db[0].to_dict()["stage"]
                 if stage == 0:
                     self.repository.update_user_info(find_sender_db[0].id, {"stage": 1})
                 break
-        
+
         #Now, the messages will be inserted in the db inside the messages array
         doc_id = find_sender_db[0].id
         doc_data = find_sender_db[0].to_dict()
+        if doc_data["lead"] == self.last_sender:
+            print('repeated sender!!')
+            return doc_data["lead"]
 
         #Making sure there won't be any repeated messages in the db
         date_time_format = "%H:%M, %d/%m/%Y"
         list_of_messages_to_update = copy.deepcopy(doc_data["messages"])
 
         for message in messages:
+            if user_name in message["message_sender"]:
+                print('prospect message!')
+                continue
             message_to_insert = {
                 "sender": message["message_sender"],
-                "text": message["message_text"], 
+                "text": message["message_text"],
                 "date": message["message_date"]
             }
 
@@ -95,7 +102,7 @@ class ExtractMessages:
                 last_message_date_db = datetime.strptime(doc_data["messages"][-1]["date"], date_time_format)
                 last_message_sender_db = doc_data["messages"][-1]["sender"] #seller
                 message_date_time = datetime.strptime(message["message_date"], date_time_format)
-                
+
                 #if the message we want to insert in the db was sent after the last message in the database, it will be added to it
                 if message_date_time > last_message_date_db:
                     list_of_messages_to_update.append(message_to_insert)
@@ -104,7 +111,7 @@ class ExtractMessages:
                 # it will be added to it only if the sender of the message is not the seller
                 elif message_date_time == last_message_date_db and message["message_sender"] != last_message_sender_db:
                     list_of_messages_to_update.append(message_to_insert)
-                
+
                 #otherwise, it means the message is already in the database and will not be added again
                 else:
                     continue
