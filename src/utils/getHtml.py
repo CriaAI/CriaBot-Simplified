@@ -69,7 +69,7 @@ class GetHtml:
                 messages_list.append(message)
                 continue
 
-        #checking to see if any dates are empty or text senders are None
+        #if any dates are empty, the date will be replaced by the next message date that is not empty
         i = 0
         for message in messages_list:
             if message["message_date"] == "":

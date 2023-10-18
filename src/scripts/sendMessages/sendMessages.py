@@ -47,7 +47,7 @@ class SendMessages:
             elif stage == 2:
                 #if the last message in the db is not from the seller, we send the messages below
                 if last_message_sender != f" {self.message_sender}: ":
-                    messages ["Minha empresa desenvolveu recentemente uma Inteligência Artificial específica para advogados!",
+                    messages = ["Minha empresa desenvolveu recentemente uma Inteligência Artificial específica para advogados!",
                               "<Vídeo plataforma>",
                               "Estou buscando advogados interessados em fazer o teste da nossa solução de forma 100% gratuita.\nSe tiver interesse, só mandar um 👍 que eu envio o link!"]
                     self.keyboard.write(messages[0])

@@ -89,9 +89,10 @@ class ExtractMessages:
         list_of_messages_to_update = copy.deepcopy(doc_data["messages"])
 
         for message in messages:
-            if user_name in message["message_sender"]:
+            if user_name in message["message_sender"]: #only messages from the lead will be saved in the database
                 print('prospect message!')
                 continue
+            
             message_to_insert = {
                 "sender": message["message_sender"],
                 "text": message["message_text"],
@@ -100,19 +101,10 @@ class ExtractMessages:
 
             if len(doc_data["messages"]) > 0:
                 last_message_date_db = datetime.strptime(doc_data["messages"][-1]["date"], date_time_format)
-                last_message_sender_db = doc_data["messages"][-1]["sender"] #seller
                 message_date_time = datetime.strptime(message["message_date"], date_time_format)
 
-                #if the message we want to insert in the db was sent after the last message in the database, it will be added to it
-                if message_date_time > last_message_date_db:
+                if message_date_time >= last_message_date_db:
                     list_of_messages_to_update.append(message_to_insert)
-
-                #if the message we want to insert in the db was sent at the same time the last message in the database
-                # it will be added to it only if the sender of the message is not the seller
-                elif message_date_time == last_message_date_db and message["message_sender"] != last_message_sender_db:
-                    list_of_messages_to_update.append(message_to_insert)
-
-                #otherwise, it means the message is already in the database and will not be added again
                 else:
                     continue
             else:

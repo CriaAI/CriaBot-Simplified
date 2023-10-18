@@ -19,7 +19,8 @@ def test_insert_messages_from_existing_user():
         pyautogui_module=pyautogui_module,
         pyperclip_module=pyperclip_module,
         repository=repository,
-        filter_click_type=filter_click_type
+        filter_click_type=filter_click_type,
+        last_sender=""
     ).insert_messages(messages)
 
     repository.get_user_by_phone_number.assert_called()
@@ -39,7 +40,8 @@ def test_insert_messages_from_new_user():
         pyautogui_module=pyautogui_module,
         pyperclip_module=pyperclip_module,
         repository=repository,
-        filter_click_type=filter_click_type
+        filter_click_type=filter_click_type,
+        last_sender=""
     ).insert_messages(messages)
 
     assert user == " New User: "
@@ -60,7 +62,8 @@ def test_insert_message_with_no_data_and_cannot_return_error():
         pyautogui_module=pyautogui_module,
         pyperclip_module=pyperclip_module,
         repository=repository,
-        filter_click_type=filter_click_type
+        filter_click_type=filter_click_type,
+        last_sender=""
     ).insert_messages(messages)
 
     repository.get_user_by_phone_number.assert_called()
@@ -79,7 +82,8 @@ def test_insert_messages_from_existing_user_which_the_last_message_was_sent_less
         pyautogui_module=pyautogui_module,
         pyperclip_module=pyperclip_module,
         repository=repository,
-        filter_click_type=filter_click_type
+        filter_click_type=filter_click_type,
+        last_sender=""
     ).insert_messages(messages)
 
     repository.get_user_by_phone_number.assert_called()
