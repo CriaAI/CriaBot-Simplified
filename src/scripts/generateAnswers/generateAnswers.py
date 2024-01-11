@@ -7,9 +7,6 @@ import uuid
 import streamlit as st
 from datetime import datetime
 from dotenv import load_dotenv
-from src.service.openAIstage1 import openAIstage1
-from src.service.openAIstage2 import openAIstage2
-from src.service.openAIstage4 import openAIstage4
 from src.repository.repository import Repository
 from src.utils.userMessages import UserMessages
 from src.config import user_name, run_script_extract_messages, run_script_first_message, run_script_send_messages
@@ -53,70 +50,52 @@ def main():
         all_messages = user["messages"]
         last_messages = UserMessages().get_last_messages(all_messages)
 
-        pinecone_index = PineconeClass().create_index("cria-ai-bot")
-        embeds = embed_model.embed_query(last_messages)
+
 
         if user["stage"] == 1:
             with st.sidebar:
-                openAIstage1_result = openAIstage1(last_messages)
-                
-                st.info("Baseando-se nas respostas do usuário e da sugestão da IA, como você classifica o lead?")
-                st.info(f"RESPOSTA DA IA: {openAIstage1_result['gpt_answer']}")
 
-                col1, col2, col3 = st.columns([1, 2, 2])
+                st.info("Baseando-se nas respostas do usuário e da sugestão da IA, como você classifica o lead?")
+
+                col1, col2, col3= st.columns([1, 2, 2])
 
                 with col1:
-                    if st.button("Bot", key=f"bot_{doc_id}"):
+                    if st.button("bot", key=f"bot_{doc_id}"):
                         data_to_update = {
                             "stage": 0,
+                            "q_1": 0,
+                            "q_1_text": "bot",
                             "need_to_generate_answer": False,
                             "need_to_send_answer": False,
-                            "category": "Bot"
+                            "category": "bot"
                         }
                         Repository().update_user_info(doc_id, data_to_update)
-                        
-                        metadata = {
-                            "stage": 1,
-                            "category": "Bot",
-                            "message": last_messages
-                        }
-                        PineconeClass().insert_text(index=pinecone_index, ids=uuid.uuid4(), embeds=embeds, metadata=metadata)
                         st.rerun()
 
                 with col2:
                     if st.button("Não advogado", key=f"not_lawyer_{doc_id}"):
                         data_to_update = {
                             "stage": 0,
+                            "q_1": 1,
+                            "q_1_text": "nao advogado",
                             "need_to_generate_answer": False,
                             "need_to_send_answer": False,
                             "category": "Not lawyer"
                         }
                         Repository().update_user_info(doc_id, data_to_update)
-
-                        metadata = {
-                            "stage": 1,
-                            "category": "Nao advogado",
-                            "message": last_messages
-                        }
-                        PineconeClass().insert_text(index=pinecone_index, ids=uuid.uuid4(), embeds=embeds, metadata=metadata)
                         st.rerun()
 
                 with col3:
                     if st.button("Advogado", key=f"lawyer_{doc_id}"):
                         data_to_update = {
                             "stage": 2,
+                            "q_1": 2,
+                            "q_1_text": "advogado",
                             "need_to_generate_answer": False,
                             "need_to_send_answer": True,
                             "category": "Lawyer"
                         }
                         Repository().update_user_info(doc_id, data_to_update)
-
-                        metadata = {
-                            "stage": 1,
-                            "category": "Advogado",
-                            "message": last_messages
-                        }
-                        PineconeClass().insert_text(index=pinecone_index, ids=uuid.uuid4(), embeds=embeds, metadata=metadata)
                         st.rerun()
 
                 with st.form("response_stage_1"):
@@ -132,33 +111,20 @@ def main():
 
                         data_to_update = {
                             "stage": 1,
+                            "q_1": 3,
+                            "q_1_text": "mensagem personalizada",
                             "messages": all_messages,
                             "need_to_generate_answer": False,
                             "need_to_send_answer": True,
                             "category": ""
                         }
                         Repository().update_user_info(doc_id, data_to_update)
-
-                        metadata = {
-                            "stage": 4,
-                            "message": last_messages,
-                            "gpt_answer": response
-                        }
-                        PineconeClass().insert_text(index=pinecone_index, ids=uuid.uuid4(), embeds=embeds, metadata=metadata)
-                    
                     st.form_submit_button("Enviar", on_click=handle_submit_stage_1)
-
-                st.info(
-                    f"""PROMPT ENVIADO PARA A IA: \n
-                    {openAIstage1_result['prompt']}"""
-                )
 
         if user["stage"] == 2:
             with st.sidebar:
-                openAIstage2_result = openAIstage2(last_messages)
 
                 st.info("Baseando-se nas respostas do usuário e da sugestão da IA, como você classifica o interesse do lead?")
-                st.info(f"RESPOSTA DA IA: {openAIstage2_result['gpt_answer']}")
 
                 col1, col2 = st.columns(2)
 
@@ -166,38 +132,26 @@ def main():
                     if st.button("Não interessado", key=f"reject_{doc_id}"):
                         data_to_update = {
                             "stage": 0,
+                            "q_2": 0,
+                            "q_2_text": "nao interessado",
                             "need_to_generate_answer": False,
                             "need_to_send_answer": False
                         }
                         Repository().update_user_info(doc_id, data_to_update)
-
-                        metadata = {
-                            "stage": 2,
-                            "category": "Nao interessado",
-                            "message": last_messages
-                        }
-
-                        PineconeClass().insert_text(index=pinecone_index, ids=uuid.uuid4(), embeds=embeds, metadata=metadata)
                         st.rerun()
 
                 with col2:
                     if st.button("Interessado", key=f"accept_{doc_id}"):
                         data_to_update = {
                             "stage": 3,
+                            "q_2": 1,
+                            "q_2_text": "interessado",
                             "need_to_generate_answer": False,
                             "need_to_send_answer": True
                         }
                         Repository().update_user_info(doc_id, data_to_update)
-
-                        metadata = {
-                            "stage": 2,
-                            "category": "Interessado",
-                            "message": last_messages
-                        }
-
-                        PineconeClass().insert_text(index=pinecone_index, ids=uuid.uuid4(), embeds=embeds, metadata=metadata)
                         st.rerun()
-                
+
                 with st.form("response_stage_2"):
                     st.text_area(label="Resposta personalizada", value="", height=200, key="response_stage_2")
 
@@ -211,32 +165,23 @@ def main():
 
                         data_to_update = {
                             "stage": 2,
+                            "q_2": 2,
+                            "q_2_text": "mensagem personalizada",
                             "messages": all_messages,
                             "need_to_generate_answer": False,
                             "need_to_send_answer": True
                         }
                         Repository().update_user_info(doc_id, data_to_update)
-
-                        metadata = {
-                            "stage": 4,
-                            "message": last_messages,
-                            "gpt_answer": response
-                        }
-                        PineconeClass().insert_text(index=pinecone_index, ids=uuid.uuid4(), embeds=embeds, metadata=metadata)
-                    
                     st.form_submit_button("Enviar", on_click=handle_submit_stage_2)
 
-                st.info(
-                    f"""PROMPT ENVIADO PARA A IA: \n
-                    {openAIstage2_result['prompt']}"""
-                )
-                        
+
         elif user["stage"] == 4:
-            openAIstage4_result = openAIstage4(last_messages)
+            st.info("Baseando-se nas respostas do usuário e da sugestão da IA, como você classifica o interesse do lead?")
 
             with st.sidebar:
+
                 with st.form("my_form"):
-                    st.text_area(label="Resposta", value=openAIstage4_result["gpt_answer"], height=400, key="edited_gpt_answer")
+                    st.text_area(label="Resposta", value='AI GEN NOT ENABLED!', height=400, key="edited_gpt_answer")#openAIstage4_result["gpt_answer"], height=400, key="edited_gpt_answer")
 
                     def handle_submit_stage_4():
                         edited_gpt_answer_value = st.session_state.edited_gpt_answer
@@ -248,33 +193,29 @@ def main():
 
                         data_to_update = {
                             "messages": all_messages,
+                            "q_3": 1,
+                            "q_3_text": "mensagem personalizada",
                             "need_to_generate_answer": False,
                             "need_to_send_answer": True
                         }
                         Repository().update_user_info(doc_id, data_to_update)
 
-                        metadata = {
-                            "stage": 4,
-                            "message": last_messages,
-                            "gpt_answer": edited_gpt_answer_value
+                    def handle_ignore_stage_4():
+                        data_to_update = {
+                            "messages": all_messages,
+                            "q_3": 0,
+                            "need_to_generate_answer": False,
+                            "need_to_send_answer": False
                         }
-
-                        PineconeClass().insert_text(index=pinecone_index, ids=uuid.uuid4(), embeds=embeds, metadata=metadata)
+                        Repository().update_user_info(doc_id, data_to_update)
 
                     st.form_submit_button("Aceitar", on_click=handle_submit_stage_4)
-                    
-                if st.button("Rejeitar", key=f"reject_{doc_id}"):
-                    print("REJECTED GPT MESSAGE")
+                    st.form_submit_button("Ignorar", on_click=handle_ignore_stage_4)
 
-                st.info(
-                    f"""PROMPT ENVIADO PARA A IA: \n
-                    {openAIstage4_result['prompt']}"""
-                )
-                    
         # Rendering the message history between the lead and the seller
         for message in all_messages:
             st.info(f"{message['sender']} {message['text']}")
 
-    
+
 if __name__ == '__main__':
     main()

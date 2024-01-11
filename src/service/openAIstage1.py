@@ -1,14 +1,15 @@
 import sys, os
 sys.path.insert(0, os.path.abspath(os.curdir))
-
+import json
 from dotenv import load_dotenv
 from langchain.chat_models import AzureChatOpenAI
-from langchain.schema import SystemMessage, HumanMessage
 from src.utils.augmentedPrompt import AugmentedPrompt
-
+from src.config import message_stage_1
 load_dotenv()
 
 def openAIstage1(user_last_messages):
+    seller_message = "\n".join(message_stage_1)
+    formated_message = f'Vendedor: \'\'\'{seller_message}\'\'\'\nLead: \'\'\'{user_last_messages}\'\'\''
     chat = AzureChatOpenAI(
         openai_api_base=os.getenv("BASE_URL"),
         openai_api_version="2023-05-15",
@@ -19,14 +20,11 @@ def openAIstage1(user_last_messages):
     )
 
     augmented_prompt = AugmentedPrompt()
-    content = augmented_prompt.stage_1(user_last_messages)
-
-    gpt_prompt = [
-        SystemMessage(content="""Você analisa respostas de leads de um serviço de inteligência artificial que cria documentos 
-        para advogados. A sua responsabilidade é classificar os leads como Advogado, Nao advogado ou Bot."""),
-        HumanMessage(content=content)
-    ]
-
+    gpt_prompt = augmented_prompt.prompt_by_stage(user_last_messages=formated_message, stage=1)
     gpt_answer = chat(gpt_prompt).content
-
-    return {"prompt": content, "gpt_answer": gpt_answer}
+    gpt_answer = gpt_answer.replace("```json", '').replace("```", "")
+    try:
+        gpt_answer = json.loads(gpt_answer)
+        return {"prompt": gpt_prompt, "gpt_answer": gpt_answer}
+    except json.JSONDecodeError as e:
+        print("A resposta não é um JSON válido:")

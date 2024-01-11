@@ -4,16 +4,38 @@ sys.path.insert(0, os.path.abspath(os.curdir))
 import time
 import random
 from bs4 import BeautifulSoup
+from lxml import etree
 
 class GetHtml:
-    def __init__(self, pyautogui_module, pyperclip_module):
+    def __init__(self, pyautogui_module, pyperclip_module, bezierMove):
         self.pyautogui = pyautogui_module
         self.pyperclip = pyperclip_module
+        self.bezierMove = bezierMove
 
     def extract_HTML(self):
         htmlXY = (1800, 205)
         self.move_to_and_click(xy_position=htmlXY)
         return self.copy_to_variable()
+
+    def extract_user(self):
+        print('stracting user')
+        html = self.extract_HTML()
+        print('stracting user -- 1')
+        soup = BeautifulSoup(html, 'html.parser')
+        #htmlparser = etree.HTMLParser()
+        print('stracting user -- 2')
+        dom = etree.HTML(str(soup))
+        #tree = etree.parse(html, htmlparser)
+        #print('stracting user -- 3')
+        #soup = BeautifulSoup(etree.tostring(tree), 'xml')
+        phone_element = dom.xpath("//header[@class = 'AmmtE']//span[@class='ggj6brxn gfz4du6o r7fjleex g0rxnol2 lhj4utae le5p0ye3 l7jjieqr _11JPr']")
+        if not phone_element: return None
+        phone_element = phone_element[0]
+        #user = soup.find('header', {'class': 'AmmtE'}).find("span", {'class': 'l7jjieqr'})
+        title = phone_element.text
+        print(f"user_title: {title}")
+        print(f"user_attrs: {phone_element.attrib}")
+        return title
 
     def extract_last_messages(self):
         html = self.extract_HTML()
@@ -84,7 +106,7 @@ class GetHtml:
     def get_html_from_start_page(self):
         time.sleep(4)
         html = self.extract_HTML()
-
+        print(f"html: {html}")
         if html == "":
             return
 
@@ -95,11 +117,16 @@ class GetHtml:
 
     def copy_to_variable(self):
         self.pyperclip.copy('')
+        time.sleep(1)
         self.pyautogui.hotkey('ctrl', 'c')
-        return self.pyperclip.paste()
+        time.sleep(0.5)
+        html = self.pyperclip.paste()
+        print(f"HTML: {html}")
+        return html
 
     def move_to_and_click(self, xy_position):
-        self.pyautogui.moveTo(xy_position[0], xy_position[1], duration=0.5*(self.randomize_time()), tween=self.pyautogui.easeInOutQuad)  # Use tweening/easing function to move mouse over 2 seconds.
+        #self.pyautogui.moveTo(xy_position[0], xy_position[1], duration=duration, tween=self.pyautogui.easeInOutQuad)  # Use tweening/easing function to move mouse over 2 seconds.
+        self.bezierMove.move(x2=xy_position[0], y2=  xy_position[1])
         self.pyautogui.click()
 
     def randomize_time(self):

@@ -1,5 +1,10 @@
-def elementsToMap():
-    return [
+'''
+
+        {
+            "Name": "message_sender_name_xy",
+            "Description": "Nome do usuário/vendedor",
+            "Value": (199, 582)
+        },
         {
             "Name": "profile_picture_xy",
             "Description": "Foto de perfil do usuário",
@@ -10,11 +15,25 @@ def elementsToMap():
             "Description": "Botão para editar o nome do usuário",
             "Value":(465, 241)
         },
+'''
+def elementsToMap():
+    return [
+        {
+            "Name": "messages_column_whatsapp",
+            "Description": "Texto FILTRO: NÃO LIDAS na coluna de mensagens do whatsapp, quando o filtro de mensagens não lidas está ativo.",
+            "Value": (166, 307)
+        },
         {
             "Name":"filter_box_xy",
-            "Description": "Botão de filtrar mensagens não lidas no whatsapp",
+            "Description": "Botão de filtrar mensagens",
             "Value":(465, 241)
         },
+        #Usado somente em whatsapp business
+        #{
+        #    "Name":"filter_box_nao_lidas_xy",
+        #    "Description": "Botão de filtrar mensagens não lidas no whatsapp",
+        #    "Value":(465, 241)
+        #},
         {
             "Name":"first_conversation_box_xy",
             "Description": "Box da primeira conversa que aparece no whatsapp (conversas existentes)",
@@ -100,6 +119,7 @@ class ScreenMapper():
 
         print('''
               Mapping position.
+              Set devBar at 1285.60 px.
               Click Alt to start mapping.
               Click Alt Gr to set mapping point.
               Click Esc to exit.''')

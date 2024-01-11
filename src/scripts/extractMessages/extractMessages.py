@@ -10,9 +10,10 @@ from src.utils.getHtml import GetHtml
 import copy
 
 class ExtractMessages:
-    def __init__(self, pyautogui_module, pyperclip_module, repository, filter_click_type, last_sender:str):
+    def __init__(self, pyautogui_module, pyperclip_module, bezierMove_module, repository, filter_click_type, last_sender:str):
         self.pyautogui = pyautogui_module
         self.pyperclip = pyperclip_module
+        self.bezierMove = bezierMove_module
         self.repository = repository
         self.filter_click_type = filter_click_type
         self.last_sender = last_sender
@@ -20,21 +21,37 @@ class ExtractMessages:
     def open_conversation(self):
         if self.filter_click_type == "click":
             self.move_to_and_click(xy_position = sv["filter_box_xy"]) #filter for unread conversations
+            #self.move_to_and_click(xy_position = sv["filter_box_nao_lidas_xy"]) #only for whatsapp business
+            self.scoll_messages_column()
         else:
             self.move_to_and_double_click(xy_position = sv["filter_box_xy"]) #filter for unread conversations
-        time.sleep(1)
+            #self.move_to_and_click(xy_position = sv["filter_box_nao_lidas_xy"]) #only for whatsapp business
+        #scroll WhatsApp messages column
+
         self.move_to_and_click(xy_position=sv["first_conversation_box_xy"])
         time.sleep(2)
-        messages = GetHtml(self.pyautogui, self.pyperclip).extract_last_messages()
+        messages = GetHtml(self.pyautogui, self.pyperclip, self.bezierMove).extract_last_messages()
         current_sender = self.insert_messages(messages)
         return current_sender
 
     def move_to_and_click(self, xy_position):
-        self.pyautogui.moveTo(xy_position[0], xy_position[1], duration=0.5*(self.randomize_time()), tween=self.pyautogui.easeInOutQuad)  # Use tweening/easing function to move mouse over 2 seconds.
+        self.bezierMove.move(x2=xy_position[0], y2=  xy_position[1])
+        #self.pyautogui.moveTo(xy_position[0], xy_position[1], duration=0.5*(self.randomize_time()), tween=self.pyautogui.easeInOutQuad)  # Use tweening/easing function to move mouse over 2 seconds.
         self.pyautogui.click()
 
+    def move_to(self, xy_position):
+        self.bezierMove.move(x2=xy_position[0], y2=  xy_position[1])
+        #self.pyautogui.moveTo(xy_position[0], xy_position[1], duration=0.5*(self.randomize_time()), tween=self.pyautogui.easeInOutQuad)  # Use tweening/easing function to move mouse over 2 seconds.
+
+    def scoll_messages_column(self):
+        self.move_to_and_click(xy_position=sv["messages_column_whatsapp"])
+        time.sleep(1)
+        self.pyautogui.hotkey('end')
+        time.sleep(3)
+
     def move_to_and_double_click(self, xy_position):
-        self.pyautogui.moveTo(xy_position[0], xy_position[1], duration=0.5*(self.randomize_time()), tween=self.pyautogui.easeInOutQuad)  # Use tweening/easing function to move mouse over 2 seconds.
+        self.bezierMove.move(x2=xy_position[0], y2=  xy_position[1])
+        #self.pyautogui.moveTo(xy_position[0], xy_position[1], duration=0.5*(self.randomize_time()), tween=self.pyautogui.easeInOutQuad)  # Use tweening/easing function to move mouse over 2 seconds.
         self.pyautogui.doubleClick()
 
     def randomize_time(self):
@@ -55,7 +72,7 @@ class ExtractMessages:
                 message_time = datetime.strptime(last_message["message_date"], "%H:%M, %d/%m/%Y")
                 now = datetime.now()
 
-                if (now - message_time).total_seconds() / 60 < 5:
+                if (now - message_time).total_seconds() / 60 < 3: #5:
                     return {"sender": last_message["message_sender"].strip().replace(":", "")}
 
                 #if the sender is not in the database, he will be added to it
@@ -92,7 +109,7 @@ class ExtractMessages:
             if user_name in message["message_sender"]: #only messages from the lead will be saved in the database
                 print('prospect message!')
                 continue
-            
+
             message_to_insert = {
                 "sender": message["message_sender"],
                 "text": message["message_text"],
@@ -100,6 +117,7 @@ class ExtractMessages:
             }
 
             if len(doc_data["messages"]) > 0:
+                print(doc_data["messages"][-1]["date"])
                 last_message_date_db = datetime.strptime(doc_data["messages"][-1]["date"], date_time_format)
                 message_date_time = datetime.strptime(message["message_date"], date_time_format)
 

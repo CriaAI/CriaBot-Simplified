@@ -5,7 +5,7 @@ sys.path.insert(0, os.path.abspath(os.curdir))
 from pathlib import Path
 import json
 
-user_name = "Fran"
+user_name = "Caio"
 
 screen_variables = {
     "profile_picture_xy": (60, 170),
@@ -39,6 +39,14 @@ for element in screenMapping:
 base_path = Path(__file__).parents[1].as_posix()
 video_path = f"{base_path}/src/videos"
 csv_file_path = f"{base_path}/src/files/phoneNumbers.csv"
+
+with open(f"{base_path}/src/messages/stage_1.json", 'r', encoding="utf-8") as ms1:
+    message_stage_1 = json.load(ms1)
+with open(f"{base_path}/src/messages/stage_2.json", 'r', encoding="utf-8") as ms2:
+    message_stage_2 = json.load(ms2)
+with open(f"{base_path}/src/messages/stage_3.json", 'r', encoding="utf-8") as ms3:
+    message_stage_3 = json.load(ms3)
+
 
 run_script_extract_messages = f"python {base_path}/src/run/runExtractMessagesScript.py"
 run_script_first_message = f"python {base_path}/src/run/runFirstMessageScript.py"

@@ -16,6 +16,8 @@ class PhoneChip:
         time.sleep(1)
         self.move_to_and_click(sv["message_sender_xy"])
         time.sleep(1)
+        self.move_to_and_click(sv["message_sender_name_xy"])
+        time.sleep(1)
         self.keyboard.press_and_release("ctrl+a")
         time.sleep(0.5)
         message_sender = self.copy_to_variable()
